@@ -32,7 +32,19 @@ public class SMWeaponInHand : MonoBehaviour
 	/// This holds reference to audio clip that this gun makes while firing
 	/// </summary>
 	[SerializeField]
-	public AudioClip gunSoundMadeByGun;
+	private AudioClip gunSoundMadeByGun;
+	/// <summary>
+	/// The reload sound made by gun.
+	/// </summary>
+	[SerializeField]
+	private AudioClip reloadSoundMadeByGun;
+	/// <summary>
+	/// The reload sound made by gun.
+	/// </summary>
+	public AudioClip ReloadSoundMadeByGun
+	{
+		get{ 	return reloadSoundMadeByGun;	}
+	}
 
 	[Tooltip("Type no of bullets that each gun clip can carry")]
 	[SerializeField]

@@ -229,6 +229,10 @@ namespace SandeepMattepu.Weapon
 			{
 				ownerClientBeganFiring = false;
 				ikControl.requestReloading ();
+				if(isReloadingFinished)
+				{
+					playReloadSound ();
+				}
 				isReloadingFinished = false;
 				stopAllComponenets ();
 			}
@@ -482,11 +486,18 @@ namespace SandeepMattepu.Weapon
 				if(ammoDetails.bulletsLeft != noOfBulletsInClip(guntype) && (totalNumberOfBullets - ammoDetails.bulletsLeft > 0))
 				{
 					ikControl.requestReloading ();
+					if(isReloadingFinished)
+					{
+						playReloadSound ();
+					}
 					isReloadingFinished = false;
 				}
 			}
 		}
 
+		/// <summary>
+		/// This function is called when reloading is finished
+		/// </summary>
 		private void onReloadingFinished()
 		{
 			isReloadingFinished = true;
@@ -506,6 +517,29 @@ namespace SandeepMattepu.Weapon
 			{
 				ammoDetails.extraClipsLeft += 1;
 			}
+
+			if(weaponInHandComponent != null)
+			{
+				if(audioSource.isPlaying)
+				{
+					audioSource.Stop ();
+				}
+				audioSource.clip = weaponInHandComponent.getGunSound ();
+			}
+		}
+
+		/// <summary>
+		/// This function plays reloading sound when gun is reloading
+		/// </summary>
+		private void playReloadSound()
+		{
+			AudioClip clip = weaponInHandComponent.ReloadSoundMadeByGun;
+			audioSource.clip = clip;
+			if(audioSource.isPlaying)
+			{
+				audioSource.Stop ();
+			}
+			audioSource.Play ();
 		}
 
 		#region IPunObservable implementation
