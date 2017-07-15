@@ -237,7 +237,6 @@ namespace SandeepMattepu.Weapon
 				dropCurrentHoldingWeaponToFloor ();
 				findCurrentHoldingWeapon ();
 				placeIKAppropriately ();
-				playerFiring.updateHandPos ();
 
 				if(isUsingMultiplayer && photonViewComponent.isMine)		// Send weapon change message to other remote clients who represent this client
 				{
@@ -253,7 +252,6 @@ namespace SandeepMattepu.Weapon
 					playerFiring.reportWeaponChange ();
 					findCurrentHoldingWeapon ();
 					placeIKAppropriately ();
-					playerFiring.updateHandPos ();
 					Destroy (currentGunPlayerStandingOn);
 				}
 			}
@@ -472,7 +470,6 @@ namespace SandeepMattepu.Weapon
 				placeIKAppropriately ();
 
 				playerFiring.reportWeaponChange ();
-				playerFiring.updateHandPos ();
 			}
 		}
 

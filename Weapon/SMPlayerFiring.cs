@@ -84,14 +84,6 @@ namespace SandeepMattepu.Weapon
 		/// This shows whether reloading of the gun is finished or not
 		/// </summary>
 		private bool isReloadingFinished = true;
-		/// <summary>
-		/// This will show whether hand needs to reach pocket
-		/// </summary>
-		private bool handNeededToReachPocket = false;
-		/// <summary>
-		/// This will show whether hand needs to reach gun
-		/// </summary>
-		private bool handNeededToReachGun = false;
 
 		#region Network Related Variables
 		/// <summary>
@@ -114,10 +106,6 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		private PhotonView photonViewComponent;
 		/// <summary>
-		/// This will store the current position of the left hand
-		/// </summary>
-		private Transform leftHandPos;
-		/// <summary>
 		/// This will hold reference to sound that gun makes while firing
 		/// </summary>
 		private AudioClip audioClip;
@@ -129,11 +117,11 @@ namespace SandeepMattepu.Weapon
 		void Start () 
 		{
 			ikControl = GetComponent<IKControl> ();
-			leftHandPos = ikControl.tempPos;
+			ikControl.OnReloadFinished += onReloadingFinished;
 			audioSource = GetComponent<AudioSource>();
 			photonViewComponent = GetComponent<PhotonView> ();
 			reportWeaponChange ();			// We can call this at start
-
+	
 			SMJoyStick firingStick = gameObject.GetComponent<SMPlayerController> ().orientationJoyStick;
 			firingStick.DoubleTapEvent += checkAndPerformReloading;
 		}
@@ -240,7 +228,8 @@ namespace SandeepMattepu.Weapon
 			else if(ammoDetails.extraClipsLeft > 0)
 			{
 				ownerClientBeganFiring = false;
-				performReloading();
+				ikControl.requestReloading ();
+				isReloadingFinished = false;
 				stopAllComponenets ();
 			}
 			else
@@ -492,64 +481,15 @@ namespace SandeepMattepu.Weapon
 			{
 				if(ammoDetails.bulletsLeft != noOfBulletsInClip(guntype) && (totalNumberOfBullets - ammoDetails.bulletsLeft > 0))
 				{
-					performReloading ();
+					ikControl.requestReloading ();
+					isReloadingFinished = false;
 				}
 			}
 		}
 
-		/// <summary>
-		/// This function is called when player needs to perform reloading
-		/// </summary>
-		private void performReloading()
+		private void onReloadingFinished()
 		{
-			// clip goes down
-			// hand goes back and comes forward then perform firing
-			if(isReloadingFinished)		// Newly reloading
-			{
-				isReloadingFinished = false;
-				handNeededToReachPocket = true;
-				handNeededToReachGun = false;
-				ikControl.tempPos.transform.position = Vector3.Lerp (leftHandPos.position, leftPocket.position, 0.5f);
-				ikControl.tempPos.transform.rotation = Quaternion.Slerp (leftHandPos.rotation, leftPocket.rotation, 0.5f);
-				StartCoroutine ("handMovesTowardsPocket");
-			}
-			else if(!(isReloadingFinished) && handNeededToReachPocket && !(handNeededToReachGun))	// Reloading is under progress hand goes backwards
-			{
-				ikControl.tempPos.transform.position = Vector3.Lerp (leftHandPos.position, leftPocket.position, 0.5f);
-				ikControl.tempPos.transform.rotation = Quaternion.Slerp (leftHandPos.rotation, leftPocket.rotation, 0.5f);
-			}
-			else if(!(isReloadingFinished) && !(handNeededToReachPocket) && !(handNeededToReachGun))		// Hand is at the pocket
-			{
-				StartCoroutine ("handMovesTowardsGun");
-				handNeededToReachGun = true;
-			}
-			else if(!(isReloadingFinished) && handNeededToReachGun)		// left hand returns back to gun
-			{
-				ikControl.tempPos.position = ikControl.leftHandObj.position;
-				ikControl.tempPos.rotation = ikControl.leftHandObj.rotation;
-			}
-		}
-
-		/// <summary>
-		/// Call this function after both swapping and ik of hands are placed successfully
-		/// </summary>
-		public void updateHandPos()
-		{
-			leftHandPos = ikControl.tempPos.transform;
-		}
-
-		private IEnumerator handMovesTowardsPocket()
-		{
-			yield return new WaitForSeconds (0.5f/*This value is based on play testing ie time taken by the hand to reach the pocket*/);	// This duration is when hand goes to pocket
-			handNeededToReachPocket = false;
-			yield return null;
-		}
-
-		private IEnumerator handMovesTowardsGun()
-		{
-			yield return new WaitForSeconds (ammoDetails.reloadTime);
 			isReloadingFinished = true;
-			handNeededToReachGun = false;
 			int deficientBullets = noOfBulletsInClip (guntype) - ammoDetails.bulletsLeft;
 			if((totalNumberOfBullets - ammoDetails.bulletsLeft) > deficientBullets)
 			{
