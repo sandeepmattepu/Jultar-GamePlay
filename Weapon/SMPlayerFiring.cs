@@ -133,6 +133,9 @@ namespace SandeepMattepu.Weapon
 			audioSource = GetComponent<AudioSource>();
 			photonViewComponent = GetComponent<PhotonView> ();
 			reportWeaponChange ();			// We can call this at start
+
+			SMJoyStick firingStick = gameObject.GetComponent<SMPlayerController> ().orientationJoyStick;
+			firingStick.DoubleTapEvent += checkAndPerformReloading;
 		}
 		
 		// Update is called once per frame
@@ -158,12 +161,6 @@ namespace SandeepMattepu.Weapon
 					timer = 0.0f;
 					stopAllComponenets ();
 				}
-			}
-
-			//TODO To remove this code later after testing
-			if(Input.GetKeyDown(KeyCode.Space))
-			{
-				checkAndPerformReloading ();
 			}
 		}
 
@@ -489,11 +486,14 @@ namespace SandeepMattepu.Weapon
 		/// <summary>
 		/// This function checks whether current gun configuration is eligible for reloading. If it is then it will call performReloading()
 		/// </summary>
-		private void checkAndPerformReloading()
+		private void checkAndPerformReloading(object sender, JoyStickType stickType)
 		{
-			if(ammoDetails.bulletsLeft != noOfBulletsInClip(guntype) && (totalNumberOfBullets - ammoDetails.bulletsLeft > 0))
+			if(stickType == JoyStickType.AIMING)
 			{
-				performReloading ();
+				if(ammoDetails.bulletsLeft != noOfBulletsInClip(guntype) && (totalNumberOfBullets - ammoDetails.bulletsLeft > 0))
+				{
+					performReloading ();
+				}
 			}
 		}
 
