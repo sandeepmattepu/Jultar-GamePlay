@@ -1,0 +1,137 @@
+﻿//
+//  SMTouchManager.cs
+//  Jultar
+//
+//  Created by Sandeep Yadav Mattepu on 04/02/17.
+//  Copyright © 2017 Mattepu. All rights reserved.
+//
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+namespace SandeepMattepu.MobileTouch
+{
+	/// <summary>
+	/// This class script will continuosly perform raycasting from the touches player made and it will differentiate whether the touch is made on UI or on the game scene.
+	/// Later it will register those touches which can be later be used for analyzing those touches and their raycast results
+	/// </summary>
+	public class SMTouchManager : MonoBehaviour 
+	{
+		/// <summary>
+		/// This is GraphicRaycaster component attached to the canvas
+		/// </summary>
+		private GraphicRaycaster rayCaster;
+		/// <summary>
+		/// This records all the touches in current frame
+		/// </summary>
+		private static List<SMTouchIdentifier> touchesInFrame = new List<SMTouchIdentifier>();
+		// Use this for initialization
+		void Start () 
+		{
+			rayCaster = GetComponent<GraphicRaycaster> ();
+		}
+		
+		// Update is called once per frame
+		void Update () 
+		{
+			manageTouches ();
+		}
+
+		/// <summary>
+		/// This function will check whether the touch is made on UI
+		/// </summary>
+		/// <param name="touchMade">Pass the touch value</param>
+		/// <returns>Layer value which indicates where the touch is made on UI</returns>
+		public int layerTouchMadeOn(Touch touchMade)
+		{
+			PointerEventData input = new PointerEventData (null);		// Null is passed to make PointerEventData to consider touches
+			input.position =touchMade.position;							// Manually assigned position of PointerEventData as Touch position
+			List<RaycastResult> results = new List<RaycastResult> ();
+
+			rayCaster.Raycast (input, results);							// Perform raycasting
+			if(results.Count > 0)
+			{
+				return results [0].gameObject.layer;
+			}
+			return 0;
+		}
+
+		/// <summary>
+		/// This function will check whether the touch/mouse click is made on UI
+		/// </summary>
+		/// <returns>Layer value which indicates where the mouse click is made on UI.</returns>
+		/// <param name="position">Position of the touch/mouse in screen pixels</param>
+		public int layerTouchMadeOn(Vector3 position)
+		{
+			PointerEventData input = new PointerEventData (null);		// Null is passed to make PointerEventData to consider touches
+			input.position = position;							// Manually assigned position of PointerEventData as Touch position
+			List<RaycastResult> results = new List<RaycastResult> ();
+
+			rayCaster.Raycast (input, results);							// Perform raycasting
+			if(results.Count > 0)
+			{
+				return results [0].gameObject.layer;
+			}
+			return 0;
+		}
+
+		/// <summary>
+		/// This function will manage all the touches made on the screen. It will register new touches and delete the older ones
+		/// </summary>
+		private void manageTouches()
+		{
+			if(Input.touchCount > 0)
+			{
+				foreach(Touch touch in Input.touches)
+				{
+					if(touch.phase == TouchPhase.Began)
+					{
+						registerNewTouch (touch);			// Register new touches
+					}
+					else if(touch.phase == TouchPhase.Ended)
+					{
+						for (int x = 0; x < touchesInFrame.Count; x++) 
+						{
+							if(touch.fingerId == touchesInFrame[x].fingerID)
+							{
+								touchesInFrame.RemoveAt (x);		// Remove old touches
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// This function will register new touch made on the screen and makes a record of it
+		/// </summary>
+		/// <param name="touch">Pass the touch value to register it</param>
+		private void registerNewTouch(Touch touch)
+		{
+			int layerBelongTo = layerTouchMadeOn (touch);
+			SMTouchIdentifier newTouchIdentifier = new SMTouchIdentifier (touch, layerBelongTo); 
+			touchesInFrame.Add (newTouchIdentifier);
+		}
+
+		/// <summary>
+		/// This function will return where the touch belongs to based on the touch value
+		/// </summary>
+		/// <param name="touch">Pass the touch value to analyze it</param>
+		/// <returns>Where the touch belongs to</returns>
+		public static TouchBelongs processWhichTouchBelongsTo(Touch touch)
+		{
+			foreach(SMTouchIdentifier touchIdentifier in touchesInFrame)
+			{
+				if(touch.fingerId == touchIdentifier.fingerID)
+				{
+					return touchIdentifier.touchBelongsTo;
+				}
+			}
+			return TouchBelongs.GAME;
+		}
+	}
+
+}
