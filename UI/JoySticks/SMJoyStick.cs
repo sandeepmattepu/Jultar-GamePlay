@@ -76,9 +76,52 @@ public class SMJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 	// Update is called once per frame
 	void Update () 
 	{
+		tickTimersWhileTouchingAndNot ();
+	}
+
+	/// <summary>
+	/// This function ticks the timers while touching and not touching.
+	/// </summary>
+	private void tickTimersWhileTouchingAndNot()
+	{
 		if(isPlayerTouchingJoyStick)
 		{
-			timerForSingleTap += Time.deltaTime;
+			if(isPreviouslySingleTapMade)
+			{
+				if(timerForSingleTap > 0.30f)
+				{
+					isPreviouslySingleTapMade = false;
+					if(SingleTapEvent != null)
+					{
+						SingleTapEvent (this, joyStickType);
+					}
+				}
+				else
+				{
+					timerForSingleTap += Time.deltaTime;
+				}
+			}
+			else
+			{
+				timerForSingleTap += Time.deltaTime;
+			}
+		}
+		else if(isPreviouslySingleTapMade)
+		{
+			if(timerAfterSingleTap < 0.15f)
+			{
+				timerAfterSingleTap += Time.deltaTime;
+			}
+			else
+			{
+				if(SingleTapEvent != null)
+				{
+					SingleTapEvent (this, joyStickType);
+				}
+				timerForSingleTap = 0.0f;
+				timerAfterSingleTap = 0.0f;
+				isPreviouslySingleTapMade = false;
+			}
 		}
 	}
 
@@ -104,19 +147,37 @@ public class SMJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 		}
 		isPlayerTouchingJoyStick = false;
 
+		calculateTouchTypeProduced ();
+	}
+
+	/// <summary>
+	/// This function calculates the touch type made
+	/// </summary>
+	private void calculateTouchTypeProduced()
+	{
 		if(timerForSingleTap < 0.30f)
 		{
-			isPreviouslySingleTapMade = true;
-			Debug.Log ("Single Tap made");
+			if(isPreviouslySingleTapMade && timerAfterSingleTap < 0.15f)
+			{
+				if(DoubleTapEvent != null)
+				{
+					DoubleTapEvent (this, joyStickType);
+				}
+				isPreviouslySingleTapMade = false;
+				timerForSingleTap = 0.0f;
+				timerAfterSingleTap = 0.0f;
+			}
+			else
+			{
+				isPreviouslySingleTapMade = true;
+			}
 		}
 		else
 		{
 			isPreviouslySingleTapMade = false;
-			Debug.Log ("Long Tap");
+			timerForSingleTap = 0.0f;
+			timerAfterSingleTap = 0.0f;
 		}
-
-		timerForSingleTap = 0.0f;
-		timerAfterSingleTap = 0.0f;
 	}
 
 	// When touch is dragged it is called
