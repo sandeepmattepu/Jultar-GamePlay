@@ -390,7 +390,7 @@ namespace SandeepMattepu.Weapon
 			if(gunTip != null)
 			{
 				// stop firing audio
-				if(audioSource.isPlaying)
+				if(audioSource.isPlaying && isReloadingFinished)
 				{
 					audioSource.Stop ();
 				}
