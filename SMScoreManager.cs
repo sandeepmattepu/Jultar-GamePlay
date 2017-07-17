@@ -101,6 +101,11 @@ public class SMScoreManager : MonoBehaviour
 		playExp.nextLevelExperiencePoints = experienceRequiredForNextLevel;
 		return playExp;
 	}
+
+	public static byte LevelFromExperience(int Experience)
+		{
+			return Experience < 1000 ? (byte) 1 : (byte) Mathf.Ceil(((Mathf.Log10((float)Experience) - 3) / Mathf.Log10(2f)));
+		}
 }
 
 /// <summary>

@@ -420,7 +420,8 @@ namespace SandeepMattepu.Weapon
 			endPod = gunTip.transform.TransformPoint (endPod);
 			// Create physics ray cast
 			RaycastHit hitInfo;
-			Ray ray = new Ray (gunTip.transform.position, endPod);
+			Vector3 direction = endPod - gunTip.transform.position;
+			Ray ray = new Ray (gunTip.transform.position, direction);
 			Physics.Raycast (ray, out hitInfo);
 			if(hitInfo.collider != null)
 			{
