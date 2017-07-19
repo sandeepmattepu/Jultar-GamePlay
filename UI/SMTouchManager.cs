@@ -29,7 +29,10 @@ namespace SandeepMattepu.MobileTouch
 		/// This records all the touches in current frame
 		/// </summary>
 		private static List<SMTouchIdentifier> touchesInFrame = new List<SMTouchIdentifier>();
-
+		/// <summary>
+		/// Occurs when single tap was made on screen.
+		/// </summary>
+		public event singleGameTapMade OnSingleGameTap;
 		#region Long Press variables
 
 		/// <summary>
@@ -97,7 +100,10 @@ namespace SandeepMattepu.MobileTouch
 						{
 							if(timerAfterTouch < 0.30f)
 							{
-								// Raise single tap event also handle double tap
+								if(OnSingleGameTap != null)
+								{
+									OnSingleGameTap (this, gameTouch);
+								}
 							}
 							isGameTouchMade = false;
 							timerAfterTouch = 0.0f;
@@ -113,7 +119,6 @@ namespace SandeepMattepu.MobileTouch
 						{
 							OnGameLongPress (this, gameTouch);
 						}
-						Debug.Log("Long press on game");
 						isGameTouchMade = false;
 						timerAfterTouch = 0.0f;
 					}

@@ -248,4 +248,6 @@ namespace SandeepMattepu.UI
 	public delegate void doubleTapMade(object sender, JoyStickType stickType);
 
 	public delegate void longPressMade(object sender, Touch touchType);
+
+	public delegate void singleGameTapMade(object sender, Touch touchType);
 }

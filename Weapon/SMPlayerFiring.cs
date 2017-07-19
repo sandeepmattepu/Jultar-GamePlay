@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SandeepMattepu.MobileTouch;
 
 namespace SandeepMattepu.Weapon
 {
@@ -84,6 +85,19 @@ namespace SandeepMattepu.Weapon
 		/// This shows whether reloading of the gun is finished or not
 		/// </summary>
 		private bool isReloadingFinished = true;
+		/// <summary>
+		/// The total number of grenads the player has
+		/// </summary>
+		[SerializeField]
+		private int numberOfGrenadeBombs = 2;
+		/// <summary>
+		/// Does throwing a grenade is finsihed
+		/// </summary>
+		private bool isThrowingGrenadeFinished = true;
+		/// <summary>
+		/// The touch manager to recieve inputs.
+		/// </summary>
+		public SMTouchManager touchManager;
 
 		#region Network Related Variables
 		/// <summary>
@@ -118,12 +132,16 @@ namespace SandeepMattepu.Weapon
 		{
 			ikControl = GetComponent<IKControl> ();
 			ikControl.OnReloadFinished += onReloadingFinished;
+			ikControl.OnGrenadeRelease += onGrenadeRelease;
+			ikControl.OnGrenadeThrowFinished += onGrenadeThrowFinsihed;
 			audioSource = GetComponent<AudioSource>();
 			photonViewComponent = GetComponent<PhotonView> ();
 			reportWeaponChange ();			// We can call this at start
 	
 			SMJoyStick firingStick = gameObject.GetComponent<SMPlayerController> ().orientationJoyStick;
 			firingStick.DoubleTapEvent += checkAndPerformReloading;
+
+			touchManager.OnGameLongPress += throwGrenadeInputHandler;
 		}
 		
 		// Update is called once per frame
@@ -150,6 +168,40 @@ namespace SandeepMattepu.Weapon
 					stopAllComponenets ();
 				}
 			}
+		}
+
+		/// <summary>
+		/// This function will throws grenade.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="touchMade">Touch made.</param>
+		private void throwGrenadeInputHandler(object sender, Touch touchMade)
+		{
+			if((isReloadingFinished /*&& isusingpowerups*/) && isThrowingGrenadeFinished)
+			{
+				if(numberOfGrenadeBombs > 0)
+				{
+					ikControl.requestGrenadeThrow ();
+					isThrowingGrenadeFinished = false;
+				}
+			}
+		}
+
+		/// <summary>
+		/// This function is called when the hand throw is finished in the animation
+		/// </summary>
+		private void onGrenadeRelease()
+		{
+			Debug.Log ("Throw grenade");
+			numberOfGrenadeBombs -= 1;
+		}
+
+		/// <summary>
+		/// This function is called when the entire grenade throw animation is finsihed
+		/// </summary>
+		private void onGrenadeThrowFinsihed()
+		{
+			isThrowingGrenadeFinished = true;
 		}
 
 		/// <summary>
@@ -182,7 +234,7 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		public void performFiring()
 		{
-			if(ammoDetails.bulletsLeft > 0 && isReloadingFinished)
+			if(ammoDetails.bulletsLeft > 0 && (isReloadingFinished && isThrowingGrenadeFinished))
 			{
 				if(timer >= secondsPerBullet)
 				{
@@ -229,7 +281,7 @@ namespace SandeepMattepu.Weapon
 			{
 				ownerClientBeganFiring = false;
 				ikControl.requestReloading ();
-				if(isReloadingFinished)
+				if(isReloadingFinished && isThrowingGrenadeFinished)
 				{
 					playReloadSound ();
 				}
@@ -487,7 +539,7 @@ namespace SandeepMattepu.Weapon
 				if(ammoDetails.bulletsLeft != noOfBulletsInClip(guntype) && (totalNumberOfBullets - ammoDetails.bulletsLeft > 0))
 				{
 					ikControl.requestReloading ();
-					if(isReloadingFinished)
+					if(isReloadingFinished && isThrowingGrenadeFinished)
 					{
 						playReloadSound ();
 					}
