@@ -59,6 +59,15 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		protected float gameTimer = 0.0f;
 		/// <summary>
+		/// The time from which multiplayer game started.
+		/// </summary>
+		public float GameTimer {
+			get {
+				return gameTimer;
+			}
+		}
+
+		/// <summary>
 		/// This value will tell whether to limit number of kills in multiplayer game
 		/// </summary>
 		public bool hasKillsLimit;
@@ -90,6 +99,10 @@ namespace SandeepMattepu.Multiplayer
 		/// This holds reference to the local player in the game
 		/// </summary>
 		public SMPlayerIdentifier localPlayer;
+		/// <summary>
+		/// This event is raised when a person makes a score
+		/// </summary>
+		public event notifyScoreChange OnScoreChange;
 
 		/// <summary>
 		/// Reports the score for particular game type.
@@ -100,6 +113,10 @@ namespace SandeepMattepu.Multiplayer
 			if(PhotonNetwork.player.ID == ID)
 			{
 				SMShowXpMadeInstantly.addXPToQueue(xpMadeAfterKill);
+			}
+			if(OnScoreChange != null)
+			{
+				OnScoreChange (this, ID);
 			}
 		}
 	}
@@ -113,4 +130,6 @@ namespace SandeepMattepu.Multiplayer
 		FREE_FOR_ALL,
 		TEAM_DEATH_MATCH
 	}
+
+	public delegate void notifyScoreChange(object sender, int ID);
 }
