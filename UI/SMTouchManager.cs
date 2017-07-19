@@ -74,6 +74,20 @@ namespace SandeepMattepu.MobileTouch
 		{
 			if(isGameTouchMade)
 			{
+				// Below if code is written because touches are value types and changes every frame.
+				// We can't reference them to track changes
+				if(Input.touchCount > 0)
+				{
+					foreach(Touch touch in Input.touches)
+					{
+						if(touch.fingerId == gameTouch.fingerId)
+						{
+							gameTouch = touch;
+							break;
+						}
+					}
+				}
+
 				if((gameTouch.position - initialPositionOfTouch).magnitude < 0.20f)
 				{
 					if(timerAfterTouch < 1.5f)
