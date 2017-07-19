@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using SandeepMattepu.UI;
 
 namespace SandeepMattepu.MobileTouch
 {
@@ -28,6 +29,31 @@ namespace SandeepMattepu.MobileTouch
 		/// This records all the touches in current frame
 		/// </summary>
 		private static List<SMTouchIdentifier> touchesInFrame = new List<SMTouchIdentifier>();
+
+		#region Long Press variables
+
+		/// <summary>
+		/// This becomes true when there is a game touch in particular frame
+		/// </summary>
+		private bool isGameTouchMade = false;
+		/// <summary>
+		/// This holds reference to first touch that is made in the game
+		/// </summary>
+		private Touch gameTouch;
+		/// <summary>
+		/// The initial position of touch.
+		/// </summary>
+		private Vector2 initialPositionOfTouch;
+		/// <summary>
+		/// This timer ticks after touch is made on the screen.
+		/// </summary>
+		private float timerAfterTouch = 0.0f;
+		/// <summary>
+		/// This event will raise when there is a long press on game screen(Not swipe)
+		/// </summary>
+		public event longPressMade OnGameLongPress;
+
+		#endregion
 		// Use this for initialization
 		void Start () 
 		{
@@ -38,6 +64,68 @@ namespace SandeepMattepu.MobileTouch
 		void Update () 
 		{
 			manageTouches ();
+			calculateTouchTypes ();
+		}
+
+		/// <summary>
+		/// Calculate all the touches type that are made on the game
+		/// </summary>
+		private void calculateTouchTypes()
+		{
+			if(isGameTouchMade)
+			{
+				if((gameTouch.position - initialPositionOfTouch).magnitude < 0.20f)
+				{
+					if(timerAfterTouch < 1.5f)
+					{
+						TouchPhase gameTouchPhase = gameTouch.phase;
+						if(gameTouchPhase == TouchPhase.Canceled || gameTouchPhase == TouchPhase.Ended)
+						{
+							if(timerAfterTouch < 0.30f)
+							{
+								// Raise single tap event also handle double tap
+							}
+							isGameTouchMade = false;
+							timerAfterTouch = 0.0f;
+						}
+						else
+						{
+							timerAfterTouch += Time.deltaTime;
+						}
+					}
+					else
+					{
+						if(OnGameLongPress != null)
+						{
+							OnGameLongPress (this, gameTouch);
+						}
+						Debug.Log("Long press on game");
+						isGameTouchMade = false;
+						timerAfterTouch = 0.0f;
+					}
+				}
+				else
+				{
+					isGameTouchMade = false;
+					timerAfterTouch = 0.0f;
+				}
+			}
+			else if(Input.touchCount > 0)
+			{
+				foreach(Touch touch in Input.touches)
+				{
+					if(touch.phase == TouchPhase.Began)
+					{
+						if(processWhichTouchBelongsTo(touch) == TouchBelongs.GAME)
+						{
+							isGameTouchMade = true;
+							gameTouch = touch;
+							initialPositionOfTouch = gameTouch.position;
+							break;
+						}
+					}
+				}
+			}
 		}
 
 		/// <summary>

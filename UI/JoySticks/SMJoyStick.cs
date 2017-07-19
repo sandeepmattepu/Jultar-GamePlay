@@ -11,6 +11,7 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.UI;
+using SandeepMattepu.MobileTouch;
 
 /// <summary>
 /// This class will help the UI Images to behave like joystick and we can retrive joystick values like rotation and magnitude
@@ -245,4 +246,6 @@ namespace SandeepMattepu.UI
 	public delegate void singleTapMade(object sender, JoyStickType stickType);
 
 	public delegate void doubleTapMade(object sender, JoyStickType stickType);
+
+	public delegate void longPressMade(object sender, Touch touchType);
 }
