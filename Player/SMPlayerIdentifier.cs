@@ -45,6 +45,11 @@ public class SMPlayerIdentifier : MonoBehaviour
 			afterCast.registerPlayerForScoreBoard(photonViewComponenet);
 		}
 		setPlayerUIColor(photonViewComponenet);
+
+		if(!photonViewComponenet.isMine)
+		{
+			gameObject.GetComponent<Rigidbody> ().isKinematic = true;
+		}
 	}
 
 	/// <summary>

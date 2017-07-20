@@ -104,7 +104,7 @@ public class SMScoreManager : MonoBehaviour
 
 	public static byte LevelFromExperience(int Experience)
 		{
-			return Experience < 1000 ? (byte) 1 : (byte) Mathf.Ceil(((Mathf.Log10((float)Experience) - 3) / Mathf.Log10(2f)));
+			return Experience < 2000 ? (byte) 1 : (byte) Mathf.Ceil(((Mathf.Log10((float)Experience) - 3) / Mathf.Log10(2f)));
 		}
 }
 
