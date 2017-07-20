@@ -40,6 +40,11 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		[SerializeField]
 		private float blastRadius = 8.0f;
+		/// <summary>
+		/// The blast sound.
+		/// </summary>
+		[SerializeField]
+		private AudioClip blastSound;
 		// Use this for initialization
 		void Start () 
 		{
@@ -51,6 +56,7 @@ namespace SandeepMattepu.Weapon
 			List<GameObject> inRangePlayers = new List<GameObject> ();
 			yield return new WaitForSeconds (lifeSpanOfGrenade);
 			Instantiate (grenadeParticleEffect, transform.position, Quaternion.identity);
+			AudioSource.PlayClipAtPoint (blastSound, transform.position, 1.0f);
 
 			//All game objects present in blast radius
 			Collider[] colliders = Physics.OverlapSphere(transform.position, blastRadius);
@@ -100,6 +106,8 @@ namespace SandeepMattepu.Weapon
 					player.reduceHealthPointsBy(damageTobeMade);
 				}
 			}
+
+			Destroy (this.gameObject);
 		}
 
 		/// <summary>
