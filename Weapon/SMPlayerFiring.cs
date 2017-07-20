@@ -127,21 +127,34 @@ namespace SandeepMattepu.Weapon
 		/// This is the light created when gun is fired
 		/// </summary>
 		private Light lightFromGunFire;
+		/// <summary>
+		/// The grenade prefab.
+		/// </summary>
+		public GameObject grenadePrefab;
+		/// <summary>
+		/// The right hand of the player.
+		/// </summary>
+		public GameObject rightHand;
+		public float upwardForceForGranade = 0.0f;
+		public float forwardForceForGrenade = 0.0f;
 		// Use this for initialization
 		void Start () 
 		{
 			ikControl = GetComponent<IKControl> ();
-			ikControl.OnReloadFinished += onReloadingFinished;
-			ikControl.OnGrenadeRelease += onGrenadeRelease;
-			ikControl.OnGrenadeThrowFinished += onGrenadeThrowFinsihed;
 			audioSource = GetComponent<AudioSource>();
 			photonViewComponent = GetComponent<PhotonView> ();
 			reportWeaponChange ();			// We can call this at start
 	
 			SMJoyStick firingStick = gameObject.GetComponent<SMPlayerController> ().orientationJoyStick;
-			firingStick.DoubleTapEvent += checkAndPerformReloading;
 
-			touchManager.OnGameLongPress += throwGrenadeInputHandler;
+			if((isUsingMultiplayer && photonViewComponent.isMine) || (!isUsingMultiplayer))
+			{
+				ikControl.OnReloadFinished += onReloadingFinished;
+				ikControl.OnGrenadeRelease += onGrenadeRelease;
+				ikControl.OnGrenadeThrowFinished += onGrenadeThrowFinsihed;
+				firingStick.DoubleTapEvent += checkAndPerformReloading;
+				touchManager.OnGameLongPress += throwGrenadeInputHandler;
+			}
 		}
 		
 		// Update is called once per frame
@@ -168,6 +181,11 @@ namespace SandeepMattepu.Weapon
 					stopAllComponenets ();
 				}
 			}
+
+			if(Input.GetKeyDown(KeyCode.Space))
+			{
+				ikControl.requestGrenadeThrow ();
+			}
 		}
 
 		/// <summary>
@@ -192,8 +210,21 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		private void onGrenadeRelease()
 		{
-			Debug.Log ("Throw grenade");
-			numberOfGrenadeBombs -= 1;
+			//TODO Instantiate stuff
+			if(isUsingMultiplayer)
+			{
+				numberOfGrenadeBombs -= 1;
+			}
+			else if(!isUsingMultiplayer)
+			{
+				GameObject grenade = Instantiate (grenadePrefab, rightHand.transform.position, Quaternion.identity);
+				Vector3 grenadeThrowDirection = Vector3.forward;
+				grenadeThrowDirection.z *= forwardForceForGrenade;
+				grenadeThrowDirection.y *= upwardForceForGranade;
+				grenadeThrowDirection = transform.TransformDirection (grenadeThrowDirection);
+				grenade.GetComponent<Rigidbody> ().AddForce (grenadeThrowDirection, ForceMode.Force);
+				numberOfGrenadeBombs -= 1;
+			}
 		}
 
 		/// <summary>
