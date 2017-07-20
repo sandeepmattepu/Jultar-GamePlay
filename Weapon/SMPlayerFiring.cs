@@ -230,6 +230,7 @@ namespace SandeepMattepu.Weapon
 				grenadeThrowDirection.y *= upwardForceForGranade;
 				grenadeThrowDirection = transform.TransformDirection (grenadeThrowDirection);
 				grenade.GetComponent<Rigidbody> ().AddForce (grenadeThrowDirection, ForceMode.Force);
+				grenade.GetComponent<SMGrenadeBehaviour> ().isMultiplayer = false;
 				numberOfGrenadeBombs -= 1;
 			}
 		}
