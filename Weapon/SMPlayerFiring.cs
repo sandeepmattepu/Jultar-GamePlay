@@ -211,8 +211,15 @@ namespace SandeepMattepu.Weapon
 		private void onGrenadeRelease()
 		{
 			//TODO Instantiate stuff
-			if(isUsingMultiplayer)
+			if(isUsingMultiplayer && photonViewComponent.isMine)
 			{
+				GameObject grenade = PhotonNetwork.Instantiate (grenadePrefab.name, 
+					rightHand.transform.position, Quaternion.identity, 0) as GameObject;
+				Vector3 grenadeThrowDirection = Vector3.forward;
+				grenadeThrowDirection.z *= forwardForceForGrenade;
+				grenadeThrowDirection.y *= upwardForceForGranade;
+				grenadeThrowDirection = transform.TransformDirection (grenadeThrowDirection);
+				grenade.GetComponent<Rigidbody> ().AddForce (grenadeThrowDirection, ForceMode.Force);
 				numberOfGrenadeBombs -= 1;
 			}
 			else if(!isUsingMultiplayer)
