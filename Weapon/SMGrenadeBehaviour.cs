@@ -26,6 +26,10 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		public int IDOfGrenadeThrower = 0;
 		/// <summary>
+		/// The ID of local player.
+		/// </summary>
+		private int IDOfLocalPlayer = 0;
+		/// <summary>
 		/// The players present in grenade radius
 		/// </summary>
 		private List<SMPlayerHealth> players = new List<SMPlayerHealth>();
@@ -57,6 +61,7 @@ namespace SandeepMattepu.Weapon
 		// Use this for initialization
 		void Start () 
 		{
+			IDOfLocalPlayer = PhotonNetwork.player.ID;
 			StartCoroutine ("waitUntilGreandeLife");
 		}
 
@@ -133,7 +138,11 @@ namespace SandeepMattepu.Weapon
 		{
 			if(isMultiplayer)
 			{
-				player.reduceHealthPointsBy (damage, IDOfGrenadeThrower);
+				int idOfThisPlayer = player.GetComponent<PhotonView> ().owner.ID;
+				if(idOfThisPlayer == IDOfLocalPlayer)
+				{
+					player.reduceHealthPointsBy (damage, IDOfGrenadeThrower);
+				}
 			}
 			else
 			{
