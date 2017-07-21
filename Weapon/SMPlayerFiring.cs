@@ -163,6 +163,11 @@ namespace SandeepMattepu.Weapon
 				grenadeInput.OnPressIntensity += setIntensityOfThrow;
 				grenadeInput.OnTouchDownHandler += throwGrenadeInputHandler;
 			}
+			else if(isUsingMultiplayer)
+			{
+				ikControl.OnClientGrenadePinRemoved += onGrenadePinRemoved;
+				ikControl.OnClientReloadFinished += OnClientReloadAnimationFinished;
+			}
 		}
 		
 		// Update is called once per frame
@@ -645,10 +650,19 @@ namespace SandeepMattepu.Weapon
 			}
 		}
 
+		private void OnClientReloadAnimationFinished()
+		{
+			if(audioSource.isPlaying)
+			{
+				audioSource.Stop ();
+			}
+			audioSource.clip = weaponInHandComponent.getGunSound ();
+		}
+
 		/// <summary>
 		/// This function plays reloading sound when gun is reloading
 		/// </summary>
-		private void playReloadSound()
+		public void playReloadSound()
 		{
 			AudioClip clip = weaponInHandComponent.ReloadSoundMadeByGun;
 			audioSource.clip = clip;
