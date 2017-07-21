@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.MobileTouch;
+using SandeepMattepu.UI;
 
 namespace SandeepMattepu.Weapon
 {
@@ -95,9 +96,9 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		private bool isThrowingGrenadeFinished = true;
 		/// <summary>
-		/// The touch manager to recieve inputs.
+		/// The UI button for grenade input.
 		/// </summary>
-		public SMTouchManager touchManager;
+		public SMGrenadeInput grenadeInput;
 
 		#region Network Related Variables
 		/// <summary>
@@ -135,8 +136,9 @@ namespace SandeepMattepu.Weapon
 		/// The right hand of the player.
 		/// </summary>
 		public GameObject rightHand;
-		public float upwardForceForGranade = 0.0f;
-		public float forwardForceForGrenade = 0.0f;
+		public float maxUpwardForceForGranade = 0.0f;
+		public float maxForwardForceForGrenade = 0.0f;
+		private float intensityOfThrow = 0.0f;
 		// Use this for initialization
 		void Start () 
 		{
@@ -153,7 +155,8 @@ namespace SandeepMattepu.Weapon
 				ikControl.OnGrenadeRelease += onGrenadeRelease;
 				ikControl.OnGrenadeThrowFinished += onGrenadeThrowFinsihed;
 				firingStick.DoubleTapEvent += checkAndPerformReloading;
-				touchManager.OnGameLongPress += throwGrenadeInputHandler;
+				grenadeInput.OnPressIntensity += setIntensityOfThrow;
+				grenadeInput.OnTouchDownHandler += throwGrenadeInputHandler;
 			}
 		}
 		
@@ -193,7 +196,7 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="touchMade">Touch made.</param>
-		private void throwGrenadeInputHandler(object sender, Touch touchMade)
+		public void throwGrenadeInputHandler()
 		{
 			if((isReloadingFinished /*&& isusingpowerups*/) && isThrowingGrenadeFinished)
 			{
@@ -216,8 +219,8 @@ namespace SandeepMattepu.Weapon
 				GameObject grenade = PhotonNetwork.Instantiate (grenadePrefab.name, 
 					rightHand.transform.position, Quaternion.identity, 0) as GameObject;
 				Vector3 grenadeThrowDirection = Vector3.forward;
-				grenadeThrowDirection.z *= forwardForceForGrenade;
-				grenadeThrowDirection.y *= upwardForceForGranade;
+				grenadeThrowDirection.z *= (maxForwardForceForGrenade * intensityOfThrow);
+				grenadeThrowDirection.y *= (maxUpwardForceForGranade * intensityOfThrow);
 				grenadeThrowDirection = transform.TransformDirection (grenadeThrowDirection);
 				grenade.GetComponent<Rigidbody> ().AddForce (grenadeThrowDirection, ForceMode.Force);
 				numberOfGrenadeBombs -= 1;
@@ -226,13 +229,18 @@ namespace SandeepMattepu.Weapon
 			{
 				GameObject grenade = Instantiate (grenadePrefab, rightHand.transform.position, Quaternion.identity);
 				Vector3 grenadeThrowDirection = Vector3.forward;
-				grenadeThrowDirection.z *= forwardForceForGrenade;
-				grenadeThrowDirection.y *= upwardForceForGranade;
+				grenadeThrowDirection.z *= (maxForwardForceForGrenade * intensityOfThrow);
+				grenadeThrowDirection.y *= (maxUpwardForceForGranade * intensityOfThrow);
 				grenadeThrowDirection = transform.TransformDirection (grenadeThrowDirection);
 				grenade.GetComponent<Rigidbody> ().AddForce (grenadeThrowDirection, ForceMode.Force);
 				grenade.GetComponent<SMGrenadeBehaviour> ().isMultiplayer = false;
 				numberOfGrenadeBombs -= 1;
 			}
+		}
+
+		private void setIntensityOfThrow(float intensity)
+		{
+			intensityOfThrow = intensity;
 		}
 
 		/// <summary>
@@ -241,6 +249,7 @@ namespace SandeepMattepu.Weapon
 		private void onGrenadeThrowFinsihed()
 		{
 			isThrowingGrenadeFinished = true;
+			intensityOfThrow = 0.0f;
 		}
 
 		/// <summary>
