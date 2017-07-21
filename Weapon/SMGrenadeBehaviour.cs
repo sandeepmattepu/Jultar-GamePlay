@@ -45,10 +45,20 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		[SerializeField]
 		private AudioClip blastSound;
+		/// <summary>
+		/// The grenade floor hit sound.
+		/// </summary>
+		[SerializeField]
+		private AudioClip grenadeFloorHitSound;
 		// Use this for initialization
 		void Start () 
 		{
 			StartCoroutine ("waitUntilGreandeLife");
+		}
+
+		void OnCollisionEnter(Collision collider)
+		{
+			AudioSource.PlayClipAtPoint (grenadeFloorHitSound, transform.position);
 		}
 
 		IEnumerator waitUntilGreandeLife()
