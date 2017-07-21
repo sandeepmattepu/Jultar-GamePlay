@@ -22,10 +22,6 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		public bool isMultiplayer = true;
 		/// <summary>
-		/// The identifier of grenade thrower.
-		/// </summary>
-		public int IDOfGrenadeThrower = 0;
-		/// <summary>
 		/// The ID of local player.
 		/// </summary>
 		private int IDOfLocalPlayer = 0;
@@ -58,10 +54,15 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		[SerializeField]
 		private AudioClip grenadeFloorHitSound;
+		/// <summary>
+		/// The photon view component.
+		/// </summary>
+		private PhotonView photonViewComponent;
 		// Use this for initialization
 		void Start () 
 		{
 			IDOfLocalPlayer = PhotonNetwork.player.ID;
+			photonViewComponent = GetComponent<PhotonView> ();
 			StartCoroutine ("waitUntilGreandeLife");
 		}
 
@@ -141,7 +142,7 @@ namespace SandeepMattepu.Weapon
 				int idOfThisPlayer = player.GetComponent<PhotonView> ().owner.ID;
 				if(idOfThisPlayer == IDOfLocalPlayer)
 				{
-					player.reduceHealthPointsBy (damage, IDOfGrenadeThrower);
+					player.reduceHealthPointsBy (damage, photonViewComponent.owner.ID);
 				}
 			}
 			else
