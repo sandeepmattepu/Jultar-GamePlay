@@ -22,6 +22,10 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		public bool isMultiplayer = true;
 		/// <summary>
+		/// The identifier of grenade thrower.
+		/// </summary>
+		public int IDOfGrenadeThrower = 0;
+		/// <summary>
 		/// The players present in grenade radius
 		/// </summary>
 		private List<SMPlayerHealth> players = new List<SMPlayerHealth>();
@@ -102,22 +106,39 @@ namespace SandeepMattepu.Weapon
 				float distanceGrenadeAndPlayer = ((transform.position) - player.gameObject.transform.position).magnitude;
 				if(distanceGrenadeAndPlayer <= (blastRadius/2.0f))
 				{
-					player.reduceHealthPointsBy (player.MaxHealth);
+					createDamageToPlayer (player, player.MaxHealth);
 				}
 				else if(distanceGrenadeAndPlayer >= blastRadius)
 				{
-					player.reduceHealthPointsBy (player.MaxHealth * 0.15f);
+					createDamageToPlayer (player, (player.MaxHealth * 0.15f));
 				}
 				else
 				{
 					float distancePercentage = findPercentage (blastRadius/2.0f, blastRadius, distanceGrenadeAndPlayer);
 					float damageRate = 1 - distancePercentage;
 					float damageTobeMade = findActualValueFromPercentage (0.15f, player.MaxHealth, damageRate);
-					player.reduceHealthPointsBy(damageTobeMade);
+					createDamageToPlayer (player, damageTobeMade);
 				}
 			}
 
 			Destroy (this.gameObject);
+		}
+
+		/// <summary>
+		/// Creates the damage to player.
+		/// </summary>
+		/// <param name="player">Player.</param>
+		/// <param name="damage">Damage on player.</param>
+		private void createDamageToPlayer(SMPlayerHealth player, float damage)
+		{
+			if(isMultiplayer)
+			{
+				player.reduceHealthPointsBy (damage, IDOfGrenadeThrower);
+			}
+			else
+			{
+				player.reduceHealthPointsBy (damage);
+			}
 		}
 
 		/// <summary>

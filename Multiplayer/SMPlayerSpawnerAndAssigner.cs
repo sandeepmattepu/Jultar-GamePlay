@@ -12,6 +12,7 @@ using SandeepMattepu.Weapon;
 using SandeepMattepu;
 using SandeepMattepu.Multiplayer;
 using System.Collections;
+using SandeepMattepu.UI;
 
 
 /// <summary>
@@ -55,6 +56,10 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// The orientation stick which controls the player movement.
 	/// </summary>
 	public SMJoyStick orientationStick;
+	/// <summary>
+	/// Grenade UI Button
+	/// </summary>
+	public SMGrenadeInput grenadeButton;
 	/// <summary>
 	/// The pick up button UI.
 	/// </summary>
@@ -135,6 +140,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			player.transform.GetComponent<SMWeaponManager> ().currentWeaponText = currentWeaponText;
 
 			player.transform.GetComponent<SMPlayerFiring> ().ammoDetailsUI = ammoDetailsUI;
+			player.transform.GetComponent<SMPlayerFiring> ().grenadeInput = grenadeButton;
 
 			player.transform.GetComponent<SMPlayerController> ().leanButton = leanButtonUI;
 			player.transform.GetComponent<SMPlayerController> ().hideOrUnhideButton = hideButtonUI;
@@ -208,6 +214,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			player.transform.GetComponent<SMWeaponManager>().currentWeaponText = currentWeaponText;
 
 			player.transform.GetComponent<SMPlayerFiring>().ammoDetailsUI = ammoDetailsUI;
+			player.transform.GetComponent<SMPlayerFiring> ().grenadeInput = grenadeButton;
 
 			player.transform.GetComponent<SMPlayerController>().leanButton = leanButtonUI;
 			player.transform.GetComponent<SMPlayerController>().hideOrUnhideButton = hideButtonUI;
