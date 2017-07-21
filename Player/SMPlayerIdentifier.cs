@@ -96,7 +96,10 @@ public class SMPlayerIdentifier : MonoBehaviour
 	/// <param name="ID">ID of the player to award the score.</param>
 	public void reportScore(int ID)
 	{
-		sendScoreMadeBy(ID);
+		if(PhotonNetwork.player.ID != ID)
+		{
+			sendScoreMadeBy(ID);
+		}
 	}
 
 	/// <summary>
