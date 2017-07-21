@@ -46,6 +46,10 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		private GameObject gunTip;
 		/// <summary>
+		/// The pin removed sound.
+		/// </summary>
+		public AudioClip pinRemovedSound;
+		/// <summary>
 		/// This line renderer is used to render the bullet path when it is fired
 		/// </summary>
 		private LineRenderer lineRenderer;
@@ -154,6 +158,7 @@ namespace SandeepMattepu.Weapon
 				ikControl.OnReloadFinished += onReloadingFinished;
 				ikControl.OnGrenadeRelease += onGrenadeRelease;
 				ikControl.OnGrenadeThrowFinished += onGrenadeThrowFinsihed;
+				ikControl.OnGrenadePinRemoved += onGrenadePinRemoved;
 				firingStick.DoubleTapEvent += checkAndPerformReloading;
 				grenadeInput.OnPressIntensity += setIntensityOfThrow;
 				grenadeInput.OnTouchDownHandler += throwGrenadeInputHandler;
@@ -205,6 +210,17 @@ namespace SandeepMattepu.Weapon
 					ikControl.requestGrenadeThrow ();
 					isThrowingGrenadeFinished = false;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Call this function when the grenade pin removed.
+		/// </summary>
+		private void onGrenadePinRemoved()
+		{
+			if(pinRemovedSound != null)
+			{
+				AudioSource.PlayClipAtPoint (pinRemovedSound, transform.position);
 			}
 		}
 
@@ -328,9 +344,9 @@ namespace SandeepMattepu.Weapon
 			else if(ammoDetails.extraClipsLeft > 0)
 			{
 				ownerClientBeganFiring = false;
-				ikControl.requestReloading ();
 				if(isReloadingFinished && isThrowingGrenadeFinished)
 				{
+					ikControl.requestReloading ();
 					playReloadSound ();
 				}
 				isReloadingFinished = false;
@@ -586,9 +602,9 @@ namespace SandeepMattepu.Weapon
 			{
 				if(ammoDetails.bulletsLeft != noOfBulletsInClip(guntype) && (totalNumberOfBullets - ammoDetails.bulletsLeft > 0))
 				{
-					ikControl.requestReloading ();
 					if(isReloadingFinished && isThrowingGrenadeFinished)
 					{
+						ikControl.requestReloading ();
 						playReloadSound ();
 					}
 					isReloadingFinished = false;
