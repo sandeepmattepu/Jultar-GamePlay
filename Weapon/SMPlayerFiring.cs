@@ -69,6 +69,13 @@ namespace SandeepMattepu.Weapon
 		/// This holds reference to SMWeaponInHand component that is present in current gun player is holding
 		/// </summary>
 		private SMWeaponInHand weaponInHandComponent;
+
+		public SMWeaponInHand WeaponInHandComponent {
+			get {
+				return weaponInHandComponent;
+			}
+		}
+
 		/// <summary>
 		/// This describes the gun type player is holding
 		/// </summary>
@@ -662,7 +669,7 @@ namespace SandeepMattepu.Weapon
 		/// <summary>
 		/// This function plays reloading sound when gun is reloading
 		/// </summary>
-		public void playReloadSound()
+		private void playReloadSound()
 		{
 			AudioClip clip = weaponInHandComponent.ReloadSoundMadeByGun;
 			audioSource.clip = clip;
