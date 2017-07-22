@@ -339,6 +339,14 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 		{
 			playerHealth = (float)stream.ReceiveNext ();
 			armorPoints = (float)stream.ReceiveNext ();
+			if(armorPoints > 0)
+			{
+				_armorAvailable = true;
+			}
+			else
+			{
+				_armorAvailable = false;
+			}
 			setSliderValues ();
 		}
 	}

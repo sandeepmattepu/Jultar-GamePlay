@@ -159,11 +159,11 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		public virtual void resetLocalPlayerKillStreak()
 		{
-			killStreak = 0;
+			/*killStreak = 0;
 			if(OnKillStreakChange != null)
 			{
 				OnKillStreakChange (0);
-			}
+			}*/
 		}
 
 		/// <summary>
