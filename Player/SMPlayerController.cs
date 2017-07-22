@@ -176,7 +176,7 @@ namespace SandeepMattepu
 		/// <summary>
 		/// This value will determine whether player can lean or not
 		/// </summary>
-		private bool canLean = false;
+		//private bool canLean = false;
 		/// <summary>
 		/// This value will describe whether player is currently leaning or not
 		/// </summary>
@@ -201,12 +201,12 @@ namespace SandeepMattepu
 		/// This will store angle the player need to rotate after stand to lean animation made at every frame when player is
 		/// near the wall.
 		/// </summary>
-		private float tempAnglePlayerHasToTurnAfterAnimation;
+		//private float tempAnglePlayerHasToTurnAfterAnimation;
 		/// <summary>
 		/// This will store angle the character need to rotate after stand to lean animation made when lean button
 		/// or double tap is made.
 		/// </summary>
-		private float finalAnglePlayerHasToTurnAfterAnimation;
+		//private float finalAnglePlayerHasToTurnAfterAnimation;
 
 		#endregion
 
@@ -531,7 +531,7 @@ namespace SandeepMattepu
 			{
 				if (hitInfo.collider.tag == "Building")
 				{
-					canLean = true;
+					//canLean = true;
 					leanButton.gameObject.SetActive(true);
 
 					// Below code finds the normal of the traingle where the raycast is been hit
@@ -552,23 +552,23 @@ namespace SandeepMattepu
 						// Debug.Log (angleDiff1 + " " + angleDiff);
 						if (crossProductAngle == 180.0f)   // angle difference is measured anticlockwise
 						{
-							tempAnglePlayerHasToTurnAfterAnimation = (180 - angleDiff);
+							//tempAnglePlayerHasToTurnAfterAnimation = (180 - angleDiff);
 						}
 						else                    // angle difference is measured clockwise
 						{
-							tempAnglePlayerHasToTurnAfterAnimation = -(180 - angleDiff);
+							//tempAnglePlayerHasToTurnAfterAnimation = -(180 - angleDiff);
 						}
 					}
 				}
 				else
 				{
-					canLean = false;
+					//canLean = false;
 					leanButton.gameObject.SetActive(false);
 				}
 			}
 			else
 			{
-				canLean = false;
+				//canLean = false;
 				if (leanButton != null)
 				{
 					leanButton.gameObject.SetActive(false);
@@ -652,7 +652,7 @@ namespace SandeepMattepu
 			yield return new WaitForSeconds (0.53f);	// 0.53 value is based on observing duration of stand to lean animation clip
 			if(transform != null)		// Checking if when player is destroyed then to avoid bugs
 			{
-				transform.Rotate(new Vector3(0,finalAnglePlayerHasToTurnAfterAnimation,0));
+				transform.Rotate(new Vector3(0,0/*finalAnglePlayerHasToTurnAfterAnimation*/,0));
 				currentAnimationState = PlayerAnimType.LEAN_IDLE_LEFT;
 				isIdleToLeanAnimationFinished = true;
 				isLeanToIdleAnimationFinished = false;
