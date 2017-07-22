@@ -18,6 +18,10 @@ namespace SandeepMattepu.Multiplayer
 	public class SMMultiplayerGame : MonoBehaviour
 	{
 		/// <summary>
+		/// If he is golden player then he has special abilities
+		/// </summary>
+		public static bool isGoldenPlayer = false;
+		/// <summary>
 		/// The xp made by the player after kill.
 		/// </summary>
 		public int xpMadeAfterKill = 10;
@@ -159,6 +163,19 @@ namespace SandeepMattepu.Multiplayer
 			if(OnKillStreakChange != null)
 			{
 				OnKillStreakChange (0);
+			}
+		}
+
+		/// <summary>
+		/// Reduces the health streak by.
+		/// </summary>
+		/// <param name="byValue">By value.</param>
+		public void reduceHealthStreakBy(int byValue)
+		{
+			killStreak = (byValue >= killStreak) ? 0 : (killStreak - byValue);
+			if(OnKillStreakChange != null)
+			{
+				OnKillStreakChange (killStreak);
 			}
 		}
 	}
