@@ -22,6 +22,16 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		public int xpMadeAfterKill = 10;
 		/// <summary>
+		/// The total xp made by local player.
+		/// </summary>
+		private int totalXpMadeByPlayer = 0;
+		public int TotalXpMadeByPlayer {
+			get {
+				return totalXpMadeByPlayer;
+			}
+		}
+
+		/// <summary>
 		/// The scene name after the end of multiplayer game.
 		/// </summary>
 		public string sceneNameAfterEndOfGame;
@@ -96,6 +106,16 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		public int noOfPlayers;
 		/// <summary>
+		/// The kill streak of local player.
+		/// </summary>
+		private int killStreak = 0;
+		public int KillStreak {
+			get {
+				return killStreak;
+			}
+		}
+
+		/// <summary>
 		/// This holds reference to the local player in the game
 		/// </summary>
 		public SMPlayerIdentifier localPlayer;
@@ -103,6 +123,10 @@ namespace SandeepMattepu.Multiplayer
 		/// This event is raised when a person makes a score
 		/// </summary>
 		public event notifyScoreChange OnScoreChange;
+		/// <summary>
+		/// Occurs when kill streak has been reset.
+		/// </summary>
+		public event onKillStreakChange OnKillStreakChange;
 
 		/// <summary>
 		/// Reports the score for particular game type.
@@ -113,10 +137,28 @@ namespace SandeepMattepu.Multiplayer
 			if(PhotonNetwork.player.ID == ID)
 			{
 				SMShowXpMadeInstantly.addXPToQueue(xpMadeAfterKill);
+				killStreak += 1;
+				totalXpMadeByPlayer += xpMadeAfterKill;
+				if(OnKillStreakChange != null)
+				{
+					OnKillStreakChange (killStreak);
+				}
 			}
 			if(OnScoreChange != null)
 			{
 				OnScoreChange (this, ID);
+			}
+		}
+
+		/// <summary>
+		/// Resets the local player kill streak.
+		/// </summary>
+		public virtual void resetLocalPlayerKillStreak()
+		{
+			killStreak = 0;
+			if(OnKillStreakChange != null)
+			{
+				OnKillStreakChange (0);
 			}
 		}
 	}
@@ -132,4 +174,5 @@ namespace SandeepMattepu.Multiplayer
 	}
 
 	public delegate void notifyScoreChange(object sender, int ID);
+	public delegate void onKillStreakChange(int killStreak);
 }

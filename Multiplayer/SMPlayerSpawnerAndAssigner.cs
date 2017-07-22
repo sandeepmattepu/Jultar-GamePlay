@@ -92,6 +92,10 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// This UI text will show countdown when the player is going to respawn again
 	/// </summary>
 	public Text respawnCounter;
+	/// <summary>
+	/// The special weapon manager.
+	/// </summary>
+	public SMSpecialWeaponManager specialWeaponManager;
 	// Use this for initialization
 	void Start () 
 	{
@@ -163,6 +167,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	{
 		if (gameRulesThatSpawned.isRespwanAllowed)
 		{
+			gameRulesThatSpawned.resetLocalPlayerKillStreak ();
 			StartCoroutine("respawnCountDown");
 		}
 	}
@@ -259,5 +264,6 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 				}
 			}
 		}
+		specialWeaponManager.registerMultiplayerGame(gameRulesThatSpawned);
 	}
 }
