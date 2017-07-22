@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SandeepMattepu.MobileTouch;
 
 namespace SandeepMattepu.Multiplayer
 {
@@ -28,6 +29,11 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		[SerializeField]
 		private int killStreakForRocket = 4;
+		/// <summary>
+		/// The touch manager.
+		/// </summary>
+		[SerializeField]
+		private SMTouchManager touchManager;
 		/// <summary>
 		/// The rules for multiplayer game
 		/// </summary>
@@ -56,13 +62,6 @@ namespace SandeepMattepu.Multiplayer
 		/// The rocket is in aiming position.
 		/// </summary>
 		private bool rocketIsInAimingPosition = false;
-		// Use this for initialization
-		void Start () 
-		{
-			cancelButton.gameObject.SetActive (false);
-			rocketButton.image.color = Color.black;
-			healthBoostButton.image.color = Color.black;
-		}
 
 		/// <summary>
 		/// This function gets called when rocket button is pressed
@@ -100,7 +99,7 @@ namespace SandeepMattepu.Multiplayer
 			if(canHaveHealthBoost)
 			{
 				multiplayerGame.localPlayer.gameObject.GetComponent<SMPlayerHealth> ().giveArmorToPlayer ();
-				multiplayerGame.reduceHealthStreakBy (killStreakForHealthBoost);
+				multiplayerGame.reduceKillStreakBy (killStreakForHealthBoost);
 			}
 		}
 
@@ -149,6 +148,23 @@ namespace SandeepMattepu.Multiplayer
 		}
 
 		/// <summary>
+		/// This function gets called whenever there is a request for grenade launch
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="touch">Touch.</param>
+		private void requestForRocketFire(object sender, Touch touch)
+		{
+			if(canLauchRocket)
+			{
+				canLauchRocket = false;
+				onCancelButtonPressed ();
+				multiplayerGame.reduceKillStreakBy (killStreakForRocket);
+				Debug.Log ("Rocket dropped KABOOOM!!!");
+				// Instantiate rocket in mp
+			}
+		}
+
+		/// <summary>
 		/// Registers the multiplayer game.
 		/// </summary>
 		/// <param name="gameType">Multiplayer game type.</param>
@@ -156,6 +172,13 @@ namespace SandeepMattepu.Multiplayer
 		{
 			multiplayerGame = gameType;
 			multiplayerGame.OnKillStreakChange += onKillStreakHandler;
+
+
+			cancelButton.gameObject.SetActive (false);
+			rocketButton.image.color = Color.black;
+			healthBoostButton.image.color = Color.black;
+
+			touchManager.OnSingleGameTap += requestForRocketFire;
 		}
 	}	
 }

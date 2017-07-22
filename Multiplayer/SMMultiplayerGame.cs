@@ -170,7 +170,7 @@ namespace SandeepMattepu.Multiplayer
 		/// Reduces the health streak by.
 		/// </summary>
 		/// <param name="byValue">By value.</param>
-		public void reduceHealthStreakBy(int byValue)
+		public void reduceKillStreakBy(int byValue)
 		{
 			killStreak = (byValue >= killStreak) ? 0 : (killStreak - byValue);
 			if(OnKillStreakChange != null)
