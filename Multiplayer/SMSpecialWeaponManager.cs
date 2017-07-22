@@ -100,6 +100,14 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		[SerializeField]
 		private RectTransform healthBoostTextAnnouncement;
+		/// <summary>
+		/// Game has already announced rocket.
+		/// </summary>
+		private bool hasAlreadyAnnouncedRocket = false;
+		/// <summary>
+		/// Game has already announced health.
+		/// </summary>
+		private bool hasAlreadyAnnouncedHealth = false;
 
 		/// <summary>
 		/// Ability types.
@@ -149,6 +157,7 @@ namespace SandeepMattepu.Multiplayer
 			{
 				multiplayerGame.localPlayer.gameObject.GetComponent<SMPlayerHealth> ().giveArmorToPlayer ();
 				multiplayerGame.reduceKillStreakBy (killStreakForHealthBoost);
+				hasAlreadyAnnouncedHealth = false;
 			}
 		}
 
@@ -163,6 +172,8 @@ namespace SandeepMattepu.Multiplayer
 				canLauchRocket = false;
 				canHaveHealthBoost = false;
 				rocketIsInAimingPosition = false;
+				hasAlreadyAnnouncedHealth = false;
+				hasAlreadyAnnouncedRocket = false;
 
 				rocketButton.image.color = Color.black;
 				healthBoostButton.image.color = Color.black;
@@ -175,9 +186,12 @@ namespace SandeepMattepu.Multiplayer
 				{
 					canHaveHealthBoost = true;
 					healthBoostButton.image.color = Color.white;
-					clipToBeAnnounced = announcementType (AbilityType.HealthBoost);
-					abilityType = AbilityType.HealthBoost;
-					StartCoroutine ("announcePlayerAbility");
+					if(!hasAlreadyAnnouncedHealth)
+					{
+						clipToBeAnnounced = announcementType (AbilityType.HealthBoost);
+						abilityType = AbilityType.HealthBoost;
+						StartCoroutine ("announcePlayerAbility");
+					}
 				}
 				else
 				{
@@ -191,9 +205,12 @@ namespace SandeepMattepu.Multiplayer
 				{
 					canLauchRocket = true;
 					rocketButton.image.color = Color.white;
-					clipToBeAnnounced = announcementType (AbilityType.Rocket);
-					abilityType = AbilityType.Rocket;
-					StartCoroutine ("announcePlayerAbility");
+					if(!hasAlreadyAnnouncedRocket)
+					{
+						clipToBeAnnounced = announcementType (AbilityType.Rocket);
+						abilityType = AbilityType.Rocket;
+						StartCoroutine ("announcePlayerAbility");
+					}
 				}
 				else
 				{
@@ -213,13 +230,15 @@ namespace SandeepMattepu.Multiplayer
 		IEnumerator announcePlayerAbility()
 		{
 			yield return new WaitUntil (() => (multiplayerGame.localPlayer != null));
-			AudioSource.PlayClipAtPoint (clipToBeAnnounced, multiplayerGame.localPlayer.transform.position, 0.5f);
+			AudioSource.PlayClipAtPoint (clipToBeAnnounced, multiplayerGame.localPlayer.transform.position);
 			if(abilityType == AbilityType.HealthBoost)
 			{
+				hasAlreadyAnnouncedHealth = true;
 				healthBoostTextAnnouncement.GetComponent<Animator> ().SetTrigger ("ShowAnnouncement");
 			}
 			else if(abilityType == AbilityType.Rocket)
 			{
+				hasAlreadyAnnouncedRocket = true;
 				rocketTextAnnouncement.GetComponent<Animator> ().SetTrigger ("ShowAnnouncement");
 			}
 		}
@@ -269,6 +288,7 @@ namespace SandeepMattepu.Multiplayer
 				canLauchRocket = false;
 				onCancelButtonPressed ();
 				multiplayerGame.reduceKillStreakBy (killStreakForRocket);
+				hasAlreadyAnnouncedRocket = false;
 				Debug.Log ("Rocket dropped KABOOOM!!!");
 				// Instantiate rocket in mp
 			}
