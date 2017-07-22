@@ -90,15 +90,28 @@ namespace SandeepMattepu.Multiplayer
 		/// The clip to be announced.
 		/// </summary>
 		private AudioClip clipToBeAnnounced;
+		/// <summary>
+		/// The rocket text announcement.
+		/// </summary>
+		[SerializeField]
+		private RectTransform rocketTextAnnouncement;
+		/// <summary>
+		/// The health boost text announcement.
+		/// </summary>
+		[SerializeField]
+		private RectTransform healthBoostTextAnnouncement;
 
 		/// <summary>
 		/// Ability types.
 		/// </summary>
 		private enum AbilityType
 		{
-			HealthBoost, Rocket
+			HealthBoost, Rocket, None
 		}
-
+		/// <summary>
+		/// The type of the ability.
+		/// </summary>
+		private AbilityType abilityType = AbilityType.None;
 		/// <summary>
 		/// This function gets called when rocket button is pressed
 		/// </summary>
@@ -154,6 +167,7 @@ namespace SandeepMattepu.Multiplayer
 				rocketButton.image.color = Color.black;
 				healthBoostButton.image.color = Color.black;
 				cancelButton.gameObject.SetActive (false);
+				abilityType = AbilityType.None;
 			}
 			else if(killStreak >= killStreakForHealthBoost)
 			{
@@ -162,6 +176,7 @@ namespace SandeepMattepu.Multiplayer
 					canHaveHealthBoost = true;
 					healthBoostButton.image.color = Color.white;
 					clipToBeAnnounced = announcementType (AbilityType.HealthBoost);
+					abilityType = AbilityType.HealthBoost;
 					StartCoroutine ("announcePlayerAbility");
 				}
 				else
@@ -177,6 +192,7 @@ namespace SandeepMattepu.Multiplayer
 					canLauchRocket = true;
 					rocketButton.image.color = Color.white;
 					clipToBeAnnounced = announcementType (AbilityType.Rocket);
+					abilityType = AbilityType.Rocket;
 					StartCoroutine ("announcePlayerAbility");
 				}
 				else
@@ -184,6 +200,10 @@ namespace SandeepMattepu.Multiplayer
 					rocketButton.image.color = Color.yellow;
 					// show panel that buy gold
 				}
+			}
+			else
+			{
+				abilityType = AbilityType.None;
 			}
 		}
 
@@ -194,6 +214,14 @@ namespace SandeepMattepu.Multiplayer
 		{
 			yield return new WaitUntil (() => (multiplayerGame.localPlayer != null));
 			AudioSource.PlayClipAtPoint (clipToBeAnnounced, multiplayerGame.localPlayer.transform.position, 0.5f);
+			if(abilityType == AbilityType.HealthBoost)
+			{
+				healthBoostTextAnnouncement.GetComponent<Animator> ().SetTrigger ("ShowAnnouncement");
+			}
+			else if(abilityType == AbilityType.Rocket)
+			{
+				rocketTextAnnouncement.GetComponent<Animator> ().SetTrigger ("ShowAnnouncement");
+			}
 		}
 
 		/// <summary>
