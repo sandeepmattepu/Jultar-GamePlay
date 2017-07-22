@@ -230,7 +230,9 @@ namespace SandeepMattepu.Multiplayer
 		IEnumerator announcePlayerAbility()
 		{
 			yield return new WaitUntil (() => (multiplayerGame.localPlayer != null));
-			AudioSource.PlayClipAtPoint (clipToBeAnnounced, multiplayerGame.localPlayer.transform.position);
+			Transform locationToMakeAnnouncement = multiplayerGame.localPlayer.
+				GetComponent<SMPlayerController> ().characterFocusedCamera.transform;
+			AudioSource.PlayClipAtPoint (clipToBeAnnounced, locationToMakeAnnouncement.position);
 			if(abilityType == AbilityType.HealthBoost)
 			{
 				hasAlreadyAnnouncedHealth = true;
