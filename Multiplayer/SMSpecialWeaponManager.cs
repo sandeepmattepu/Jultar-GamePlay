@@ -51,6 +51,30 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		public Button cancelButton;
 		/// <summary>
+		/// This defines what race type local player is
+		/// </summary>
+		public MpPlayerRaceType localPlayerRace = MpPlayerRaceType.Jagur;
+		/// <summary>
+		/// The jagur health announcement.
+		/// </summary>
+		[SerializeField]
+		private AudioClip jagurHealthAnnouncement;
+		/// <summary>
+		/// The jagur rocket announcement.
+		/// </summary>
+		[SerializeField]
+		private AudioClip jagurRocketAnnouncement;
+		/// <summary>
+		/// The monio health announcement.
+		/// </summary>
+		[SerializeField]
+		private AudioClip monioHealthAnnouncement;
+		/// <summary>
+		/// The monio rocket announcement.
+		/// </summary>
+		[SerializeField]
+		private AudioClip monioRocketAnnouncement;
+		/// <summary>
 		/// The can lauch rocket.
 		/// </summary>
 		private bool canLauchRocket = false;
@@ -62,6 +86,18 @@ namespace SandeepMattepu.Multiplayer
 		/// The rocket is in aiming position.
 		/// </summary>
 		private bool rocketIsInAimingPosition = false;
+		/// <summary>
+		/// The clip to be announced.
+		/// </summary>
+		private AudioClip clipToBeAnnounced;
+
+		/// <summary>
+		/// Ability types.
+		/// </summary>
+		private enum AbilityType
+		{
+			HealthBoost, Rocket
+		}
 
 		/// <summary>
 		/// This function gets called when rocket button is pressed
@@ -125,6 +161,8 @@ namespace SandeepMattepu.Multiplayer
 				{
 					canHaveHealthBoost = true;
 					healthBoostButton.image.color = Color.white;
+					clipToBeAnnounced = announcementType (AbilityType.HealthBoost);
+					StartCoroutine ("announcePlayerAbility");
 				}
 				else
 				{
@@ -138,6 +176,8 @@ namespace SandeepMattepu.Multiplayer
 				{
 					canLauchRocket = true;
 					rocketButton.image.color = Color.white;
+					clipToBeAnnounced = announcementType (AbilityType.Rocket);
+					StartCoroutine ("announcePlayerAbility");
 				}
 				else
 				{
@@ -145,6 +185,48 @@ namespace SandeepMattepu.Multiplayer
 					// show panel that buy gold
 				}
 			}
+		}
+
+		/// <summary>
+		/// Announces the player ability and waits to announce if player is missing or died.
+		/// </summary>
+		IEnumerator announcePlayerAbility()
+		{
+			yield return new WaitUntil (() => (multiplayerGame.localPlayer != null));
+			AudioSource.PlayClipAtPoint (clipToBeAnnounced, multiplayerGame.localPlayer.transform.position, 0.5f);
+		}
+
+		/// <summary>
+		/// This function returns appropritae audio clip based on race and ability
+		/// </summary>
+		/// <returns>The announcement clip.</returns>
+		/// <param name="abilityType">Ability type.</param>
+		private AudioClip announcementType(AbilityType abilityType)
+		{
+			if(abilityType == AbilityType.HealthBoost)
+			{
+				if(localPlayerRace == MpPlayerRaceType.Jagur)
+				{
+					return jagurHealthAnnouncement;
+				}
+				else if(localPlayerRace == MpPlayerRaceType.Monio)
+				{
+					return monioHealthAnnouncement;
+				}
+			}
+			else if(abilityType == AbilityType.Rocket)
+			{
+				if(localPlayerRace == MpPlayerRaceType.Jagur)
+				{
+					return jagurRocketAnnouncement;
+				}
+				else if(localPlayerRace == MpPlayerRaceType.Monio)
+				{
+					return monioRocketAnnouncement;
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -180,5 +262,13 @@ namespace SandeepMattepu.Multiplayer
 
 			touchManager.OnSingleGameTap += requestForRocketFire;
 		}
-	}	
+	}
+
+	/// <summary>
+	/// Multiplayer race type.
+	/// </summary>
+	public enum MpPlayerRaceType
+	{
+		Jagur, Monio
+	}
 }
