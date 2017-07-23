@@ -25,16 +25,16 @@ namespace SandeepMattepu.Multiplayer
 			if(eventCode == (int)MultiplayerEvents.FreeForAll || eventCode == (int)MultiplayerEvents.TeamDeathMatch)
 			{
 				dataInContent = (byte[])content;
-			}
-			if(eventCode == (int)MultiplayerEvents.FreeForAll)		// Means Free for all game
-			{
-				int ID = (int)dataInContent[0];
-				gameType.reportScore(ID);
-			}
-			else if(eventCode == (int)MultiplayerEvents.TeamDeathMatch)	// Means Team Death match
-			{
-				int ID = (int)dataInContent [0];
-				gameType.reportScore (ID);
+				if(eventCode == (int)MultiplayerEvents.FreeForAll)		// Means Free for all game
+				{
+					int ID = (int)dataInContent[0];
+					gameType.reportScore(ID);
+				}
+				else if(eventCode == (int)MultiplayerEvents.TeamDeathMatch)	// Means Team Death match
+				{
+					int ID = (int)dataInContent [0];
+					gameType.reportScore (ID);
+				}
 			}
 		}
 
