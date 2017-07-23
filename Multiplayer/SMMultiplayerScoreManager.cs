@@ -21,7 +21,11 @@ namespace SandeepMattepu.Multiplayer
 
 		private void OnEvent(byte eventCode, object content, int senderID)
 		{
-			byte[] dataInContent = (byte[])content;
+			byte[] dataInContent;
+			if(eventCode == (int)MultiplayerEvents.FreeForAll || eventCode == (int)MultiplayerEvents.TeamDeathMatch)
+			{
+				dataInContent = (byte[])content;
+			}
 			if(eventCode == (int)MultiplayerEvents.FreeForAll)		// Means Free for all game
 			{
 				int ID = (int)dataInContent[0];

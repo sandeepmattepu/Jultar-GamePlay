@@ -192,7 +192,7 @@ namespace SandeepMattepu.Multiplayer
 				{
 					Camera camera = multiplayerGame.localPlayer.GetComponent<SMPlayerController> ().characterFocusedCamera;
 					AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, camera.transform.position);
-					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.HealthBoost, true);
+					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.HealthBoost, true, null);
 				}
 			}
 		}
@@ -331,7 +331,7 @@ namespace SandeepMattepu.Multiplayer
 				{
 					Camera camera = multiplayerGame.localPlayer.GetComponent<SMPlayerController> ().characterFocusedCamera;
 					AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, camera.transform.position);
-					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.Rocket, true);
+					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.Rocket, true, null);
 				}
 				Debug.Log ("Rocket dropped KABOOOM!!!");
 				// Instantiate rocket in mp
