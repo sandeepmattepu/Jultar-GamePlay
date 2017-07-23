@@ -58,22 +58,42 @@ namespace SandeepMattepu.Multiplayer
 		/// The jagur health announcement.
 		/// </summary>
 		[SerializeField]
-		private AudioClip jagurHealthAnnouncement;
+		private AudioClip jagurHealthUnlockedClip;
 		/// <summary>
 		/// The jagur rocket announcement.
 		/// </summary>
 		[SerializeField]
-		private AudioClip jagurRocketAnnouncement;
+		private AudioClip jagurRocketUnlockedClip;
 		/// <summary>
 		/// The monio health announcement.
 		/// </summary>
 		[SerializeField]
-		private AudioClip monioHealthAnnouncement;
+		private AudioClip monioHealthUnlockedClip;
 		/// <summary>
 		/// The monio rocket announcement.
 		/// </summary>
 		[SerializeField]
-		private AudioClip monioRocketAnnouncement;
+		private AudioClip monioRocketUnlockedClip;
+		[SerializeField]
+		/// <summary>
+		/// The friendly health activated sound.
+		/// </summary>
+		private AudioClip friendlyHealthUsedClip;
+		/// <summary>
+		/// The friendly rocket activated sound.
+		/// </summary>
+		[SerializeField]
+		private AudioClip friendlyRocketUsedClip;
+		/// <summary>
+		/// The enemy health activated audio clip.
+		/// </summary>
+		[SerializeField]
+		private AudioClip enemyHealthUsedClip;
+		/// <summary>
+		/// The enemy rocket firing incoming clip.
+		/// </summary>
+		[SerializeField]
+		private AudioClip enemyRocketUsedClip;
 		/// <summary>
 		/// The can lauch rocket.
 		/// </summary>
@@ -114,12 +134,22 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		private enum AbilityType
 		{
-			HealthBoost, Rocket, None
+			None, HealthBoost, Rocket
 		}
 		/// <summary>
 		/// The type of the ability.
 		/// </summary>
 		private AbilityType abilityType = AbilityType.None;
+
+		void Update()
+		{
+			// For testing
+			if(Input.GetKeyDown(KeyCode.Space))
+			{
+				requestForRocketFire (null, new Touch ());
+			}
+		}
+
 		/// <summary>
 		/// This function gets called when rocket button is pressed
 		/// </summary>
@@ -158,6 +188,12 @@ namespace SandeepMattepu.Multiplayer
 				multiplayerGame.localPlayer.gameObject.GetComponent<SMPlayerHealth> ().giveArmorToPlayer ();
 				multiplayerGame.reduceKillStreakBy (killStreakForHealthBoost);
 				hasAlreadyAnnouncedHealth = false;
+				if(multiplayerGame.localPlayer != null)
+				{
+					Camera camera = multiplayerGame.localPlayer.GetComponent<SMPlayerController> ().characterFocusedCamera;
+					AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, camera.transform.position);
+					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.HealthBoost, true);
+				}
 			}
 		}
 
@@ -188,7 +224,7 @@ namespace SandeepMattepu.Multiplayer
 					healthBoostButton.image.color = Color.white;
 					if(!hasAlreadyAnnouncedHealth)
 					{
-						clipToBeAnnounced = announcementType (AbilityType.HealthBoost);
+						clipToBeAnnounced = boostUnlockedType (AbilityType.HealthBoost);
 						abilityType = AbilityType.HealthBoost;
 						StartCoroutine ("announcePlayerAbility");
 					}
@@ -207,7 +243,7 @@ namespace SandeepMattepu.Multiplayer
 					rocketButton.image.color = Color.white;
 					if(!hasAlreadyAnnouncedRocket)
 					{
-						clipToBeAnnounced = announcementType (AbilityType.Rocket);
+						clipToBeAnnounced = boostUnlockedType (AbilityType.Rocket);
 						abilityType = AbilityType.Rocket;
 						StartCoroutine ("announcePlayerAbility");
 					}
@@ -250,28 +286,28 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		/// <returns>The announcement clip.</returns>
 		/// <param name="abilityType">Ability type.</param>
-		private AudioClip announcementType(AbilityType abilityType)
+		private AudioClip boostUnlockedType(AbilityType abilityType)
 		{
 			if(abilityType == AbilityType.HealthBoost)
 			{
 				if(localPlayerRace == MpPlayerRaceType.Jagur)
 				{
-					return jagurHealthAnnouncement;
+					return jagurHealthUnlockedClip;
 				}
 				else if(localPlayerRace == MpPlayerRaceType.Monio)
 				{
-					return monioHealthAnnouncement;
+					return monioHealthUnlockedClip;
 				}
 			}
 			else if(abilityType == AbilityType.Rocket)
 			{
 				if(localPlayerRace == MpPlayerRaceType.Jagur)
 				{
-					return jagurRocketAnnouncement;
+					return jagurRocketUnlockedClip;
 				}
 				else if(localPlayerRace == MpPlayerRaceType.Monio)
 				{
-					return monioRocketAnnouncement;
+					return monioRocketUnlockedClip;
 				}
 			}
 
@@ -291,6 +327,12 @@ namespace SandeepMattepu.Multiplayer
 				onCancelButtonPressed ();
 				multiplayerGame.reduceKillStreakBy (killStreakForRocket);
 				hasAlreadyAnnouncedRocket = false;
+				if(multiplayerGame.localPlayer != null)
+				{
+					Camera camera = multiplayerGame.localPlayer.GetComponent<SMPlayerController> ().characterFocusedCamera;
+					AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, camera.transform.position);
+					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.Rocket, true);
+				}
 				Debug.Log ("Rocket dropped KABOOOM!!!");
 				// Instantiate rocket in mp
 			}
@@ -311,6 +353,65 @@ namespace SandeepMattepu.Multiplayer
 			healthBoostButton.image.color = Color.black;
 
 			touchManager.OnSingleGameTap += requestForRocketFire;
+			PhotonNetwork.OnEventCall += recieveAnnouncementsFromOtherClients;
+		}
+
+		private void recieveAnnouncementsFromOtherClients(byte eventCode, object content, int senderId)
+		{
+			if(eventCode == (int)MultiplayerEvents.Announcements)
+			{
+				SMPlayerIdentifier clientPlayer = multiplayerGame.localPlayer;
+				AbilityType ability = (AbilityType)content;
+				if(clientPlayer != null)
+				{
+					if(SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
+					{
+						if(ability == AbilityType.HealthBoost)
+						{
+							AudioSource.PlayClipAtPoint (enemyHealthUsedClip, clientPlayer.
+								GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+						}
+						else if(ability == AbilityType.Rocket)
+						{
+							AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.
+								GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+						}
+					}
+					else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
+					{
+						int senderTeamIndex = 0;
+						if(SMTeamDeathMatch.PlayerIdAndTeamIndex.TryGetValue (senderId, out senderTeamIndex))
+						{
+							if(senderTeamIndex == SMTeamDeathMatch.LocalPlayerTeamIndex)
+							{
+								if(ability == AbilityType.HealthBoost)
+								{
+									AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, clientPlayer.
+										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+								}
+								else if(ability == AbilityType.Rocket)
+								{
+									AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, clientPlayer.
+										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+								}
+							}
+							else
+							{
+								if(ability == AbilityType.HealthBoost)
+								{
+									AudioSource.PlayClipAtPoint (enemyHealthUsedClip, clientPlayer.
+										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+								}
+								else if(ability == AbilityType.Rocket)
+								{
+									AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.
+										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

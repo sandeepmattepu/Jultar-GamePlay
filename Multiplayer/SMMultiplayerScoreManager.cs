@@ -22,12 +22,12 @@ namespace SandeepMattepu.Multiplayer
 		private void OnEvent(byte eventCode, object content, int senderID)
 		{
 			byte[] dataInContent = (byte[])content;
-			if(eventCode == 1)		// Means Free for all game
+			if(eventCode == (int)MultiplayerEvents.FreeForAll)		// Means Free for all game
 			{
 				int ID = (int)dataInContent[0];
 				gameType.reportScore(ID);
 			}
-			else if(eventCode == 2)
+			else if(eventCode == (int)MultiplayerEvents.TeamDeathMatch)	// Means Team Death match
 			{
 				int ID = (int)dataInContent [0];
 				gameType.reportScore (ID);
@@ -39,5 +39,13 @@ namespace SandeepMattepu.Multiplayer
 			gameType = GameType;
 			PhotonNetwork.OnEventCall += this.OnEvent;
 		}
-	}	
+	}
+
+	/// <summary>
+	/// Multiplayer events that helps us to understand custom events in photon.
+	/// </summary>
+	public enum MultiplayerEvents
+	{
+		FreeForAll = 1, TeamDeathMatch, Announcements
+	}
 }
