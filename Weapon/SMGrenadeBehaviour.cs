@@ -63,6 +63,10 @@ namespace SandeepMattepu.Weapon
 		{
 			IDOfLocalPlayer = PhotonNetwork.player.ID;
 			photonViewComponent = GetComponent<PhotonView> ();
+			if(isMultiplayer && !photonViewComponent.isMine)
+			{
+				gameObject.GetComponent<Rigidbody> ().isKinematic = true;
+			}
 			StartCoroutine ("waitUntilGreandeLife");
 		}
 
