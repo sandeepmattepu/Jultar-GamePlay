@@ -201,11 +201,6 @@ namespace SandeepMattepu.Weapon
 					stopAllComponenets ();
 				}
 			}
-
-			if(Input.GetKeyDown(KeyCode.Space))
-			{
-				ikControl.requestGrenadeThrow ();
-			}
 		}
 
 		/// <summary>

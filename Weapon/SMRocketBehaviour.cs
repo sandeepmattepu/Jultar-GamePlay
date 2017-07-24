@@ -96,31 +96,39 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		private void rocketMovement()
 		{
-			if(!canLanch)
+			if((isMultiplayer && photonViewComponent.isMine) || !isMultiplayer)
 			{
-				tickDelay += Time.deltaTime;
-				if(tickDelay >= delayBeforeLauch)
+				if(!canLanch)
 				{
-					canLanch = true;
+					tickDelay += Time.deltaTime;
+					if(tickDelay >= delayBeforeLauch)
+					{
+						canLanch = true;
+					}
 				}
-			}
-			if(!canBlast && canLanch)
-			{
-				Vector3 direction = transform.InverseTransformPoint (targetPosition);
-				if(direction.magnitude <= 0.02f)
+				if(!canBlast && canLanch)
 				{
-					canBlast = true;
-					audioSourceComponent.Play ();
-					blastTheRocket ();
+					Vector3 direction = transform.InverseTransformPoint (targetPosition);
+					if(direction.magnitude <= 0.02f)
+					{
+						canBlast = true;
+						audioSourceComponent.Play ();
+						blastTheRocket ();
+						if(isMultiplayer && photonViewComponent.isMine)
+						{
+							photonViewComponent.RPC ("blastTheRocket", PhotonTargets.Others, null);
+						}
+					}
+					direction.Normalize();
+					transform.Translate (direction * speedOfRocket * Time.deltaTime);
 				}
-				direction.Normalize();
-				transform.Translate (direction * speedOfRocket * Time.deltaTime);
 			}
 		}
 
 		/// <summary>
 		/// This function will blast the rocket
 		/// </summary>
+		[PunRPC]
 		private void blastTheRocket()
 		{
 			Instantiate (rocketBlastParticleEffect, targetPosition, Quaternion.identity);
@@ -165,6 +173,10 @@ namespace SandeepMattepu.Weapon
 			canBlast = true;
 			audioSourceComponent.Play ();
 			blastTheRocket ();
+			if(isMultiplayer && photonViewComponent.isMine)
+			{
+				photonViewComponent.RPC ("blastTheRocket", PhotonTargets.Others, null);
+			}
 		}
 
 		/// <summary>
