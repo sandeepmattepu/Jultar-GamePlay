@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.MobileTouch;
+using SandeepMattepu.Weapon;
 
 namespace SandeepMattepu.Multiplayer
 {
@@ -128,6 +129,21 @@ namespace SandeepMattepu.Multiplayer
 		/// Game has already announced health.
 		/// </summary>
 		private bool hasAlreadyAnnouncedHealth = false;
+		[SerializeField]
+		/// <summary>
+		/// This audio component playes rocket fly over sound
+		/// </summary>
+		private AudioSource jetFlyOverAudio;
+		/// <summary>
+		/// The rocket prefab that gets launched.
+		/// </summary>
+		[SerializeField]
+		private GameObject rocketPrefab;
+		/// <summary>
+		/// The flare game object for rocket target
+		/// </summary>
+		[SerializeField]
+		private GameObject flareForRocketTarget;
 
 		/// <summary>
 		/// Ability types.
@@ -140,15 +156,6 @@ namespace SandeepMattepu.Multiplayer
 		/// The type of the ability.
 		/// </summary>
 		private AbilityType abilityType = AbilityType.None;
-
-		void Update()
-		{
-			// For testing
-			if(Input.GetKeyDown(KeyCode.Space))
-			{
-				requestForRocketFire (null, new Touch ());
-			}
-		}
 
 		/// <summary>
 		/// This function gets called when rocket button is pressed
@@ -323,18 +330,40 @@ namespace SandeepMattepu.Multiplayer
 		{
 			if(canLauchRocket)
 			{
-				canLauchRocket = false;
-				onCancelButtonPressed ();
-				multiplayerGame.reduceKillStreakBy (killStreakForRocket);
-				hasAlreadyAnnouncedRocket = false;
-				if(multiplayerGame.localPlayer != null)
+				Ray touchRay = Camera.main.ScreenPointToRay (touch.position);
+				RaycastHit hitInfo;
+				int layerMask = 1 << 18;				// 18 is to ignore barriers collider
+				layerMask = ~layerMask;
+				if(Physics.Raycast(touchRay, out hitInfo, 500.0f, layerMask))
 				{
-					Camera camera = multiplayerGame.localPlayer.GetComponent<SMPlayerController> ().characterFocusedCamera;
-					AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, camera.transform.position);
+					Debug.Log ("Called");
+					Vector3 target = hitInfo.collider.transform.position;
+					canLauchRocket = false;
+					onCancelButtonPressed ();
+					rocketButton.image.color = Color.black;
+					multiplayerGame.reduceKillStreakBy (killStreakForRocket);
+					hasAlreadyAnnouncedRocket = false;
 					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.Rocket, true, null);
+					if(multiplayerGame.localPlayer != null)
+					{
+						Camera camera = multiplayerGame.localPlayer.GetComponent<SMPlayerController> ().characterFocusedCamera;
+						AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, camera.transform.position);
+					}
+					if(jetFlyOverAudio != null)
+					{
+						if(jetFlyOverAudio.isPlaying)
+						{
+							jetFlyOverAudio.Stop ();
+						}
+						jetFlyOverAudio.Play ();
+					}
+					Vector3 rocketInstantiateLocation = target;
+					rocketInstantiateLocation.y += 50.0f;
+					GameObject rocketAfterInstantiating = PhotonNetwork.Instantiate (rocketPrefab.name, rocketInstantiateLocation, 
+						rocketPrefab.transform.rotation, 0) as GameObject;
+					rocketAfterInstantiating.GetComponent<SMRocketBehaviour> ().targetPosition = target;
+					PhotonNetwork.Instantiate (flareForRocketTarget.name, target, flareForRocketTarget.transform.rotation, 0);
 				}
-				Debug.Log ("Rocket dropped KABOOOM!!!");
-				// Instantiate rocket in mp
 			}
 		}
 
@@ -356,6 +385,12 @@ namespace SandeepMattepu.Multiplayer
 			PhotonNetwork.OnEventCall += recieveAnnouncementsFromOtherClients;
 		}
 
+		/// <summary>
+		/// Recieves the signals from other clients to do announcements.
+		/// </summary>
+		/// <param name="eventCode">Event code.</param>
+		/// <param name="content">Content.</param>
+		/// <param name="senderId">Sender identifier.</param>
 		private void recieveAnnouncementsFromOtherClients(byte eventCode, object content, int senderId)
 		{
 			if(eventCode == (int)MultiplayerEvents.Announcements)
@@ -375,6 +410,14 @@ namespace SandeepMattepu.Multiplayer
 						{
 							AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.
 								GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+							if(jetFlyOverAudio != null)
+							{
+								if(jetFlyOverAudio.isPlaying)
+								{
+									jetFlyOverAudio.Stop ();
+								}
+								jetFlyOverAudio.Play ();
+							}
 						}
 					}
 					else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
@@ -393,6 +436,14 @@ namespace SandeepMattepu.Multiplayer
 								{
 									AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, clientPlayer.
 										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+									if(jetFlyOverAudio != null)
+									{
+										if(jetFlyOverAudio.isPlaying)
+										{
+											jetFlyOverAudio.Stop ();
+										}
+										jetFlyOverAudio.Play ();
+									}
 								}
 							}
 							else
@@ -406,6 +457,14 @@ namespace SandeepMattepu.Multiplayer
 								{
 									AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.
 										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+									if(jetFlyOverAudio != null)
+									{
+										if(jetFlyOverAudio.isPlaying)
+										{
+											jetFlyOverAudio.Stop ();
+										}
+										jetFlyOverAudio.Play ();
+									}
 								}
 							}
 						}
