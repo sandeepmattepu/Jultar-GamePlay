@@ -77,6 +77,11 @@ namespace SandeepMattepu.Weapon
 			GetComponent<Rigidbody> ().isKinematic = true;
 			audioSourceComponent = GetComponent<AudioSource> ();
 			StartCoroutine ("playRocketTravellingSound");
+			if(isMultiplayer && !photonViewComponent.isMine)
+			{
+				object[] data = photonViewComponent.instantiationData;
+				targetPosition = (Vector3)data[0];
+			}
 		}
 
 		IEnumerator playRocketTravellingSound()
@@ -96,39 +101,31 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		private void rocketMovement()
 		{
-			if((isMultiplayer && photonViewComponent.isMine) || !isMultiplayer)
+			if(!canLanch)
 			{
-				if(!canLanch)
+				tickDelay += Time.deltaTime;
+				if(tickDelay >= delayBeforeLauch)
 				{
-					tickDelay += Time.deltaTime;
-					if(tickDelay >= delayBeforeLauch)
-					{
-						canLanch = true;
-					}
+					canLanch = true;
 				}
-				if(!canBlast && canLanch)
+			}
+			if(!canBlast && canLanch)
+			{
+				Vector3 direction = transform.InverseTransformPoint (targetPosition);
+				if(direction.magnitude <= 0.02f)
 				{
-					Vector3 direction = transform.InverseTransformPoint (targetPosition);
-					if(direction.magnitude <= 0.02f)
-					{
-						canBlast = true;
-						audioSourceComponent.Play ();
-						blastTheRocket ();
-						if(isMultiplayer && photonViewComponent.isMine)
-						{
-							photonViewComponent.RPC ("blastTheRocket", PhotonTargets.Others, null);
-						}
-					}
-					direction.Normalize();
-					transform.Translate (direction * speedOfRocket * Time.deltaTime);
+					canBlast = true;
+					audioSourceComponent.Play ();
+					blastTheRocket ();
 				}
+				direction.Normalize();
+				transform.Translate (direction * speedOfRocket * Time.deltaTime);
 			}
 		}
 
 		/// <summary>
 		/// This function will blast the rocket
 		/// </summary>
-		[PunRPC]
 		private void blastTheRocket()
 		{
 			Instantiate (rocketBlastParticleEffect, targetPosition, Quaternion.identity);
@@ -170,12 +167,11 @@ namespace SandeepMattepu.Weapon
 
 		void OnCollisionEnter(Collision collider)
 		{
-			canBlast = true;
-			audioSourceComponent.Play ();
-			blastTheRocket ();
-			if(isMultiplayer && photonViewComponent.isMine)
+			if(!canBlast)
 			{
-				photonViewComponent.RPC ("blastTheRocket", PhotonTargets.Others, null);
+				canBlast = true;
+				audioSourceComponent.Play ();
+				blastTheRocket ();
 			}
 		}
 

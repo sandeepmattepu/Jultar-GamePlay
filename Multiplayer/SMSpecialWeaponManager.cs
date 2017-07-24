@@ -157,6 +157,14 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		private AbilityType abilityType = AbilityType.None;
 
+		void Update()
+		{
+			if(Input.GetMouseButtonDown(0))
+			{
+				requestForRocketFire (this, new Touch ());
+			}
+		}
+
 		/// <summary>
 		/// This function gets called when rocket button is pressed
 		/// </summary>
@@ -193,7 +201,6 @@ namespace SandeepMattepu.Multiplayer
 			if(canHaveHealthBoost)
 			{
 				multiplayerGame.localPlayer.gameObject.GetComponent<SMPlayerHealth> ().giveArmorToPlayer ();
-				multiplayerGame.reduceKillStreakBy (killStreakForHealthBoost);
 				hasAlreadyAnnouncedHealth = false;
 				if(multiplayerGame.localPlayer != null)
 				{
@@ -328,20 +335,28 @@ namespace SandeepMattepu.Multiplayer
 		/// <param name="touch">Touch.</param>
 		private void requestForRocketFire(object sender, Touch touch)
 		{
-			if(canLauchRocket)
+			if(rocketIsInAimingPosition)
 			{
-				Ray touchRay = Camera.main.ScreenPointToRay (touch.position);
+				Ray touchRay;
+				if(Input.touchCount > 0)
+				{
+					touchRay = Camera.main.ScreenPointToRay (touch.position);
+				}
+				else if(Input.GetMouseButtonDown(0))
+				{
+					touchRay = Camera.main.ScreenPointToRay (Input.mousePosition);
+				}
 				RaycastHit hitInfo;
 				int layerMask = 1 << 18;				// 18 is to ignore barriers collider
 				layerMask = ~layerMask;
 				if(Physics.Raycast(touchRay, out hitInfo, 500.0f, layerMask))
 				{
 					Debug.Log ("Called");
-					Vector3 target = hitInfo.collider.transform.position;
-					canLauchRocket = false;
+					Vector3 target = hitInfo.point;
 					onCancelButtonPressed ();
+					canLauchRocket = false;
+					rocketIsInAimingPosition = false;
 					rocketButton.image.color = Color.black;
-					multiplayerGame.reduceKillStreakBy (killStreakForRocket);
 					hasAlreadyAnnouncedRocket = false;
 					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.Rocket, true, null);
 					if(multiplayerGame.localPlayer != null)
@@ -359,8 +374,10 @@ namespace SandeepMattepu.Multiplayer
 					}
 					Vector3 rocketInstantiateLocation = target;
 					rocketInstantiateLocation.y += 50.0f;
+					object[] dataToTransfer = new object[1];
+					dataToTransfer [0] = (object)target;
 					GameObject rocketAfterInstantiating = PhotonNetwork.Instantiate (rocketPrefab.name, rocketInstantiateLocation, 
-						rocketPrefab.transform.rotation, 0) as GameObject;
+						rocketPrefab.transform.rotation, 0, dataToTransfer) as GameObject;
 					rocketAfterInstantiating.GetComponent<SMRocketBehaviour> ().targetPosition = target;
 					PhotonNetwork.Instantiate (flareForRocketTarget.name, target, flareForRocketTarget.transform.rotation, 0);
 				}
