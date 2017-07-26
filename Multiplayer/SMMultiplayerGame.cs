@@ -185,7 +185,7 @@ namespace SandeepMattepu.Multiplayer
 	/// </summary>
 	public enum MPGameTypes
 	{
-		NOT_INITIALIZED,
+		NOT_INITIALIZED = 0,
 		FREE_FOR_ALL,
 		TEAM_DEATH_MATCH
 	}

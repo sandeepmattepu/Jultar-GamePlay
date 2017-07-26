@@ -21,9 +21,10 @@ using SandeepMattepu.UI;
 /// </summary>
 public class SMPlayerSpawnerAndAssigner : MonoBehaviour 
 {
-	#region ToBeRemoved
-	public MPGameTypes gameType;
-	#endregion
+    /// <summary>
+    /// This will decide which rules that need to be maintained in the game. Set this value before loading the game
+    /// </summary>
+    public static MPGameTypes gameType = MPGameTypes.TEAM_DEATH_MATCH;
 	/// <summary>
 	/// The player game object which will be spawned by photon
 	/// </summary>
