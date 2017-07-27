@@ -204,8 +204,7 @@ namespace SandeepMattepu.Multiplayer
 				hasAlreadyAnnouncedHealth = false;
 				if(multiplayerGame.localPlayer != null)
 				{
-					Camera camera = multiplayerGame.localPlayer.GetComponent<SMPlayerController> ().characterFocusedCamera;
-					AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, camera.transform.position);
+					AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, multiplayerGame.localPlayer.transform.position);
 					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.HealthBoost, true, null);
 				}
 			}
@@ -280,8 +279,7 @@ namespace SandeepMattepu.Multiplayer
 		IEnumerator announcePlayerAbility()
 		{
 			yield return new WaitUntil (() => (multiplayerGame.localPlayer != null));
-			Transform locationToMakeAnnouncement = multiplayerGame.localPlayer.
-				GetComponent<SMPlayerController> ().characterFocusedCamera.transform;
+			Transform locationToMakeAnnouncement = multiplayerGame.localPlayer.transform;
 			AudioSource.PlayClipAtPoint (clipToBeAnnounced, locationToMakeAnnouncement.position);
 			if(abilityType == AbilityType.HealthBoost)
 			{
@@ -351,7 +349,6 @@ namespace SandeepMattepu.Multiplayer
 				layerMask = ~layerMask;
 				if(Physics.Raycast(touchRay, out hitInfo, 500.0f, layerMask))
 				{
-					Debug.Log ("Called");
 					Vector3 target = hitInfo.point;
 					onCancelButtonPressed ();
 					canLauchRocket = false;
@@ -361,8 +358,7 @@ namespace SandeepMattepu.Multiplayer
 					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.Rocket, true, null);
 					if(multiplayerGame.localPlayer != null)
 					{
-						Camera camera = multiplayerGame.localPlayer.GetComponent<SMPlayerController> ().characterFocusedCamera;
-						AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, camera.transform.position);
+						AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, multiplayerGame.localPlayer.transform.position);
 					}
 					if(jetFlyOverAudio != null)
 					{
@@ -420,13 +416,11 @@ namespace SandeepMattepu.Multiplayer
 					{
 						if(ability == AbilityType.HealthBoost)
 						{
-							AudioSource.PlayClipAtPoint (enemyHealthUsedClip, clientPlayer.
-								GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+							AudioSource.PlayClipAtPoint (enemyHealthUsedClip, clientPlayer.transform.position);
 						}
 						else if(ability == AbilityType.Rocket)
 						{
-							AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.
-								GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+							AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.transform.position);
 							if(jetFlyOverAudio != null)
 							{
 								if(jetFlyOverAudio.isPlaying)
@@ -446,13 +440,11 @@ namespace SandeepMattepu.Multiplayer
 							{
 								if(ability == AbilityType.HealthBoost)
 								{
-									AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, clientPlayer.
-										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+									AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, clientPlayer.transform.position);
 								}
 								else if(ability == AbilityType.Rocket)
 								{
-									AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, clientPlayer.
-										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+									AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, clientPlayer.transform.position);
 									if(jetFlyOverAudio != null)
 									{
 										if(jetFlyOverAudio.isPlaying)
@@ -467,13 +459,11 @@ namespace SandeepMattepu.Multiplayer
 							{
 								if(ability == AbilityType.HealthBoost)
 								{
-									AudioSource.PlayClipAtPoint (enemyHealthUsedClip, clientPlayer.
-										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+									AudioSource.PlayClipAtPoint (enemyHealthUsedClip, clientPlayer.transform.position);
 								}
 								else if(ability == AbilityType.Rocket)
 								{
-									AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.
-										GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
+									AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.transform.position);
 									if(jetFlyOverAudio != null)
 									{
 										if(jetFlyOverAudio.isPlaying)

@@ -17,9 +17,16 @@ namespace SandeepMattepu
 	public class SMDestroyRagdoll : MonoBehaviour
 	{
 		public bool isMultiplayer = false;
+		[SerializeField]
+		private AudioClip[] deathScreams;
+		private AudioSource audioSource;
 		// Use this for initialization
 		void Start()
 		{
+			int index = Random.Range (0, 2);
+			audioSource = GetComponent<AudioSource> ();
+			audioSource.clip = deathScreams [index];
+			audioSource.Play ();
 			if(isMultiplayer)
 			{
 				StartCoroutine("destroyRagdoll");
