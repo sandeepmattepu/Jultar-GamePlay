@@ -50,6 +50,16 @@ namespace SandeepMattepu.Multiplayer
 		public static Dictionary<int, string> PlayersIdAndName
 		{ get { return playersIdAndName;} }
 		/// <summary>
+		/// This dictionary holds number of deaths a player gone through
+		/// </summary>
+		protected static Dictionary<int, int> playerIdAndDeaths = new Dictionary<int, int>();
+		/// <summary>
+		/// This dictionary holds player names as values with player id as key
+		/// </summary>
+		public static Dictionary<int, int> PlayerIdAndDeaths
+		{ get { return playerIdAndDeaths;}	}
+
+		/// <summary>
 		/// The current game type player is playing
 		/// </summary>
 		public static MPGameTypes gameType = MPGameTypes.NOT_INITIALIZED;
@@ -142,15 +152,16 @@ namespace SandeepMattepu.Multiplayer
 			{
 				OnGameRulesLoaded ();
 			}
+
 		}
 
 		/// <summary>
 		/// Reports the score for particular game type.
 		/// </summary>
-		/// <param name="ID">ID of the player who made damage.</param>
-		public virtual void reportScore(int ID)
+		/// <param name="whoKilledID">ID of the player who made damage.</param>
+		public virtual void reportScore(int whoKilledID)
 		{
-			if(PhotonNetwork.player.ID == ID)
+			if(PhotonNetwork.player.ID == whoKilledID)
 			{
 				SMShowXpMadeInstantly.addXPToQueue(xpMadeAfterKill);
 				killStreak += 1;
@@ -162,8 +173,17 @@ namespace SandeepMattepu.Multiplayer
 			}
 			if(OnScoreChange != null)
 			{
-				OnScoreChange (this, ID);
+				OnScoreChange (this, whoKilledID);
 			}
+		}
+
+		/// <summary>
+		/// Adds the death information of particular ID of the player.
+		/// </summary>
+		/// <param name="ID">ID of the player who died</param>
+		private void addDeathInformation(int ID)
+		{
+			
 		}
 
 		/// <summary>

@@ -39,6 +39,7 @@ namespace SandeepMattepu.Multiplayer
 			// When player is playing mp game back to back then to avoid bugs
 			playersIdAndName.Clear();
 			playersIdAndScore.Clear();
+			playerIdAndDeaths.Clear ();
 		}
 
 		protected override void Start()
@@ -56,17 +57,17 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// Update the score to the score board
 		/// </summary>
-		/// <param name="ID">Identifier who won the score.</param>
-		public override void reportScore(int ID)
+		/// <param name="whoKilledID">Identifier who won the score.</param>
+		public override void reportScore(int whoKilledID)
 		{
-			base.reportScore(ID);
-			if (playersIdAndScore.ContainsKey(ID))
+			base.reportScore(whoKilledID);
+			if (playersIdAndScore.ContainsKey(whoKilledID))
 			{
 				int score = 0;
-				playersIdAndScore.TryGetValue(ID, out score);
+				playersIdAndScore.TryGetValue(whoKilledID, out score);
 				score ++;
-				playersIdAndScore.Remove(ID);
-				playersIdAndScore.Add(ID, score);
+				playersIdAndScore.Remove(whoKilledID);
+				playersIdAndScore.Add(whoKilledID, score);
 				checkEndGameScore(score);
 			}
 		}
@@ -81,6 +82,7 @@ namespace SandeepMattepu.Multiplayer
 			{
 				playersIdAndName.Add(photonView.owner.ID, photonView.owner.NickName);
 				playersIdAndScore.Add(photonView.owner.ID, 0);
+				playerIdAndDeaths.Add (photonView.owner.ID, 0);
 			}
 		}
 
