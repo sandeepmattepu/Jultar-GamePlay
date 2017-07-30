@@ -130,10 +130,10 @@ public class SMPlayerIdentifier : MonoBehaviour
 	{
 		if(SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
 		{
-			byte evCode = 1;    // 1 denotes free for all
-			byte[] content = new byte[] { (byte)ID };    // Send who scored the points
+			byte evCode = (int)MultiplayerEvents.FreeForAll;    // 1 denotes free for all
+			byte[] content = new byte[] { (byte)ID, (byte)photonViewComponenet.owner.ID };    // Send who scored the points
 			bool reliable = true;
-			gameType.reportScore (ID);		// Acknowledge score in local device
+			gameType.reportScore (ID, photonViewComponenet.owner.ID);		// Acknowledge score in local device
 			PhotonNetwork.RaiseEvent(evCode, content, reliable, null);
 		}
 		else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
@@ -146,10 +146,10 @@ public class SMPlayerIdentifier : MonoBehaviour
 			{
 				if(localPlayerTeam != playerTeamWhoKilledLocal)
 				{
-					byte evCode = 2;    // 2 denotes team death match
-					byte[] content = new byte[] { (byte)ID };    // Send who scored the points
+					byte evCode = (int)MultiplayerEvents.TeamDeathMatch;    // 2 denotes team death match
+					byte[] content = new byte[] { (byte)ID, (byte)photonViewComponenet.owner.ID };    // Send who scored the points
 					bool reliable = true;
-					gameType.reportScore (ID);		// Acknowledge score in local device
+					gameType.reportScore (ID, photonViewComponenet.owner.ID);		// Acknowledge score in local device
 					PhotonNetwork.RaiseEvent(evCode, content, reliable, null);
 				}
 			}

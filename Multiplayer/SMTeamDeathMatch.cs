@@ -60,6 +60,7 @@ namespace SandeepMattepu.Multiplayer
 			playersIdAndName.Clear();
             playersIdAndScore.Clear();
 			playerIdAndTeamIndex.Clear ();
+			playerIdAndDeaths.Clear ();
 		}
 
 		// Use this for initialization
@@ -124,11 +125,8 @@ namespace SandeepMattepu.Multiplayer
 			foreach(PhotonPlayer player in players)
 			{
 				playersIdAndName.Add (player.ID, player.NickName);
-			}
-
-			foreach(PhotonPlayer player in players)
-			{
 				playersIdAndScore.Add (player.ID, 0);
+				playerIdAndDeaths.Add (player.ID, 0);
 			}
 		}
 
@@ -201,17 +199,18 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// Update the score to the score board
 		/// </summary>
-		/// <param name="ID">Identifier who won the score.</param>
-		public override void reportScore(int ID)
+		/// <param name="whoKilledID">Identifier who won the score.</param>
+		/// <param name="whoDiedID">Identifier who died.</param>
+		public override void reportScore(int whoKilledID, int whoDiedID)
 		{
-			base.reportScore(ID);
-			if (playersIdAndScore.ContainsKey(ID))
+			base.reportScore(whoKilledID, whoDiedID);
+			if (playersIdAndScore.ContainsKey(whoKilledID))
 			{
 				int score = 0;
-				playersIdAndScore.TryGetValue(ID, out score);
+				playersIdAndScore.TryGetValue(whoKilledID, out score);
 				score ++;
-				playersIdAndScore.Remove(ID);
-				playersIdAndScore.Add(ID, score);
+				playersIdAndScore.Remove(whoKilledID);
+				playersIdAndScore.Add(whoKilledID, score);
 				checkEndGameScore(score);
 			}
 		}
