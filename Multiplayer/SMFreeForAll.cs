@@ -41,8 +41,9 @@ namespace SandeepMattepu.Multiplayer
 			playersIdAndScore.Clear();
 		}
 
-		void Start()
+		protected override void Start()
 		{
+			base.Start ();
 			startDownloadingXpRewardData();
 		}
 
