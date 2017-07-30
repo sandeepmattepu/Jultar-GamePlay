@@ -200,9 +200,10 @@ namespace SandeepMattepu.Multiplayer
 		/// Update the score to the score board
 		/// </summary>
 		/// <param name="whoKilledID">Identifier who won the score.</param>
-		public override void reportScore(int whoKilledID)
+		/// <param name="whoDiedID">Identifier who died.</param>
+		public override void reportScore(int whoKilledID, int whoDiedID)
 		{
-			base.reportScore(whoKilledID);
+			base.reportScore(whoKilledID, whoDiedID);
 			if (playersIdAndScore.ContainsKey(whoKilledID))
 			{
 				int score = 0;

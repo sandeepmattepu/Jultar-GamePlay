@@ -159,8 +159,10 @@ namespace SandeepMattepu.Multiplayer
 		/// Reports the score for particular game type.
 		/// </summary>
 		/// <param name="whoKilledID">ID of the player who made damage.</param>
-		public virtual void reportScore(int whoKilledID)
+		/// <param name="whoDiedID">ID of the player who died.</param>
+		public virtual void reportScore(int whoKilledID, int whoDiedID)
 		{
+			addDeathInformation (whoDiedID);
 			if(PhotonNetwork.player.ID == whoKilledID)
 			{
 				SMShowXpMadeInstantly.addXPToQueue(xpMadeAfterKill);
@@ -173,7 +175,7 @@ namespace SandeepMattepu.Multiplayer
 			}
 			if(OnScoreChange != null)
 			{
-				OnScoreChange (this, whoKilledID);
+				OnScoreChange (this, whoKilledID, whoDiedID);
 			}
 		}
 
@@ -183,7 +185,13 @@ namespace SandeepMattepu.Multiplayer
 		/// <param name="ID">ID of the player who died</param>
 		private void addDeathInformation(int ID)
 		{
-			
+			int numberOfDeaths;
+			if(playerIdAndDeaths.TryGetValue (ID, out numberOfDeaths))
+			{
+				numberOfDeaths += 1;
+				playerIdAndDeaths.Remove (ID);
+				playerIdAndDeaths.Add (ID, numberOfDeaths);
+			}
 		}
 
 		/// <summary>
@@ -222,7 +230,7 @@ namespace SandeepMattepu.Multiplayer
 		TEAM_DEATH_MATCH
 	}
 
-	public delegate void notifyScoreChange(object sender, int ID);
+	public delegate void notifyScoreChange(object sender, int whoKilled, int whoDied);
 	public delegate void onKillStreakChange(int killStreak);
 	public delegate void onGameRulesCreated();
 }

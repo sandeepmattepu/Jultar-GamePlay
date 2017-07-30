@@ -27,13 +27,15 @@ namespace SandeepMattepu.Multiplayer
 				dataInContent = (byte[])content;
 				if(eventCode == (int)MultiplayerEvents.FreeForAll)		// Means Free for all game
 				{
-					int ID = (int)dataInContent[0];
-					gameType.reportScore(ID);
+					int scoreReciever = (int)dataInContent[0];
+					int diedID = (int)dataInContent [1];
+					gameType.reportScore(scoreReciever, diedID);
 				}
 				else if(eventCode == (int)MultiplayerEvents.TeamDeathMatch)	// Means Team Death match
 				{
-					int ID = (int)dataInContent [0];
-					gameType.reportScore (ID);
+					int scoreReciever = (int)dataInContent [0];
+					int diedID = (int)dataInContent [1];
+					gameType.reportScore (scoreReciever, diedID);
 				}
 			}
 		}
