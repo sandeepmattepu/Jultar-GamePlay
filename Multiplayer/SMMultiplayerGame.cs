@@ -131,6 +131,18 @@ namespace SandeepMattepu.Multiplayer
 		/// Occurs when kill streak has been reset.
 		/// </summary>
 		public event onKillStreakChange OnKillStreakChange;
+		/// <summary>
+		/// Occurs when game rules are loaded in the game.
+		/// </summary>
+		public static event onGameRulesCreated OnGameRulesLoaded;
+
+		protected virtual void Start()
+		{
+			if(OnGameRulesLoaded != null)
+			{
+				OnGameRulesLoaded ();
+			}
+		}
 
 		/// <summary>
 		/// Reports the score for particular game type.
@@ -192,4 +204,5 @@ namespace SandeepMattepu.Multiplayer
 
 	public delegate void notifyScoreChange(object sender, int ID);
 	public delegate void onKillStreakChange(int killStreak);
+	public delegate void onGameRulesCreated();
 }
