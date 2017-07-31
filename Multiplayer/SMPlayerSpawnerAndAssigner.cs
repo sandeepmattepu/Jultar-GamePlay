@@ -97,6 +97,10 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// The special weapon manager.
 	/// </summary>
 	public SMSpecialWeaponManager specialWeaponManager;
+	/// <summary>
+	/// Occurs when player respawnes in multiplayer context.
+	/// </summary>
+	public static event onGameRulesCreated OnPlayerRespawned;
 	// Use this for initialization
 	void Start () 
 	{
@@ -195,6 +199,10 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// </summary>
 	public void spawnSinglePlayer()
 	{
+		if(OnPlayerRespawned != null)
+		{
+			OnPlayerRespawned ();
+		}
 		GameObject player = PhotonNetwork.Instantiate(playerToBeSpawned.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
 		foreach (Transform spawnPoint in spawnPoints)
 		{

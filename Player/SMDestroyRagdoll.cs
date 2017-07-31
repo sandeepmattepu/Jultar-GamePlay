@@ -34,6 +34,7 @@ namespace SandeepMattepu
 			audioSource.Play ();
 			if(isMultiplayer)
 			{
+				SMPlayerSpawnerAndAssigner.OnPlayerRespawned += silenceAudioListner;
 				StartCoroutine("destroyRagdoll");
 			}
 		}
@@ -42,6 +43,11 @@ namespace SandeepMattepu
 		{
 			yield return new WaitForSeconds(5.0f);
 			Destroy(this.gameObject);
+		}
+
+		private void silenceAudioListner()
+		{
+			Destroy (GetComponent<AudioListener> ());
 		}
 	}	
 }
