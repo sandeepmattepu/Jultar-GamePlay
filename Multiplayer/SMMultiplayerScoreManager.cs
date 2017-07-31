@@ -45,6 +45,11 @@ namespace SandeepMattepu.Multiplayer
 			gameType = GameType;
 			PhotonNetwork.OnEventCall += this.OnEvent;
 		}
+
+		void OnDestroy()
+		{
+			PhotonNetwork.OnEventCall -= this.OnEvent;
+		}
 	}
 
 	/// <summary>

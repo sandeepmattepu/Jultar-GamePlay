@@ -165,6 +165,13 @@ namespace SandeepMattepu.Multiplayer
 			}
 		}
 
+		void OnDestroy()
+		{
+			multiplayerGame.OnKillStreakChange -= onKillStreakHandler;
+			PhotonNetwork.OnEventCall -= recieveAnnouncementsFromOtherClients;
+			touchManager.OnSingleGameTap -= requestForRocketFire;
+		}
+
 		/// <summary>
 		/// This function gets called when rocket button is pressed
 		/// </summary>

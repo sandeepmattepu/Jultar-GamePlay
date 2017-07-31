@@ -39,6 +39,11 @@ namespace SandeepMattepu
 			}
 		}
 
+		void OnDestroy()
+		{
+			SMPlayerSpawnerAndAssigner.OnPlayerRespawned -= silenceAudioListner;
+		}
+
 		IEnumerator destroyRagdoll()
 		{
 			yield return new WaitForSeconds(5.0f);

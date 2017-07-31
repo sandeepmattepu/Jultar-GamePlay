@@ -45,6 +45,10 @@ namespace SandeepMattepu.UI
 			SMMultiplayerGame.OnGameRulesLoaded += onMultiplayerRulesCreated;
 		}
 
+		void OnDestroy()
+		{
+			SMMultiplayerGame.OnGameRulesLoaded -= onMultiplayerRulesCreated;
+		}
 		// Update is called once per frame
 		void Update () 
 		{

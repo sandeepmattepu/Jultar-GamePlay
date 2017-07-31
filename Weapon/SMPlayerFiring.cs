@@ -176,6 +176,27 @@ namespace SandeepMattepu.Weapon
 				ikControl.OnClientReloadFinished += OnClientReloadAnimationFinished;
 			}
 		}
+
+		void OnDestroy()
+		{
+			SMJoyStick firingStick = gameObject.GetComponent<SMPlayerController> ().orientationJoyStick;
+
+			if((isUsingMultiplayer && photonViewComponent.isMine) || (!isUsingMultiplayer))
+			{
+				ikControl.OnReloadFinished -= onReloadingFinished;
+				ikControl.OnGrenadeRelease -= onGrenadeRelease;
+				ikControl.OnGrenadeThrowFinished -= onGrenadeThrowFinsihed;
+				ikControl.OnGrenadePinRemoved -= onGrenadePinRemoved;
+				firingStick.DoubleTapEvent -= checkAndPerformReloading;
+				grenadeInput.OnPressIntensity -= setIntensityOfThrow;
+				grenadeInput.OnTouchDownHandler -= throwGrenadeInputHandler;
+			}
+			else if(isUsingMultiplayer)
+			{
+				ikControl.OnClientGrenadePinRemoved -= onGrenadePinRemoved;
+				ikControl.OnClientReloadFinished -= OnClientReloadAnimationFinished;
+			}
+		}
 		
 		// Update is called once per frame
 		void Update () 
