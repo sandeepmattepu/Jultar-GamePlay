@@ -172,8 +172,9 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	private void createDeadBody(bool isMultiplayer, bool canListenAudio)
 	{
 		GameObject ragdollBody = Instantiate(ragdoll, transform.position, transform.rotation) as GameObject;
-		ragdollBody.GetComponent<SMDestroyRagdoll>().isMultiplayer = isMultiplayer;
-		ragdoll.GetComponent<SMDestroyRagdoll> ().canListenToAudio = canListenAudio;
+		SMDestroyRagdoll destroyRagdoll = ragdollBody.GetComponent<SMDestroyRagdoll>();
+		destroyRagdoll.isMultiplayer = isMultiplayer;
+		destroyRagdoll.canListenToAudio = canListenAudio;
 		Camera gameCamera = transform.GetComponent<SMPlayerController>().characterFocusedCamera;
 		if(gameCamera != null)
 		{
