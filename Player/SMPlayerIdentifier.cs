@@ -49,6 +49,7 @@ public class SMPlayerIdentifier : MonoBehaviour
 		if(!photonViewComponenet.isMine)
 		{
 			gameObject.GetComponent<Rigidbody> ().isKinematic = true;
+			Destroy (GetComponent<AudioListener>());
 		}
 	}
 

@@ -148,7 +148,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 					playInteractableUI.SetActive(false);
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
 					Destroy(this.gameObject);
-					createDeadBody(true);
+					createDeadBody(true, true);
 				}
 			}
 		}
@@ -158,7 +158,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			if (playerHealth <= 0.0f)
 			{
 				playInteractableUI.SetActive(false);
-				createDeadBody(false);
+				createDeadBody(false, true);
 				Destroy(this.gameObject);
 			}
 		}
@@ -168,10 +168,12 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// This function creates ragdoll at the player's position and sets the joints as current player's orientation
 	/// </summary>
 	/// <param name="isMultiplayer">Value which indicates to produce ragdoll for multiplayer game or single player game</param>
-	private void createDeadBody(bool isMultiplayer)
+	/// <param name="canListenAudio">Value which indicates whether ragdoll can hear sounds are not</param>
+	private void createDeadBody(bool isMultiplayer, bool canListenAudio)
 	{
 		GameObject ragdollBody = Instantiate(ragdoll, transform.position, transform.rotation) as GameObject;
 		ragdollBody.GetComponent<SMDestroyRagdoll>().isMultiplayer = isMultiplayer;
+		ragdoll.GetComponent<SMDestroyRagdoll> ().canListenToAudio = canListenAudio;
 		Camera gameCamera = transform.GetComponent<SMPlayerController>().characterFocusedCamera;
 		if(gameCamera != null)
 		{
@@ -242,7 +244,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 					playInteractableUI.SetActive(false);
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
 					Destroy(this.gameObject);
-					createDeadBody(true);
+					createDeadBody(true, true);
 				}
 			}
 		}
@@ -252,7 +254,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			if(playerHealth <= 0.0f)
 			{
 				playInteractableUI.SetActive(false);
-				createDeadBody(false);
+				createDeadBody(false, true);
 				Destroy(this.gameObject);
 			}
 		}
@@ -323,7 +325,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	public void sendDeathMessage()
 	{
 		Destroy(this.gameObject);
-		createDeadBody(true);
+		createDeadBody(true, false);
 	}
 
 	#region IPunObservable implementation
