@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SandeepMattepu.Multiplayer;
 
 namespace SandeepMattepu.UI
 {
@@ -19,28 +20,89 @@ namespace SandeepMattepu.UI
 	public class SMScoreBoardUIManager : MonoBehaviour 
 	{
 		/// <summary>
+		/// This acts as a data packet
+		/// </summary>
+		protected class PlayerScoreUI
+		{
+			public string name;
+			public int playerID;
+			public int index;
+			public int teamIndex = 0;
+			public int score;
+			public int deaths;
+
+			public PlayerScoreUI()
+			{}
+
+			public PlayerScoreUI(PlayerScoreUI playerScoreUI)
+			{
+				name = playerScoreUI.name;
+				playerID = playerScoreUI.playerID;
+				index = playerScoreUI.index;
+				teamIndex = playerScoreUI.teamIndex;
+				score = playerScoreUI.score;
+				deaths = playerScoreUI.deaths;
+			}
+		}
+
+		/// <summary>
 		/// The players UI text to show their scores in free for all.
 		/// </summary>
 		[SerializeField]
-		private Text[] freeForAllPlayers;
+		protected Text[] playersTextUI;
 		/// <summary>
-		/// The players UI text to show team 1 score in team death match.
+		/// This holds players data packet as list
 		/// </summary>
-		[SerializeField]
-		private Text[] team1;
+		protected List<PlayerScoreUI> playerScoreAndUI = new List<PlayerScoreUI>();
 		/// <summary>
-		/// The players UI text to show team 2 score in team death match.
+		/// The type of the multiplayer rules in the game.
 		/// </summary>
-		[SerializeField]
-		private Text[] team2;
-		// Use this for initialization
-		void Start () 
+		protected MPGameTypes multiplayerType;
+
+		protected void Awake () 
 		{
+			playerScoreAndUI.Clear ();
+			SMMultiplayerGame.OnGameRulesLoaded += OnRulesCreated;
 		}
 
-		// Update is called once per frame
-		void Update () {
-
+		protected void OnDestroy()
+		{
+			SMMultiplayerGame.OnGameRulesLoaded -= OnRulesCreated;
+			SMMultiplayerGame.INSTANCE.OnScoreChange -= OnScoreChange;
 		}
-	}	
+
+		protected virtual void OnRulesCreated()
+		{
+			multiplayerType = SMMultiplayerGame.gameType;
+			PhotonPlayer[] players = PhotonNetwork.playerList;
+			int index = 0;
+			foreach(PhotonPlayer player in players)
+			{
+				PlayerScoreUI playerSU = new PlayerScoreUI ();
+				playerSU.name = player.NickName;
+				playerSU.playerID = player.ID;
+				playerSU.index = index;
+				index++;
+				playerSU.score = 0;
+				playerSU.deaths = 0;
+				playerScoreAndUI.Add (playerSU);
+			}
+			SMMultiplayerGame.INSTANCE.OnScoreChange += OnScoreChange;
+		}
+
+		protected virtual void OnScoreChange(object sender, int whoKilled, int whoDied)
+		{
+			foreach(PlayerScoreUI psu in playerScoreAndUI)
+			{
+				if(psu.playerID == whoDied)
+				{
+					psu.deaths += 1;
+				}
+				else if(psu.playerID == whoKilled)
+				{
+					psu.score += 1;
+				}
+			}
+		}
+	}
 }
