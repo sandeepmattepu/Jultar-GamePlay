@@ -65,7 +65,7 @@ namespace SandeepMattepu.UI
 				timeLeftInGame = totalGameTime - (int)multiplayerGame.GameTimer;
 				minutes = timeLeftInGame / 60;
 				seconds = timeLeftInGame % 60;
-				gameTimeText.text = "Time : " + minutes + " " + seconds;
+				gameTimeText.text = "Time : " + minutes + ":" + seconds;
 			}
 		}
 

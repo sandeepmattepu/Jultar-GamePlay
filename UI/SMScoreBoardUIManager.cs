@@ -19,13 +19,23 @@ namespace SandeepMattepu.UI
 	public class SMScoreBoardUIManager : MonoBehaviour 
 	{
 		/// <summary>
-		/// The players UI text to show their scores.
+		/// The players UI text to show their scores in free for all.
 		/// </summary>
-		private Text[] players;
+		[SerializeField]
+		private Text[] freeForAllPlayers;
+		/// <summary>
+		/// The players UI text to show team 1 score in team death match.
+		/// </summary>
+		[SerializeField]
+		private Text[] team1;
+		/// <summary>
+		/// The players UI text to show team 2 score in team death match.
+		/// </summary>
+		[SerializeField]
+		private Text[] team2;
 		// Use this for initialization
 		void Start () 
 		{
-			players = new Text[PhotonNetwork.playerList.Length];
 		}
 
 		// Update is called once per frame
