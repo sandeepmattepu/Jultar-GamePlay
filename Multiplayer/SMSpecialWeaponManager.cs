@@ -96,18 +96,6 @@ namespace SandeepMattepu.Multiplayer
 		[SerializeField]
 		private AudioClip enemyRocketUsedClip;
 		/// <summary>
-		/// The can lauch rocket.
-		/// </summary>
-		private bool canLauchRocket = false;
-		/// <summary>
-		/// The can have health boost.
-		/// </summary>
-		private bool canHaveHealthBoost = false;
-		/// <summary>
-		/// The rocket is in aiming position.
-		/// </summary>
-		private bool rocketIsInAimingPosition = false;
-		/// <summary>
 		/// The clip to be announced.
 		/// </summary>
 		private AudioClip clipToBeAnnounced;
@@ -121,14 +109,6 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		[SerializeField]
 		private RectTransform healthBoostTextAnnouncement;
-		/// <summary>
-		/// Game has already announced rocket.
-		/// </summary>
-		private bool hasAlreadyAnnouncedRocket = false;
-		/// <summary>
-		/// Game has already announced health.
-		/// </summary>
-		private bool hasAlreadyAnnouncedHealth = false;
 		[SerializeField]
 		/// <summary>
 		/// This audio component playes rocket fly over sound
@@ -144,18 +124,38 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		[SerializeField]
 		private GameObject flareForRocketTarget;
+		/// <summary>
+		/// The current abilities that are unlocked for the player.
+		/// </summary>
+		private List<AbilityType> currentSpecialAbilities = new List<AbilityType>();
+		/// <summary>
+		/// The current abilities that are unlocked for the player.
+		/// </summary>
+		public List<AbilityType> CurrentSpecialAbilities {
+			get {
+				return currentSpecialAbilities;
+			}
+		}
+		/// <summary>
+		/// Becomes true when rocket is in aiming position
+		/// </summary>
+		private bool rocketIsInAimingPosition = false;
 
 		/// <summary>
 		/// Ability types.
 		/// </summary>
-		private enum AbilityType
+		public enum AbilityType
 		{
 			None, HealthBoost, Rocket
 		}
-		/// <summary>
-		/// The type of the ability.
-		/// </summary>
 		private AbilityType abilityType = AbilityType.None;
+
+		void Start()
+		{
+			currentSpecialAbilities.Clear ();
+			rocketButton.interactable = false;
+			healthBoostButton.interactable = false;
+		}
 
 		void Update()
 		{
@@ -173,11 +173,35 @@ namespace SandeepMattepu.Multiplayer
 		}
 
 		/// <summary>
+		/// Adds the special abilities to the player.
+		/// </summary>
+		/// <param name="ability">Ability.</param>
+		private void addSpecialAbilities(AbilityType ability)
+		{
+			if(!currentSpecialAbilities.Contains (ability))
+			{
+				currentSpecialAbilities.Add (ability);
+			}
+		}
+
+		/// <summary>
+		/// Removes the special abilities from the player.
+		/// </summary>
+		/// <param name="ability">Ability.</param>
+		private void removeSpecialAbilities(AbilityType ability)
+		{
+			if(currentSpecialAbilities.Contains (ability))
+			{
+				currentSpecialAbilities.Remove (ability);
+			}
+		}
+
+		/// <summary>
 		/// This function gets called when rocket button is pressed
 		/// </summary>
 		public void onRocketButtonPressed()
 		{
-			if(canLauchRocket)
+			if(currentSpecialAbilities.Contains(AbilityType.Rocket))
 			{
 				rocketButton.gameObject.SetActive (false);
 				healthBoostButton.gameObject.SetActive (false);
@@ -205,10 +229,12 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		public void onHealthBoostButtonPressed()
 		{
-			if(canHaveHealthBoost)
+			if(currentSpecialAbilities.Contains(AbilityType.HealthBoost))
 			{
 				multiplayerGame.localPlayer.gameObject.GetComponent<SMPlayerHealth> ().giveArmorToPlayer ();
-				hasAlreadyAnnouncedHealth = false;
+				healthBoostButton.interactable = false;
+				removeSpecialAbilities (AbilityType.HealthBoost);
+				healthBoostButton.GetComponent<Image> ().color = Color.black;
 				if(multiplayerGame.localPlayer != null)
 				{
 					AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, multiplayerGame.localPlayer.transform.position);
@@ -223,61 +249,31 @@ namespace SandeepMattepu.Multiplayer
 		/// <param name="killStreak">Current kill streak.</param>
 		private void onKillStreakHandler(int killStreak)
 		{
-			if(killStreak == 0)
+			if (killStreak == 0) 
 			{
-				canLauchRocket = false;
-				canHaveHealthBoost = false;
 				rocketIsInAimingPosition = false;
-				hasAlreadyAnnouncedHealth = false;
-				hasAlreadyAnnouncedRocket = false;
-
-				rocketButton.image.color = Color.black;
-				healthBoostButton.image.color = Color.black;
+				rocketButton.gameObject.SetActive (true);
+				healthBoostButton.gameObject.SetActive (true);
 				cancelButton.gameObject.SetActive (false);
-				abilityType = AbilityType.None;
 			}
-			else if(killStreak >= killStreakForHealthBoost)
+			else if (killStreak == killStreakForRocket && !currentSpecialAbilities.Contains(AbilityType.Rocket)) 
 			{
-				if(SMMultiplayerGame.isGoldenPlayer)
-				{
-					canHaveHealthBoost = true;
-					healthBoostButton.image.color = Color.white;
-					if(!hasAlreadyAnnouncedHealth)
-					{
-						clipToBeAnnounced = boostUnlockedType (AbilityType.HealthBoost);
-						abilityType = AbilityType.HealthBoost;
-						StartCoroutine ("announcePlayerAbility");
-					}
-				}
-				else
-				{
-					healthBoostButton.image.color = Color.yellow;
-					// show panel that buy gold
-				}
+				addSpecialAbilities (AbilityType.Rocket);
+				rocketButton.interactable = true;
+				clipToBeAnnounced = audioForUnlockedAbility (AbilityType.Rocket);
+				abilityType = AbilityType.Rocket;
+				StartCoroutine ("announcePlayerAbility");
+				rocketButton.GetComponent<Image> ().color = Color.white;
 			}
-			else if(killStreak >= killStreakForRocket)
+			else if (killStreak == killStreakForHealthBoost && !currentSpecialAbilities.Contains(AbilityType.HealthBoost)) 
 			{
-				if(SMMultiplayerGame.isGoldenPlayer)
-				{
-					canLauchRocket = true;
-					rocketButton.image.color = Color.white;
-					if(!hasAlreadyAnnouncedRocket)
-					{
-						clipToBeAnnounced = boostUnlockedType (AbilityType.Rocket);
-						abilityType = AbilityType.Rocket;
-						StartCoroutine ("announcePlayerAbility");
-					}
-				}
-				else
-				{
-					rocketButton.image.color = Color.yellow;
-					// show panel that buy gold
-				}
-			}
-			else
-			{
-				abilityType = AbilityType.None;
-			}
+				addSpecialAbilities (AbilityType.HealthBoost);
+				healthBoostButton.interactable = true;
+				abilityType = AbilityType.HealthBoost;
+				clipToBeAnnounced = audioForUnlockedAbility (AbilityType.HealthBoost);
+				StartCoroutine ("announcePlayerAbility");
+				healthBoostButton.GetComponent<Image> ().color = Color.white;
+			} 
 		}
 
 		/// <summary>
@@ -290,12 +286,10 @@ namespace SandeepMattepu.Multiplayer
 			AudioSource.PlayClipAtPoint (clipToBeAnnounced, locationToMakeAnnouncement.position);
 			if(abilityType == AbilityType.HealthBoost)
 			{
-				hasAlreadyAnnouncedHealth = true;
 				healthBoostTextAnnouncement.GetComponent<Animator> ().SetTrigger ("ShowAnnouncement");
 			}
 			else if(abilityType == AbilityType.Rocket)
 			{
-				hasAlreadyAnnouncedRocket = true;
 				rocketTextAnnouncement.GetComponent<Animator> ().SetTrigger ("ShowAnnouncement");
 			}
 		}
@@ -305,7 +299,7 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		/// <returns>The announcement clip.</returns>
 		/// <param name="abilityType">Ability type.</param>
-		private AudioClip boostUnlockedType(AbilityType abilityType)
+		private AudioClip audioForUnlockedAbility(AbilityType abilityType)
 		{
 			if(abilityType == AbilityType.HealthBoost)
 			{
@@ -358,10 +352,10 @@ namespace SandeepMattepu.Multiplayer
 				{
 					Vector3 target = hitInfo.point;
 					onCancelButtonPressed ();
-					canLauchRocket = false;
+					removeSpecialAbilities(AbilityType.Rocket);
 					rocketIsInAimingPosition = false;
-					rocketButton.image.color = Color.black;
-					hasAlreadyAnnouncedRocket = false;
+					rocketButton.interactable = false;
+					rocketButton.GetComponent<Image> ().color = Color.black;
 					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.Rocket, true, null);
 					if(multiplayerGame.localPlayer != null)
 					{

@@ -20,7 +20,7 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// If he is golden player then he has special abilities
 		/// </summary>
-		public static bool isGoldenPlayer = false;
+		public static bool isGoldenPlayer = true;
 		/// <summary>
 		/// The xp made by the player after kill.
 		/// </summary>
