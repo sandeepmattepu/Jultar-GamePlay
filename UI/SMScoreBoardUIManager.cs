@@ -96,11 +96,15 @@ namespace SandeepMattepu.UI
 			{
 				if(psu.playerID == whoDied)
 				{
-					psu.deaths += 1;
+					int deaths = psu.deaths;
+					deaths += 1;
+					psu.deaths = deaths;
 				}
 				else if(psu.playerID == whoKilled)
 				{
-					psu.score += 1;
+					int score = psu.score;
+					score += 1;
+					psu.score = score;
 				}
 			}
 		}

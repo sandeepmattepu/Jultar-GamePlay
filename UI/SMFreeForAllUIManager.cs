@@ -40,8 +40,12 @@ namespace SandeepMattepu.UI
 				{
 					playersTextUI [playersTextUI.Length - unUsedUILength].gameObject.SetActive (false);
 				}
-				SMMultiplayerGame.INSTANCE.OnScoreChange += OnScoreChange;
 				assignUIAtBeginning ();
+			}
+			else
+			{
+				// To avoid error
+				SMMultiplayerGame.INSTANCE.OnScoreChange += OnScoreChange;
 			}
 		}
 
@@ -56,9 +60,14 @@ namespace SandeepMattepu.UI
 					if(psui.playerID == whoKilled)
 					{
 						requiredIndex = psui.index;
-						break;
+						playersTextUI [psui.index].text = psui.name + " " + psui.score + "/" + psui.deaths;
+					}
+					else if(psui.playerID == whoDied)
+					{
+						playersTextUI [psui.index].text = psui.name + " " + psui.score + "/" + psui.deaths;
 					}
 				}
+				// Below code is to arrange the position of the scoreboard
 				PlayerScoreUI theEffectedPlayer = playerScoreAndUI [requiredIndex];
 				foreach(PlayerScoreUI psui in playerScoreAndUI)
 				{
@@ -72,6 +81,7 @@ namespace SandeepMattepu.UI
 							theEffectedPlayer.name + " " + theEffectedPlayer.score + "/" + theEffectedPlayer.deaths;
 						playersTextUI [psui.index].text = 
 							psui.name + " " + psui.score + "/" + psui.deaths;
+						break;
 					}
 				}
 			}
