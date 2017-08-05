@@ -50,6 +50,10 @@ namespace SandeepMattepu.Multiplayer
 		{
 			get{ return localPlayerTeamIndex; }
 		}
+		/// <summary>
+		/// This event is raised when players are splitted into individual teams
+		/// </summary>
+		public static event onGameRulesCreated OnPlayersSplittedToTeams;
 
 		void Awake()
 		{
@@ -128,6 +132,7 @@ namespace SandeepMattepu.Multiplayer
 				playersIdAndScore.Add (player.ID, 0);
 				playerIdAndDeaths.Add (player.ID, 0);
 			}
+			OnPlayersSplittedToTeams ();
 		}
 
 		/// <summary>

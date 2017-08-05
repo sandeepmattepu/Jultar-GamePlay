@@ -19,9 +19,9 @@ namespace SandeepMattepu.UI
 	/// </summary>
 	public class SMFreeForAllUIManager : SMScoreBoardUIManager
 	{
-		void Start()
+		void hideUIInNonContext()
 		{
-			if(multiplayerType == MPGameTypes.TEAM_DEATH_MATCH)
+			if(multiplayerType != MPGameTypes.FREE_FOR_ALL)
 			{
 				foreach(Text textUI in playersTextUI)
 				{
@@ -47,6 +47,7 @@ namespace SandeepMattepu.UI
 				// To avoid error
 				SMMultiplayerGame.INSTANCE.OnScoreChange += OnScoreChange;
 			}
+			hideUIInNonContext ();
 		}
 
 		protected override void OnScoreChange (object sender, int whoKilled, int whoDied)

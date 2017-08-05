@@ -65,12 +65,15 @@ namespace SandeepMattepu.UI
 			SMMultiplayerGame.OnGameRulesLoaded += OnRulesCreated;
 		}
 
-		protected void OnDestroy()
+		protected virtual void OnDestroy()
 		{
 			SMMultiplayerGame.OnGameRulesLoaded -= OnRulesCreated;
 			SMMultiplayerGame.INSTANCE.OnScoreChange -= OnScoreChange;
 		}
 
+		/// <summary>
+		/// This gets called when multiplayer rules have been created in scene
+		/// </summary>
 		protected virtual void OnRulesCreated()
 		{
 			multiplayerType = SMMultiplayerGame.gameType;

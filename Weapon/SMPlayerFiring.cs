@@ -187,7 +187,10 @@ namespace SandeepMattepu.Weapon
 				ikControl.OnGrenadeRelease -= onGrenadeRelease;
 				ikControl.OnGrenadeThrowFinished -= onGrenadeThrowFinsihed;
 				ikControl.OnGrenadePinRemoved -= onGrenadePinRemoved;
-				firingStick.DoubleTapEvent -= checkAndPerformReloading;
+				if(firingStick != null)
+				{
+					firingStick.DoubleTapEvent -= checkAndPerformReloading;
+				}
 				grenadeInput.OnPressIntensity -= setIntensityOfThrow;
 				grenadeInput.OnTouchDownHandler -= throwGrenadeInputHandler;
 			}
