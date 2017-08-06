@@ -9,6 +9,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SandeepMattepu.Multiplayer;
 
 namespace SandeepMattepu
 {
@@ -32,33 +33,55 @@ namespace SandeepMattepu
 			}
 		}
 
-		void OnTriggerEnter(Collider playerCollider)
+		void Start()
 		{
-			if(playerCollider.gameObject.tag == "Player")
+			SMPlayerSpawnerAndAssigner.OnPlayerRespawned += checkEnemiesInTheArea;
+		}
+
+		void OnDestroy()
+		{
+			SMPlayerSpawnerAndAssigner.OnPlayerRespawned -= checkEnemiesInTheArea;
+		}
+
+		/// <summary>
+		/// This function checks the enemies in the area.
+		/// </summary>
+		private void checkEnemiesInTheArea()
+		{
+			int layerMask = 1 << 8;		// 8 is for player layer
+			Vector3 dimensions = transform.localScale / 2;
+			Collider[] playersInRange = Physics.OverlapBox(transform.position, dimensions, transform.rotation, layerMask);
+			if(SMPlayerSpawnerAndAssigner.gameType == SandeepMattepu.Multiplayer.MPGameTypes.FREE_FOR_ALL)
 			{
-				if(SMPlayerSpawnerAndAssigner.gameType == SandeepMattepu.Multiplayer.MPGameTypes.FREE_FOR_ALL)
+				numberOfEnimeiesInRegion = 0;
+				foreach(Collider collider in playersInRange)
 				{
-					Debug.Log ("Someone entered my region");
-					if(playerCollider.gameObject.GetComponent<PhotonView>().owner.ID != localPlayerID)
+					int playerID = collider.gameObject.GetComponent<PhotonView> ().owner.ID;
+					if(playerID != localPlayerID)
 					{
 						numberOfEnimeiesInRegion += 1;
 					}
 				}
+				Debug.Log (gameObject.name + " has " + numberOfEnimeiesInRegion);
 			}
-		}
-
-		void OnTriggerExit(Collider playerCollider)
-		{
-			if(playerCollider.gameObject.tag == "Player")
+			else if(SMPlayerSpawnerAndAssigner.gameType == SandeepMattepu.Multiplayer.MPGameTypes.TEAM_DEATH_MATCH)
 			{
-				if(SMPlayerSpawnerAndAssigner.gameType == SandeepMattepu.Multiplayer.MPGameTypes.FREE_FOR_ALL)
+				numberOfEnimeiesInRegion = 0;
+				int localTeamID = SMTeamDeathMatch.LocalPlayerTeamIndex;
+				foreach(Collider collider in playersInRange)
 				{
-					Debug.Log ("Someone left my region");
-					if(playerCollider.gameObject.GetComponent<PhotonView>().owner.ID != localPlayerID)
+					int playerID = collider.gameObject.GetComponent<PhotonView> ().owner.ID;
+					int playersTeamIndexWhoEntered = 1;
+					if(SMTeamDeathMatch.PlayerIdAndTeamIndex.TryGetValue
+						(playerID, out playersTeamIndexWhoEntered))
 					{
-						numberOfEnimeiesInRegion -= 1;
+						if(localTeamID != playersTeamIndexWhoEntered)
+						{
+							numberOfEnimeiesInRegion += 1;
+						}
 					}
 				}
+				Debug.Log (gameObject.name + " has " + numberOfEnimeiesInRegion);
 			}
 		}
 	}	

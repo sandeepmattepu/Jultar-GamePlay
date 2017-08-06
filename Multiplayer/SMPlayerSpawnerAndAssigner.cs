@@ -43,10 +43,6 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// </summary>
 	public SMMultiplayerScoreManager scoreManager;
 	/// <summary>
-	/// This transform contains several spawn points as their children which can be used to spawn the players
-	/// </summary>
-	public Transform spawnPoints;
-	/// <summary>
 	/// The spawn points in region 1.
 	/// </summary>
 	public Transform[] region1SpawnPoints;
@@ -137,34 +133,8 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	private void spawnPlayers()
 	{
 		GameObject player = PhotonNetwork.Instantiate (playerToBeSpawned.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-		if(gameType == MPGameTypes.FREE_FOR_ALL)
-		{
-			List<int> playerIDs = new List<int> ();
-			int requiredIndex = 0;
-			foreach(PhotonPlayer photonPlayer in PhotonNetwork.playerList)
-			{
-				playerIDs.Add(photonPlayer.ID);
-			}
-			playerIDs.Sort();
-			int numberOfPlayersInEachRegion = playerIDs.Count / 2;
-			for(int i = 0; i < playerIDs.Count; i++)
-			{
-				if(playerIDs[i] == PhotonNetwork.player.ID)
-				{
-					requiredIndex = i;
-					break;
-				}
-			}
-
-			if(requiredIndex < numberOfPlayersInEachRegion)		// Belongs to region one
-			{
-				player.transform.position = region1SpawnPoints [requiredIndex].position;
-			}
-			else                  // Belongs to region two
-			{
-				player.transform.position = region2SpawnPoints [requiredIndex - numberOfPlayersInEachRegion].position;
-			}
-		}
+		Transform playerPosition = placePlayerPositionAtStart ();
+		player.transform.position = playerPosition.position;
 
 		if(player.GetComponent<PhotonView>().isMine)
 		{
@@ -195,6 +165,82 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 
 			scoreManager.setGameType (gameRulesThatSpawned);
 		}
+	}
+
+	/// <summary>
+	/// This will decide which position the player need to be placed at start of the game
+	/// </summary>
+	/// <returns>The player position at start.</returns>
+	private Transform placePlayerPositionAtStart()
+	{
+		if(gameType == MPGameTypes.FREE_FOR_ALL)
+		{
+			List<int> playerIDs = new List<int> ();
+			int requiredIndex = 0;
+			foreach(PhotonPlayer photonPlayer in PhotonNetwork.playerList)
+			{
+				playerIDs.Add(photonPlayer.ID);
+			}
+			playerIDs.Sort();
+			int numberOfPlayersInEachRegion = playerIDs.Count / 2;
+			for(int i = 0; i < playerIDs.Count; i++)
+			{
+				if(playerIDs[i] == PhotonNetwork.player.ID)
+				{
+					requiredIndex = i;
+					break;
+				}
+			}
+
+			if(requiredIndex < numberOfPlayersInEachRegion)		// Belongs to region one
+			{
+				return region1SpawnPoints [requiredIndex];
+			}
+			else                  // Belongs to region two
+			{
+				return region2SpawnPoints [requiredIndex - numberOfPlayersInEachRegion];
+			}
+		}
+		else if(gameType == MPGameTypes.TEAM_DEATH_MATCH)
+		{
+			int localPlayerTeam = 1;
+			int requiredIndex = 0;
+			if(SMTeamDeathMatch.PlayerIdAndTeamIndex.TryGetValue (PhotonNetwork.player.ID, out localPlayerTeam))
+			{
+				List<int> teamPlayers = new List<int> ();
+				foreach(KeyValuePair<int,int> vp in SMTeamDeathMatch.PlayerIdAndTeamIndex)
+				{
+					if(vp.Value == localPlayerTeam)
+					{
+						teamPlayers.Add (vp.Key);
+					}
+				}
+				teamPlayers.Sort ();
+				for(int i = 0; i < teamPlayers.Count; i++)
+				{
+					if(teamPlayers[i] == PhotonNetwork.player.ID)
+					{
+						requiredIndex = i;
+						break;
+					}
+				}
+				if(localPlayerTeam == 1)
+				{
+					return region1SpawnPoints [requiredIndex];
+				}
+				else if(localPlayerTeam == 2)
+				{
+					return region2SpawnPoints [requiredIndex];
+				}
+			}
+			else
+			{
+				Debug.LogError ("Ercursive function calling");
+				return placePlayerPositionAtStart ();	// This wont happen but on safe side
+			}
+		}
+
+		return this.transform; // this is to avoid error code doesn't reach here
 	}
 
 	/// <summary>
