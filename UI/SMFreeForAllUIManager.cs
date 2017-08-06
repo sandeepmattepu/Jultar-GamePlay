@@ -55,12 +55,12 @@ namespace SandeepMattepu.UI
 			if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL) 
 			{
 				base.OnScoreChange (sender, whoKilled, whoDied);
-				int requiredIndex = 0;
+				PlayerScoreUI theEffectedPlayer = new PlayerScoreUI();
 				foreach(PlayerScoreUI psui in playerScoreAndUI)
 				{
 					if(psui.playerID == whoKilled)
 					{
-						requiredIndex = psui.uiIndex;
+						theEffectedPlayer = psui;
 						playersTextUI [psui.uiIndex].text = psui.name + " " + psui.score + "/" + psui.deaths;
 					}
 					else if(psui.playerID == whoDied)
@@ -69,21 +69,12 @@ namespace SandeepMattepu.UI
 					}
 				}
 				// Below code is to arrange the position of the scoreboard
-				PlayerScoreUI theEffectedPlayer = playerScoreAndUI [requiredIndex];
-				foreach(PlayerScoreUI psui in playerScoreAndUI)
+				playerScoreAndUI.Sort();
+				for(int i = 0; i < playerScoreAndUI.Count; i++)
 				{
-					if(theEffectedPlayer.score > psui.score)
-					{
-						int tempindex = theEffectedPlayer.uiIndex;
-						theEffectedPlayer.uiIndex = psui.uiIndex;
-						psui.uiIndex = tempindex;
-
-						playersTextUI [theEffectedPlayer.uiIndex].text = 
-							theEffectedPlayer.name + " " + theEffectedPlayer.score + "/" + theEffectedPlayer.deaths;
-						playersTextUI [psui.uiIndex].text = 
-							psui.name + " " + psui.score + "/" + psui.deaths;
-						break;
-					}
+					playerScoreAndUI [i].uiIndex = i;
+					playersTextUI [i].text = 
+						playerScoreAndUI [i].name + " " + playerScoreAndUI [i].score + "/" + playerScoreAndUI [i].deaths;
 				}
 			}
 		}
