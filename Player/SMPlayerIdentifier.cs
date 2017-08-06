@@ -50,6 +50,7 @@ public class SMPlayerIdentifier : MonoBehaviour
 		{
 			gameObject.GetComponent<Rigidbody> ().isKinematic = true;
 			Destroy (GetComponent<AudioListener>());
+			GetComponent<AudioSource> ().volume = 0.1f;
 		}
 	}
 
