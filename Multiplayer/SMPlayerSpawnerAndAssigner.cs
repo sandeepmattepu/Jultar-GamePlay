@@ -13,6 +13,7 @@ using SandeepMattepu;
 using SandeepMattepu.Multiplayer;
 using System.Collections;
 using SandeepMattepu.UI;
+using System.Collections.Generic;
 
 
 /// <summary>
@@ -45,6 +46,14 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// This transform contains several spawn points as their children which can be used to spawn the players
 	/// </summary>
 	public Transform spawnPoints;
+	/// <summary>
+	/// The spawn points in region 1.
+	/// </summary>
+	public Transform[] region1SpawnPoints;
+	/// <summary>
+	/// The spawn points in region 2.
+	/// </summary>
+	public Transform[] region2SpawnPoints;
 	/// <summary>
 	/// The camera which follows the player
 	/// </summary>
@@ -101,16 +110,19 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// Occurs when player respawnes in multiplayer context.
 	/// </summary>
 	public static event onGameRulesCreated OnPlayerRespawned;
+	/// <summary>
+	/// The area observer 1.
+	/// </summary>
+	public SMAreaObserver areaObserver1;
+	/// <summary>
+	/// The area observer 2.
+	/// </summary>
+	public SMAreaObserver areaObserver2;
 	// Use this for initialization
 	void Start () 
 	{
 		spawnGameRules();
 		StartCoroutine ("spawnPlayersAfterDelay");		// To fix double instantiation of the player 
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
 	}
 
 	IEnumerator spawnPlayersAfterDelay()
@@ -125,12 +137,32 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	private void spawnPlayers()
 	{
 		GameObject player = PhotonNetwork.Instantiate (playerToBeSpawned.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-		foreach(Transform spawnPoint in spawnPoints)
+		if(gameType == MPGameTypes.FREE_FOR_ALL)
 		{
-			if(spawnPoint.name == player.GetComponent<PhotonView>().owner.ID.ToString())
+			List<int> playerIDs = new List<int> ();
+			int requiredIndex = 0;
+			foreach(PhotonPlayer photonPlayer in PhotonNetwork.playerList)
 			{
-				player.transform.position = spawnPoint.position;
-				break;
+				playerIDs.Add(photonPlayer.ID);
+			}
+			playerIDs.Sort();
+			int numberOfPlayersInEachRegion = playerIDs.Count / 2;
+			for(int i = 0; i < playerIDs.Count; i++)
+			{
+				if(playerIDs[i] == PhotonNetwork.player.ID)
+				{
+					requiredIndex = i;
+					break;
+				}
+			}
+
+			if(requiredIndex < numberOfPlayersInEachRegion)		// Belongs to region one
+			{
+				player.transform.position = region1SpawnPoints [requiredIndex].position;
+			}
+			else                  // Belongs to region two
+			{
+				player.transform.position = region2SpawnPoints [requiredIndex - numberOfPlayersInEachRegion].position;
 			}
 		}
 
@@ -204,13 +236,15 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			OnPlayerRespawned ();
 		}
 		GameObject player = PhotonNetwork.Instantiate(playerToBeSpawned.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-		foreach (Transform spawnPoint in spawnPoints)
+		if(areaObserver1.NumberOfEnimeiesInRegion > areaObserver2.NumberOfEnimeiesInRegion)
 		{
-			if (spawnPoint.name == player.GetComponent<PhotonView>().owner.ID.ToString())
-			{
-				player.transform.position = spawnPoint.position;
-				break;
-			}
+			int random = Random.Range (0, region2SpawnPoints.Length);
+			player.transform.position = region2SpawnPoints [random].position;
+		}
+		else
+		{
+			int random = Random.Range (0, region1SpawnPoints.Length);
+			player.transform.position = region1SpawnPoints [random].position;
 		}
 
 		if (player.GetComponent<PhotonView>().isMine)
