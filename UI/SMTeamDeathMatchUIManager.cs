@@ -19,6 +19,15 @@ namespace SandeepMattepu.UI
 	/// </summary>
 	public class SMTeamDeathMatchUIManager : SMScoreBoardUIManager 
 	{
+		/// <summary>
+		/// The team1 players in the game.
+		/// </summary>
+		private List<PlayerScoreUI> team1Players = new List<PlayerScoreUI>();
+		/// <summary>
+		/// The team2 players in the game.
+		/// </summary>
+		private List<PlayerScoreUI> team2Players = new List<PlayerScoreUI>();
+
 		void hideUIInNonContext()
 		{
 			if(multiplayerType != MPGameTypes.TEAM_DEATH_MATCH)
@@ -63,27 +72,30 @@ namespace SandeepMattepu.UI
 					if(psui.playerID == whoKilled)
 					{
 						theEffectedPlayer = psui;
-						playersTextUI [psui.index].text = psui.name + " " + psui.score + "/" + psui.deaths;
+						playersTextUI [psui.uiIndex].text = psui.name + " " + psui.score + "/" + psui.deaths;
 					}
 					else if(psui.playerID == whoDied)
 					{
-						playersTextUI [psui.index].text = psui.name + " " + psui.score + "/" + psui.deaths;
+						playersTextUI [psui.uiIndex].text = psui.name + " " + psui.score + "/" + psui.deaths;
 					}
 				}
 				// Below code is to arrange the position of the scoreboard
-				foreach(PlayerScoreUI psui in playerScoreAndUI)
+				if(theEffectedPlayer.teamIndex == 1)
 				{
-					if(theEffectedPlayer.score > psui.score && theEffectedPlayer.teamIndex == psui.teamIndex)
+					team1Players.Sort ();
+					for(int i = 0; i < team1Players.Count; i++)
 					{
-						int tempindex = theEffectedPlayer.index;
-						theEffectedPlayer.index = psui.index;
-						psui.index = tempindex;
-
-						playersTextUI [theEffectedPlayer.index].text = 
-							theEffectedPlayer.name + " " + theEffectedPlayer.score + "/" + theEffectedPlayer.deaths;
-						playersTextUI [psui.index].text = 
-							psui.name + " " + psui.score + "/" + psui.deaths;
-						break;
+						team1Players [i].uiIndex = i;
+						playersTextUI [i].text = team1Players [i].name + " " + team1Players [i].score + "/" + team1Players [i].deaths;
+					}
+				}
+				else if(theEffectedPlayer.teamIndex == 2)
+				{
+					team2Players.Sort ();
+					for(int i = 3; i < (team1Players.Count + 3); i++)
+					{
+						team2Players [i-3].uiIndex = i;
+						playersTextUI [i].text = team2Players [i-3].name + " " + team2Players [i-3].score + "/" + team2Players [i-3].deaths;
 					}
 				}
 			}
@@ -95,23 +107,25 @@ namespace SandeepMattepu.UI
 			{
 				foreach(PlayerScoreUI psui in playerScoreAndUI)
 				{
-					if(psui.index == -1)		// This is to avoid multiple data packets to have same UI index
+					if(psui.uiIndex == -1)		// This is to avoid multiple data packets to have same UI index
 					{
 						if(i < 3 && psui.teamIndex == 1)
 						{
-							psui.index = i;
+							psui.uiIndex = i;
 							playersTextUI [i].text = psui.name + " " + psui.score + "/" + psui.deaths;
+							team1Players.Add (psui);
+							break;
 						}
 						else if((i > 2 && i < 6) && psui.teamIndex == 2)
 						{
-							psui.index = i;
+							psui.uiIndex = i;
 							playersTextUI [i].text = psui.name + " " + psui.score + "/" + psui.deaths;
+							team2Players.Add (psui);
+							break;
 						}
 					}
 				}
 			}
-
-
 		}
 
 		/// <summary>
@@ -128,7 +142,7 @@ namespace SandeepMattepu.UI
 					if(playerIdAndTeamID.Key == psui.playerID)
 					{
 						psui.teamIndex = playerIdAndTeamID.Value;
-						psui.index = -1;		// To remove any attachments to UI
+						psui.uiIndex = -1;		// To remove any attachments to UI
 						if(playerIdAndTeamID.Value == 1)
 						{
 							teamMembersin1 += 1;

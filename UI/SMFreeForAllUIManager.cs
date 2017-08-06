@@ -60,12 +60,12 @@ namespace SandeepMattepu.UI
 				{
 					if(psui.playerID == whoKilled)
 					{
-						requiredIndex = psui.index;
-						playersTextUI [psui.index].text = psui.name + " " + psui.score + "/" + psui.deaths;
+						requiredIndex = psui.uiIndex;
+						playersTextUI [psui.uiIndex].text = psui.name + " " + psui.score + "/" + psui.deaths;
 					}
 					else if(psui.playerID == whoDied)
 					{
-						playersTextUI [psui.index].text = psui.name + " " + psui.score + "/" + psui.deaths;
+						playersTextUI [psui.uiIndex].text = psui.name + " " + psui.score + "/" + psui.deaths;
 					}
 				}
 				// Below code is to arrange the position of the scoreboard
@@ -74,13 +74,13 @@ namespace SandeepMattepu.UI
 				{
 					if(theEffectedPlayer.score > psui.score)
 					{
-						int tempindex = theEffectedPlayer.index;
-						theEffectedPlayer.index = psui.index;
-						psui.index = tempindex;
+						int tempindex = theEffectedPlayer.uiIndex;
+						theEffectedPlayer.uiIndex = psui.uiIndex;
+						psui.uiIndex = tempindex;
 
-						playersTextUI [theEffectedPlayer.index].text = 
+						playersTextUI [theEffectedPlayer.uiIndex].text = 
 							theEffectedPlayer.name + " " + theEffectedPlayer.score + "/" + theEffectedPlayer.deaths;
-						playersTextUI [psui.index].text = 
+						playersTextUI [psui.uiIndex].text = 
 							psui.name + " " + psui.score + "/" + psui.deaths;
 						break;
 					}
@@ -94,7 +94,7 @@ namespace SandeepMattepu.UI
 			{
 				foreach(PlayerScoreUI psu in playerScoreAndUI)
 				{
-					if(psu.index == i)
+					if(psu.uiIndex == i)
 					{
 						playersTextUI [i].text = psu.name + " " + psu.score + "/" + psu.deaths;
 						break;

@@ -191,8 +191,11 @@ namespace SandeepMattepu.Weapon
 				{
 					firingStick.DoubleTapEvent -= checkAndPerformReloading;
 				}
-				grenadeInput.OnPressIntensity -= setIntensityOfThrow;
-				grenadeInput.OnTouchDownHandler -= throwGrenadeInputHandler;
+				if(grenadeInput != null)
+				{
+					grenadeInput.OnPressIntensity -= setIntensityOfThrow;
+					grenadeInput.OnTouchDownHandler -= throwGrenadeInputHandler;
+				}
 			}
 			else if(isUsingMultiplayer)
 			{

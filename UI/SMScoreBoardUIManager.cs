@@ -22,11 +22,11 @@ namespace SandeepMattepu.UI
 		/// <summary>
 		/// This acts as a data packet
 		/// </summary>
-		protected class PlayerScoreUI
+		protected class PlayerScoreUI : System.IComparable
 		{
 			public string name;
 			public int playerID;
-			public int index;
+			public int uiIndex;
 			public int teamIndex = 0;
 			public int score;
 			public int deaths;
@@ -38,11 +38,26 @@ namespace SandeepMattepu.UI
 			{
 				name = playerScoreUI.name;
 				playerID = playerScoreUI.playerID;
-				index = playerScoreUI.index;
+				uiIndex = playerScoreUI.uiIndex;
 				teamIndex = playerScoreUI.teamIndex;
 				score = playerScoreUI.score;
 				deaths = playerScoreUI.deaths;
 			}
+
+			#region IComparable implementation
+
+			public int CompareTo (object obj)
+			{
+				if(obj == null)
+				{
+					return 1;
+				}
+
+				PlayerScoreUI otherPsui = obj as PlayerScoreUI;
+				return -(this.score - otherPsui.score);
+			}
+
+			#endregion
 		}
 
 		/// <summary>
@@ -84,7 +99,7 @@ namespace SandeepMattepu.UI
 				PlayerScoreUI playerSU = new PlayerScoreUI ();
 				playerSU.name = player.NickName;
 				playerSU.playerID = player.ID;
-				playerSU.index = index;
+				playerSU.uiIndex = index;
 				index++;
 				playerSU.score = 0;
 				playerSU.deaths = 0;
