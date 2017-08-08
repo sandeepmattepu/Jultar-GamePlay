@@ -91,6 +91,11 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// The player identifier componenet attached to the game object.
 	/// </summary>
 	private SMPlayerIdentifier playerIdentifier;
+	/// <summary>
+	/// The seconds to regenerate full health.
+	/// </summary>
+	[SerializeField]
+	private float secondsToRegenerateFullHealth = 4.0f;
 
 	#endregion
 
@@ -104,6 +109,14 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 		armorPoints = MaxArmor;
 		setSliderValues ();
 		playerIdentifier = GetComponent<SMPlayerIdentifier>();
+	}
+
+	void Update()
+	{
+		if(playerHealth < MaxHealth)
+		{
+			playerHealth += ((MaxHealth / secondsToRegenerateFullHealth) * Time.deltaTime);
+		}
 	}
 
 	#endregion

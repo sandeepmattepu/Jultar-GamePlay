@@ -95,6 +95,10 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// </summary>
 	public Text respawnText;
 	/// <summary>
+	/// You died text.
+	/// </summary>
+	public Text youDiedText;
+	/// <summary>
 	/// The special weapon manager.
 	/// </summary>
 	public SMSpecialWeaponManager specialWeaponManager;
@@ -115,6 +119,12 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	{
 		spawnGameRules();
 		StartCoroutine ("spawnPlayersAfterDelay");		// To fix double instantiation of the player 
+		SMMultiplayerGame.OnGameOver += hideUIAfterDeath;
+	}
+
+	void OnDestroy()
+	{
+		SMMultiplayerGame.OnGameOver -= hideUIAfterDeath;
 	}
 
 	IEnumerator spawnPlayersAfterDelay()
@@ -254,7 +264,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	IEnumerator respawnCountDown()
 	{
 		respawnText.gameObject.SetActive(true);
-
+		youDiedText.gameObject.SetActive (true);
 		respawnText.text = "Respawn in 3";
 		yield return new WaitForSeconds(1.0f);
 		respawnText.text = "Respawn in 2";
@@ -263,6 +273,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 		yield return new WaitForSeconds(1.0f);
 
 		respawnText.gameObject.SetActive(false);
+		youDiedText.gameObject.SetActive (false);
 		spawnSinglePlayer();
 	}
 
@@ -315,6 +326,14 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			gameRulesThatSpawned.localPlayer.setPlayerUIColor(player.GetComponent<PhotonView>());
 		}
 
+		hideUIAfterDeath ();
+	}
+
+	/// <summary>
+	/// Hides the user interface after death.
+	/// </summary>
+	private void hideUIAfterDeath()
+	{
 		foreach(GameObject playerUI in playInteractableUI)
 		{
 			playerUI.SetActive(true);

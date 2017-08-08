@@ -11,16 +11,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using SandeepMattepu.Multiplayer;
 
 namespace SandeepMattepu.UI
 {
 	public class SMUIManager : MonoBehaviour 
 	{
 		public RectTransform areYouSureExitPanel;
+		public Text victoryText;
+		public Text defeatText;
+		public Text nextMapIn;
+		public string loadSceneAfterGame;
+		public int gameStartsInSeconds;
 
 		void Start()
 		{
 			areYouSureExitPanel.gameObject.SetActive (false);
+			SMMultiplayerGame.OnGameOver += OnGameOver;
+		}
+
+		void OnDestroy()
+		{
+			SMMultiplayerGame.OnGameOver -= OnGameOver;
 		}
 
 		public void exitButtonPressed()
@@ -36,6 +48,56 @@ namespace SandeepMattepu.UI
 		public void noSureToExitPressed()
 		{
 			areYouSureExitPanel.gameObject.SetActive (false);
+		}
+
+		private void OnGameOver()
+		{
+			StartCoroutine ("tickCountDownForRoomScene");
+			if(SMPlayerSpawnerAndAssigner.gameType == MPGameTypes.FREE_FOR_ALL)
+			{
+				if(SMFreeForAll.IsLocalPlayerLeading)
+				{
+					victoryText.gameObject.SetActive (true);
+				}
+				else
+				{
+					defeatText.gameObject.SetActive (true);
+				}
+			}
+			else if(SMPlayerSpawnerAndAssigner.gameType == MPGameTypes.TEAM_DEATH_MATCH)
+			{
+				if(SMFreeForAll.IsLocalPlayerLeading)
+				{
+					victoryText.gameObject.SetActive (true);
+				}
+				else
+				{
+					defeatText.gameObject.SetActive (true);
+				}
+			}
+		}
+
+		IEnumerator tickCountDownForRoomScene()
+		{
+			nextMapIn.gameObject.SetActive (true);
+			while(gameStartsInSeconds > 0)
+			{
+				nextMapIn.text = "Next map starts in " + gameStartsInSeconds + " seconds";
+				yield return new WaitForSeconds(gameStartsInSeconds);
+				gameStartsInSeconds -= 1;
+			}
+
+			loadNextScene ();
+		}
+
+		private void loadNextScene()
+		{
+			if(PhotonNetwork.isMasterClient)
+			{
+				PhotonNetwork.room.IsOpen = true;
+				PhotonNetwork.room.IsVisible = true;
+				PhotonNetwork.LoadLevel (loadSceneAfterGame);
+			}
 		}
 	}	
 }
