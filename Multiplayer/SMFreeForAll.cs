@@ -28,6 +28,16 @@ namespace SandeepMattepu.Multiplayer
 		{
 			get { return playersIdAndScore;	}
 		}
+		/// <summary>
+		/// Is the local player leading
+		/// </summary>
+		private static bool isLocalPlayerLeading = false;
+
+		public static bool IsLocalPlayerLeading {
+			get {
+				return isLocalPlayerLeading;
+			}
+		}
 
 		// Use this for initialization
 
@@ -40,6 +50,7 @@ namespace SandeepMattepu.Multiplayer
 			playersIdAndName.Clear();
 			playersIdAndScore.Clear();
 			playerIdAndDeaths.Clear ();
+			isLocalPlayerLeading = false;
 		}
 
 		protected override void Start()
@@ -70,6 +81,10 @@ namespace SandeepMattepu.Multiplayer
 				playersIdAndScore.Remove(whoKilledID);
 				playersIdAndScore.Add(whoKilledID, score);
 				checkEndGameScore(score);
+				if(whoKilledID == PhotonNetwork.player.ID)
+				{
+					checkIfLocalPlayerIsLeading ();
+				}
 			}
 		}
 
@@ -94,6 +109,7 @@ namespace SandeepMattepu.Multiplayer
 		{
 			if (gameTimer >= gameSessionTime)
 			{
+				checkIfLocalPlayerIsLeading ();
 				gameOver ();
 			}
 			else
@@ -111,6 +127,7 @@ namespace SandeepMattepu.Multiplayer
 			{
 				if (score >= maxKillsToEndGame)
 				{
+					checkIfLocalPlayerIsLeading ();
 					gameOver ();
 				}
 			}
@@ -122,6 +139,27 @@ namespace SandeepMattepu.Multiplayer
 		private void startDownloadingXpRewardData()
 		{
 			//TODO write www class code
+		}
+
+		/// <summary>
+		/// This function checks if local player is leading.
+		/// </summary>
+		private void checkIfLocalPlayerIsLeading()
+		{
+			int scoreMadeByLocalPlayer;
+			if(PlayersIdAndScore.TryGetValue (PhotonNetwork.player.ID, out scoreMadeByLocalPlayer))
+			{
+				int highestScore = scoreMadeByLocalPlayer;
+				foreach(KeyValuePair<int,int> kvp in playersIdAndScore)
+				{
+					if(highestScore > kvp.Value)
+					{
+						isLocalPlayerLeading = false;
+						return;
+					}
+				}
+				isLocalPlayerLeading = true;
+			}
 		}
 	}
 }

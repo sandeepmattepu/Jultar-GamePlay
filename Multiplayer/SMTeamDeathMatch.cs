@@ -40,6 +40,10 @@ namespace SandeepMattepu.Multiplayer
 			get{ return playerIdAndTeamIndex; }
 		}
 		/// <summary>
+		/// This holds reference to data packets about all players in team
+		/// </summary>
+		private static List<PlayerInTeam> playersInTeam= new List<PlayerInTeam>();
+		/// <summary>
 		/// The team index of the local player.
 		/// </summary>
 		private static int localPlayerTeamIndex = -1;
@@ -54,6 +58,16 @@ namespace SandeepMattepu.Multiplayer
 		/// This event is raised when players are splitted into individual teams
 		/// </summary>
 		public static event onGameRulesCreated OnPlayersSplittedToTeams;
+		/// <summary>
+		/// Is local player's team leading.
+		/// </summary>
+		private static bool isLocalPlayerTeamLeading = false;
+
+		public static bool IsLocalPlayerTeamLeading {
+			get {
+				return isLocalPlayerTeamLeading;
+			}
+		}
 
 		void Awake()
 		{
@@ -65,6 +79,8 @@ namespace SandeepMattepu.Multiplayer
             playersIdAndScore.Clear();
 			playerIdAndTeamIndex.Clear ();
 			playerIdAndDeaths.Clear ();
+			playersInTeam.Clear ();
+			isLocalPlayerTeamLeading = false;
 		}
 
 		// Use this for initialization
@@ -107,6 +123,7 @@ namespace SandeepMattepu.Multiplayer
 					while (countInTeam > 0) 
 					{
 						playerIdAndTeamIndex.Add (players [0].ID, teamIndex);
+						playersInTeam.Add(new PlayerInTeam(players[0].ID, 0, teamIndex));
 						players.RemoveAt (0);
 						countInTeam--;
 					}
@@ -122,6 +139,7 @@ namespace SandeepMattepu.Multiplayer
 				foreach(PhotonPlayer player in players)
 				{
 					playerIdAndTeamIndex.Add(player.ID, 0);
+					playersInTeam.Add(new PlayerInTeam(players[0].ID, 0, 1));
 				}
 			}
 
@@ -179,6 +197,7 @@ namespace SandeepMattepu.Multiplayer
 		{
 			if (gameTimer >= gameSessionTime)
 			{
+				checkIfPlayerTeamIsLeading ();
 				gameOver ();
 			}
 			else
@@ -219,6 +238,15 @@ namespace SandeepMattepu.Multiplayer
 				playersIdAndScore.Remove(whoKilledID);
 				playersIdAndScore.Add(whoKilledID, score);
 				checkEndGameScore(score);
+				foreach(PlayerInTeam pit in playersInTeam)
+				{
+					if(pit.ID == whoKilledID)
+					{
+						pit.Score = score;
+						break;
+					}
+				}
+				checkIfPlayerTeamIsLeading ();
 			}
 		}
 
@@ -231,8 +259,61 @@ namespace SandeepMattepu.Multiplayer
 			{
 				if (score >= maxKillsToEndGame)
 				{
+					checkIfPlayerTeamIsLeading ();
 					gameOver ();
 				}
+			}
+		}
+
+		/// <summary>
+		/// This function checks if player team is leading.
+		/// </summary>
+		private void checkIfPlayerTeamIsLeading()
+		{
+			int scoreMadeByPlayerTeam = 0;
+			int scoreMadeByEnemyTeam = 0;
+
+			foreach(PlayerInTeam pit in playersInTeam)
+			{
+				if(LocalPlayerTeamIndex == pit.TeamID)
+				{
+					scoreMadeByPlayerTeam += pit.Score;
+				}
+				else
+				{
+					scoreMadeByEnemyTeam += pit.Score;
+				}
+			}
+
+			if(scoreMadeByPlayerTeam > scoreMadeByEnemyTeam)
+			{
+				isLocalPlayerTeamLeading = true;
+				return;
+			}
+			isLocalPlayerTeamLeading = false;
+		}
+
+		private class PlayerInTeam
+		{
+			public int ID;
+			public int Score;
+			public int TeamID;
+
+			public PlayerInTeam()
+			{}
+
+			public PlayerInTeam(int id, int score, int teamID)
+			{
+				ID = id;
+				Score = score;
+				TeamID = teamID;
+			}
+
+			public PlayerInTeam(PlayerInTeam playerInTeam)
+			{
+				ID = playerInTeam.ID;
+				Score = playerInTeam.Score;
+				TeamID = playerInTeam.TeamID;
 			}
 		}
 	}
