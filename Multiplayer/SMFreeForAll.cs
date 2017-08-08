@@ -94,8 +94,7 @@ namespace SandeepMattepu.Multiplayer
 		{
 			if (gameTimer >= gameSessionTime)
 			{
-				//localPlayer.sendEndGameMessage(MPGameTypes.FREE_FOR_ALL, sceneNameAfterEndOfGame);
-				SceneManager.LoadScene(sceneNameAfterEndOfGame);
+				gameOver ();
 			}
 			else
 			{
@@ -112,8 +111,7 @@ namespace SandeepMattepu.Multiplayer
 			{
 				if (score >= maxKillsToEndGame)
 				{
-					//localPlayer.sendEndGameMessage(MPGameTypes.FREE_FOR_ALL, sceneNameAfterEndOfGame);
-					SceneManager.LoadScene(sceneNameAfterEndOfGame);
+					gameOver ();
 				}
 			}
 		}

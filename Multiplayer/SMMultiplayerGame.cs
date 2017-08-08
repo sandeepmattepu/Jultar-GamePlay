@@ -18,6 +18,10 @@ namespace SandeepMattepu.Multiplayer
 	public class SMMultiplayerGame : MonoBehaviour
 	{
 		/// <summary>
+		/// This occurs when game has met end condititon like when reached kill limits, time is over
+		/// </summary>
+		public static event onGameRulesCreated OnGameOver;
+		/// <summary>
 		/// If he is golden player then he has special abilities
 		/// </summary>
 		public static bool isGoldenPlayer = true;
@@ -216,6 +220,17 @@ namespace SandeepMattepu.Multiplayer
 			if(OnKillStreakChange != null)
 			{
 				OnKillStreakChange (killStreak);
+			}
+		}
+
+		/// <summary>
+		/// Call this function to raise event that belongs to SMMultiplayerGame class
+		/// </summary>
+		protected void gameOver()
+		{
+			if(OnGameOver != null)
+			{
+				OnGameOver ();
 			}
 		}
 	}
