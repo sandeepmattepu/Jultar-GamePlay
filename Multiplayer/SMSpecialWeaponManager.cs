@@ -100,6 +100,11 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		private AudioClip clipToBeAnnounced;
 		/// <summary>
+		/// The audio source for announcements.
+		/// </summary>
+		[SerializeField]
+		private AudioSource audioSourceForAnnouncements;
+		/// <summary>
 		/// The rocket text announcement.
 		/// </summary>
 		[SerializeField]
@@ -237,10 +242,24 @@ namespace SandeepMattepu.Multiplayer
 				healthBoostButton.GetComponent<Image> ().color = Color.black;
 				if(multiplayerGame.localPlayer != null)
 				{
-					AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, multiplayerGame.localPlayer.transform.position);
+					makeAnnoucement (friendlyHealthUsedClip);
 					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.HealthBoost, true, null);
 				}
 			}
+		}
+
+		/// <summary>
+		/// This function makes announcement based on the clip that is passed
+		/// </summary>
+		/// <param name="clipToBeAnnounced">Clip to be announced.</param>
+		private void makeAnnoucement(AudioClip clipToBeAnnounced)
+		{
+			if(audioSourceForAnnouncements.isPlaying)
+			{
+				audioSourceForAnnouncements.Stop ();
+			}
+			audioSourceForAnnouncements.clip = clipToBeAnnounced;
+			audioSourceForAnnouncements.Play ();
 		}
 
 		/// <summary>
@@ -262,7 +281,7 @@ namespace SandeepMattepu.Multiplayer
 				rocketButton.interactable = true;
 				clipToBeAnnounced = audioForUnlockedAbility (AbilityType.Rocket);
 				abilityType = AbilityType.Rocket;
-				StartCoroutine ("announcePlayerAbility");
+				StartCoroutine ("announcePlayerUnlockedAbility");
 				rocketButton.GetComponent<Image> ().color = Color.white;
 			}
 			else if (killStreak == killStreakForHealthBoost && !currentSpecialAbilities.Contains(AbilityType.HealthBoost)) 
@@ -271,7 +290,7 @@ namespace SandeepMattepu.Multiplayer
 				healthBoostButton.interactable = true;
 				abilityType = AbilityType.HealthBoost;
 				clipToBeAnnounced = audioForUnlockedAbility (AbilityType.HealthBoost);
-				StartCoroutine ("announcePlayerAbility");
+				StartCoroutine ("announcePlayerUnlockedAbility");
 				healthBoostButton.GetComponent<Image> ().color = Color.white;
 			} 
 		}
@@ -279,11 +298,11 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// Announces the player ability and waits to announce if player is missing or died.
 		/// </summary>
-		IEnumerator announcePlayerAbility()
+		IEnumerator announcePlayerUnlockedAbility()
 		{
 			yield return new WaitUntil (() => (multiplayerGame.localPlayer != null));
 			Transform locationToMakeAnnouncement = multiplayerGame.localPlayer.transform;
-			AudioSource.PlayClipAtPoint (clipToBeAnnounced, locationToMakeAnnouncement.position);
+			makeAnnoucement (clipToBeAnnounced);
 			if(abilityType == AbilityType.HealthBoost)
 			{
 				healthBoostTextAnnouncement.GetComponent<Animator> ().SetTrigger ("ShowAnnouncement");
@@ -357,10 +376,7 @@ namespace SandeepMattepu.Multiplayer
 					rocketButton.interactable = false;
 					rocketButton.GetComponent<Image> ().color = Color.black;
 					PhotonNetwork.RaiseEvent ((byte)MultiplayerEvents.Announcements, (object)AbilityType.Rocket, true, null);
-					if(multiplayerGame.localPlayer != null)
-					{
-						AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, multiplayerGame.localPlayer.transform.position);
-					}
+					makeAnnoucement (friendlyRocketUsedClip);
 					if(jetFlyOverAudio != null)
 					{
 						if(jetFlyOverAudio.isPlaying)
@@ -409,70 +425,66 @@ namespace SandeepMattepu.Multiplayer
 		{
 			if(eventCode == (int)MultiplayerEvents.Announcements)
 			{
-				SMPlayerIdentifier clientPlayer = multiplayerGame.localPlayer;
 				AbilityType ability = (AbilityType)content;
-				if(clientPlayer != null)
+				if(SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
 				{
-					if(SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
+					if(ability == AbilityType.HealthBoost)
 					{
-						if(ability == AbilityType.HealthBoost)
+						makeAnnoucement (enemyHealthUsedClip);
+					}
+					else if(ability == AbilityType.Rocket)
+					{
+						makeAnnoucement (enemyRocketUsedClip);
+						if(jetFlyOverAudio != null)
 						{
-							AudioSource.PlayClipAtPoint (enemyHealthUsedClip, clientPlayer.transform.position);
-						}
-						else if(ability == AbilityType.Rocket)
-						{
-							AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.transform.position);
-							if(jetFlyOverAudio != null)
+							if(jetFlyOverAudio.isPlaying)
 							{
-								if(jetFlyOverAudio.isPlaying)
-								{
-									jetFlyOverAudio.Stop ();
-								}
-								jetFlyOverAudio.Play ();
+								jetFlyOverAudio.Stop ();
 							}
+							jetFlyOverAudio.Play ();
 						}
 					}
-					else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
+				}
+				else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
+				{
+					int senderTeamIndex = 0;
+					if(SMTeamDeathMatch.PlayerIdAndTeamIndex.TryGetValue (senderId, out senderTeamIndex))
 					{
-						int senderTeamIndex = 0;
-						if(SMTeamDeathMatch.PlayerIdAndTeamIndex.TryGetValue (senderId, out senderTeamIndex))
+						if(senderTeamIndex == SMTeamDeathMatch.LocalPlayerTeamIndex)
 						{
-							if(senderTeamIndex == SMTeamDeathMatch.LocalPlayerTeamIndex)
+							if(ability == AbilityType.HealthBoost)
 							{
-								if(ability == AbilityType.HealthBoost)
+								makeAnnoucement(friendlyHealthUsedClip);
+							}
+							else if(ability == AbilityType.Rocket)
+							{
+								makeAnnoucement (friendlyRocketUsedClip);
+								if(jetFlyOverAudio != null)
 								{
-									AudioSource.PlayClipAtPoint (friendlyHealthUsedClip, clientPlayer.transform.position);
-								}
-								else if(ability == AbilityType.Rocket)
-								{
-									AudioSource.PlayClipAtPoint (friendlyRocketUsedClip, clientPlayer.transform.position);
-									if(jetFlyOverAudio != null)
+									if(jetFlyOverAudio.isPlaying)
 									{
-										if(jetFlyOverAudio.isPlaying)
-										{
-											jetFlyOverAudio.Stop ();
-										}
-										jetFlyOverAudio.Play ();
+										jetFlyOverAudio.Stop ();
 									}
+									jetFlyOverAudio.Play ();
 								}
 							}
-							else
+						}
+						else
+						{
+							if(ability == AbilityType.HealthBoost)
 							{
-								if(ability == AbilityType.HealthBoost)
+								makeAnnoucement(enemyHealthUsedClip);
+							}
+							else if(ability == AbilityType.Rocket)
+							{
+								makeAnnoucement (enemyRocketUsedClip);
+								if(jetFlyOverAudio != null)
 								{
-									AudioSource.PlayClipAtPoint (enemyHealthUsedClip, clientPlayer.transform.position);
-								}
-								else if(ability == AbilityType.Rocket)
-								{
-									AudioSource.PlayClipAtPoint (enemyRocketUsedClip, clientPlayer.transform.position);
-									if(jetFlyOverAudio != null)
+									if(jetFlyOverAudio.isPlaying)
 									{
-										if(jetFlyOverAudio.isPlaying)
-										{
-											jetFlyOverAudio.Stop ();
-										}
-										jetFlyOverAudio.Play ();
+										jetFlyOverAudio.Stop ();
 									}
+									jetFlyOverAudio.Play ();
 								}
 							}
 						}

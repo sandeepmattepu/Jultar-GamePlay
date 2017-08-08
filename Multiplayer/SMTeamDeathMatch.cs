@@ -132,7 +132,10 @@ namespace SandeepMattepu.Multiplayer
 				playersIdAndScore.Add (player.ID, 0);
 				playerIdAndDeaths.Add (player.ID, 0);
 			}
-			OnPlayersSplittedToTeams ();
+			if(OnPlayersSplittedToTeams != null)
+			{
+				OnPlayersSplittedToTeams ();
+			}
 		}
 
 		/// <summary>

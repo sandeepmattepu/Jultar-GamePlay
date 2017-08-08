@@ -62,7 +62,6 @@ namespace SandeepMattepu
 						numberOfEnimeiesInRegion += 1;
 					}
 				}
-				Debug.Log (gameObject.name + " has " + numberOfEnimeiesInRegion);
 			}
 			else if(SMPlayerSpawnerAndAssigner.gameType == SandeepMattepu.Multiplayer.MPGameTypes.TEAM_DEATH_MATCH)
 			{
@@ -81,7 +80,6 @@ namespace SandeepMattepu
 						}
 					}
 				}
-				Debug.Log (gameObject.name + " has " + numberOfEnimeiesInRegion);
 			}
 		}
 	}	

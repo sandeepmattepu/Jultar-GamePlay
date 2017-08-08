@@ -65,7 +65,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// <summary>
 	/// This UI is the main UI where the player interacts with the game
 	/// </summary>
-	public GameObject playInteractableUI;
+	public GameObject[] playInteractableUI;
 
 
 	#endregion
@@ -145,7 +145,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 				if(playerHealth <= 0.0f)
 				{
 					setSliderValues ();
-					playInteractableUI.SetActive(false);
+					hidePlayerInteractiveUI();
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
 					Destroy(this.gameObject);
 					createDeadBody(true, true);
@@ -157,7 +157,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			setSliderValues ();
 			if (playerHealth <= 0.0f)
 			{
-				playInteractableUI.SetActive(false);
+				hidePlayerInteractiveUI();
 				createDeadBody(false, true);
 				Destroy(this.gameObject);
 			}
@@ -242,7 +242,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 					}
 					setSliderValues();
 					spawnManager.spawnAfterDeath();
-					playInteractableUI.SetActive(false);
+					hidePlayerInteractiveUI();
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
 					Destroy(this.gameObject);
 					createDeadBody(true, true);
@@ -254,10 +254,21 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			setSliderValues();
 			if(playerHealth <= 0.0f)
 			{
-				playInteractableUI.SetActive(false);
+				hidePlayerInteractiveUI();
 				createDeadBody(false, true);
 				Destroy(this.gameObject);
 			}
+		}
+	}
+
+	/// <summary>
+	/// This function hides player interactble UI when he dies
+	/// </summary>
+	private void hidePlayerInteractiveUI()
+	{
+		foreach(GameObject uiGameObject in playInteractableUI)
+		{
+			uiGameObject.SetActive (false);
 		}
 	}
 

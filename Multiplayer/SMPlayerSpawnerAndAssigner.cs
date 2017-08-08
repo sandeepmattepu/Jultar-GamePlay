@@ -89,15 +89,11 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// <summary>
 	/// This UI is the main UI where the player interacts with the game
 	/// </summary>
-	public GameObject playInteractableUI;
+	public GameObject[] playInteractableUI;
 	/// <summary>
 	/// Just respawn heading
 	/// </summary>
-	public Text respawnHeading;
-	/// <summary>
-	/// This UI text will show countdown when the player is going to respawn again
-	/// </summary>
-	public Text respawnCounter;
+	public Text respawnText;
 	/// <summary>
 	/// The special weapon manager.
 	/// </summary>
@@ -235,7 +231,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			}
 			else
 			{
-				Debug.LogError ("Ercursive function calling");
+				Debug.LogError ("Recursive function calling");
 				return placePlayerPositionAtStart ();	// This wont happen but on safe side
 			}
 		}
@@ -257,18 +253,16 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 
 	IEnumerator respawnCountDown()
 	{
-		respawnHeading.gameObject.SetActive(true);
-		respawnCounter.gameObject.SetActive(true);
+		respawnText.gameObject.SetActive(true);
 
-		respawnCounter.text = "3";
+		respawnText.text = "Respawn in 3";
 		yield return new WaitForSeconds(1.0f);
-		respawnCounter.text = "2";
+		respawnText.text = "Respawn in 2";
 		yield return new WaitForSeconds(1.0f);
-		respawnCounter.text = "1";
+		respawnText.text = "Respawn in 1";
 		yield return new WaitForSeconds(1.0f);
 
-		respawnHeading.gameObject.SetActive(false);
-		respawnCounter.gameObject.SetActive(false);
+		respawnText.gameObject.SetActive(false);
 		spawnSinglePlayer();
 	}
 
@@ -320,7 +314,11 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			player.GetComponent<SMPlayerIdentifier>().gameType = gameRulesThatSpawned;
 			gameRulesThatSpawned.localPlayer.setPlayerUIColor(player.GetComponent<PhotonView>());
 		}
-		playInteractableUI.SetActive(true);
+
+		foreach(GameObject playerUI in playInteractableUI)
+		{
+			playerUI.SetActive(true);
+		}
 	}
 
 	/// <summary>
