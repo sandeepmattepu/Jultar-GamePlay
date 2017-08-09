@@ -149,10 +149,9 @@ namespace SandeepMattepu.Multiplayer
 			int scoreMadeByLocalPlayer;
 			if(PlayersIdAndScore.TryGetValue (PhotonNetwork.player.ID, out scoreMadeByLocalPlayer))
 			{
-				int highestScore = scoreMadeByLocalPlayer;
 				foreach(KeyValuePair<int,int> kvp in playersIdAndScore)
 				{
-					if(highestScore > kvp.Value)
+					if(kvp.Value > scoreMadeByLocalPlayer)
 					{
 						isLocalPlayerLeading = false;
 						return;

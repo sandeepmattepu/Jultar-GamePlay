@@ -285,7 +285,7 @@ namespace SandeepMattepu.Multiplayer
 				}
 			}
 
-			if(scoreMadeByPlayerTeam > scoreMadeByEnemyTeam)
+			if(scoreMadeByPlayerTeam >= scoreMadeByEnemyTeam)
 			{
 				isLocalPlayerTeamLeading = true;
 				return;
