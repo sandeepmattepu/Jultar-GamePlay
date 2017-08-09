@@ -91,6 +91,10 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// </summary>
 	public GameObject[] playInteractableUI;
 	/// <summary>
+	/// Hides user interface even afer respawn.
+	/// </summary>
+	public GameObject[] hideUIEvenAferRespawn;
+	/// <summary>
 	/// Just respawn heading
 	/// </summary>
 	public Text respawnText;
@@ -326,7 +330,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			gameRulesThatSpawned.localPlayer.setPlayerUIColor(player.GetComponent<PhotonView>());
 		}
 
-		hideUIAfterDeath ();
+		showUIAfterRespwan ();
 	}
 
 	/// <summary>
@@ -336,7 +340,23 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	{
 		foreach(GameObject playerUI in playInteractableUI)
 		{
+			playerUI.SetActive(false);
+		}
+	}
+
+	/// <summary>
+	/// Shows the user interface after respawn.
+	/// </summary>
+	private void showUIAfterRespwan()
+	{
+		foreach(GameObject playerUI in playInteractableUI)
+		{
 			playerUI.SetActive(true);
+		}
+
+		foreach(GameObject playerUI in hideUIEvenAferRespawn)
+		{
+			playerUI.SetActive (false);
 		}
 	}
 

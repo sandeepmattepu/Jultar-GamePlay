@@ -161,7 +161,11 @@ namespace SandeepMattepu.MobileTouch
 			rayCaster.Raycast (input, results);							// Perform raycasting
 			if(results.Count > 0)
 			{
-				return results [0].gameObject.layer;
+				RaycastResult result = results [0];
+				if(result.gameObject.activeInHierarchy)
+				{
+					return result.gameObject.layer;
+				}
 			}
 			return 0;
 		}

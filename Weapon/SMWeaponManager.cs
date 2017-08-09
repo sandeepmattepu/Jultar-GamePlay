@@ -131,12 +131,12 @@ namespace SandeepMattepu.Weapon
 			{
 				if(photonViewComponent.isMine)
 				{
-					currentWeaponText.text = "Current Weapon: " + identifierOfWeaponHolding.ToString();
+					currentWeaponText.text = identifierOfWeaponHolding.ToString();
 				}
 			}
 			else
 			{
-				currentWeaponText.text = "Current Weapon: " + identifierOfWeaponHolding.ToString();
+				currentWeaponText.text = identifierOfWeaponHolding.ToString();
 				if (!foundGun) 
 				{
 					ikControl.placeHandsToSwing ();
