@@ -73,7 +73,7 @@ namespace SandeepMattepu.Multiplayer
 		public override void reportScore(int whoKilledID, int whoDiedID)
 		{
 			base.reportScore(whoKilledID, whoDiedID);
-			if (playersIdAndScore.ContainsKey(whoKilledID))
+			if (playersIdAndScore.ContainsKey(whoKilledID) && !IsGameOver)
 			{
 				int score = 0;
 				playersIdAndScore.TryGetValue(whoKilledID, out score);

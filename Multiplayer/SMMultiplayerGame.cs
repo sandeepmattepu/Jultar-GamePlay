@@ -149,9 +149,20 @@ namespace SandeepMattepu.Multiplayer
 		/// Occurs when game rules are loaded in the game.
 		/// </summary>
 		public static event onGameRulesCreated OnGameRulesLoaded;
+		/// <summary>
+		/// This represents whether the game is over or not
+		/// </summary>
+		private static bool isGameOver = false;
+
+		public static bool IsGameOver {
+			get {
+				return isGameOver;
+			}
+		}
 
 		protected virtual void Start()
 		{
+			isGameOver = false;
 			if(OnGameRulesLoaded != null)
 			{
 				OnGameRulesLoaded ();
@@ -228,6 +239,7 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		protected void gameOver()
 		{
+			isGameOver = true;
 			if(OnGameOver != null)
 			{
 				OnGameOver ();
