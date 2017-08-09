@@ -239,11 +239,11 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		protected void gameOver()
 		{
-			isGameOver = true;
-			if(OnGameOver != null)
+			if(OnGameOver != null && !isGameOver)
 			{
 				OnGameOver ();
 			}
+			isGameOver = true;
 		}
 	}
 

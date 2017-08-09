@@ -23,6 +23,9 @@ namespace SandeepMattepu.UI
 		public Text nextMapIn;
 		public string loadSceneAfterGame;
 		public int gameStartsInSeconds;
+		public AudioClip victorySound;
+		public AudioClip defeatSound;
+		public AudioSource audioSource;
 
 		void Start()
 		{
@@ -53,15 +56,22 @@ namespace SandeepMattepu.UI
 		private void OnGameOver()
 		{
 			StartCoroutine ("tickCountDownForRoomScene");
+			if(audioSource.isPlaying)
+			{
+				audioSource.Stop ();
+			}
+			AudioClip clipTobePlayed = null;
 			if(SMPlayerSpawnerAndAssigner.gameType == MPGameTypes.FREE_FOR_ALL)
 			{
 				if(SMFreeForAll.IsLocalPlayerLeading)
 				{
 					victoryText.gameObject.SetActive (true);
+					clipTobePlayed = victorySound;
 				}
 				else
 				{
 					defeatText.gameObject.SetActive (true);
+					clipTobePlayed = defeatSound;
 				}
 			}
 			else if(SMPlayerSpawnerAndAssigner.gameType == MPGameTypes.TEAM_DEATH_MATCH)
@@ -69,12 +79,16 @@ namespace SandeepMattepu.UI
 				if(SMFreeForAll.IsLocalPlayerLeading)
 				{
 					victoryText.gameObject.SetActive (true);
+					clipTobePlayed = victorySound;
 				}
 				else
 				{
 					defeatText.gameObject.SetActive (true);
+					clipTobePlayed = defeatSound;
 				}
 			}
+			audioSource.clip = clipTobePlayed;
+			audioSource.Play ();
 		}
 
 		IEnumerator tickCountDownForRoomScene()

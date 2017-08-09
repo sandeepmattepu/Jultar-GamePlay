@@ -96,6 +96,15 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// </summary>
 	[SerializeField]
 	private float secondsToRegenerateFullHealth = 4.0f;
+	/// <summary>
+	/// The seconds to wait before health regeneration.
+	/// </summary>
+	[SerializeField]
+	private float secondsToWaitBeforeHealthRegeneration = 3.0f;
+	/// <summary>
+	/// The timer that ticks for health regeneration waiting.
+	/// </summary>
+	private float timerForHealthRegenWaiting = 0.0f;
 
 	#endregion
 
@@ -113,10 +122,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 
 	void Update()
 	{
-		if(playerHealth < MaxHealth)
-		{
-			playerHealth += ((MaxHealth / secondsToRegenerateFullHealth) * Time.deltaTime);
-		}
+		regenerateHealth ();
 	}
 
 	#endregion
@@ -173,6 +179,37 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 				hidePlayerInteractiveUI();
 				createDeadBody(false, true);
 				Destroy(this.gameObject);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Regenerates the health.
+	/// </summary>
+	private void regenerateHealth()
+	{
+		if(playerHealth < MaxHealth)
+		{
+			if(timerForHealthRegenWaiting > secondsToWaitBeforeHealthRegeneration)
+			{
+				if(isUsingMultiPlayer && photonViewComponent.isMine)
+				{
+					playerHealth += ((MaxHealth / secondsToRegenerateFullHealth) * Time.deltaTime);
+				}
+				else if(!isUsingMultiPlayer)
+				{
+					playerHealth += ((MaxHealth / secondsToRegenerateFullHealth) * Time.deltaTime);
+				}
+				if(playerHealth >= MaxHealth)
+				{
+					timerForHealthRegenWaiting = 0.0f;
+					playerHealth = MaxHealth;
+				}
+				setSliderValues ();
+			}
+			else
+			{
+				timerForHealthRegenWaiting += Time.deltaTime;
 			}
 		}
 	}
