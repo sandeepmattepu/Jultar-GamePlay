@@ -44,6 +44,7 @@ namespace SandeepMattepu.UI
 
 		public void yesSureToExitPressed(string sceneName)
 		{
+			PhotonNetwork.LeaveRoom ();
 			SceneManager.LoadScene (sceneName);
 		}
 
