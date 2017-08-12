@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.Multiplayer
 {
@@ -20,11 +21,11 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// This dictionary holds player's score as value and player's Id as key
 		/// </summary>
-		private static Dictionary<int, int> playersIdAndScore = new Dictionary<int, int>();
+		private static Dictionary<int, ObscuredInt> playersIdAndScore = new Dictionary<int, ObscuredInt>();
 		/// <summary>
 		/// This dictionary holds player's score as value and player's Id as key
 		/// </summary>
-		public static Dictionary<int, int> PlayersIdAndScore
+		public static Dictionary<int, ObscuredInt> PlayersIdAndScore
 		{
 			get { return playersIdAndScore; }
 		}
@@ -46,11 +47,11 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// The team index of the local player.
 		/// </summary>
-		private static int localPlayerTeamIndex = -1;
+		private static ObscuredInt localPlayerTeamIndex = -1;
 		/// <summary>
 		/// The team index of the local player.
 		/// </summary>
-		public static int LocalPlayerTeamIndex
+		public static ObscuredInt LocalPlayerTeamIndex
 		{
 			get{ return localPlayerTeamIndex; }
 		}
@@ -61,9 +62,9 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// Is local player's team leading.
 		/// </summary>
-		private static bool isLocalPlayerTeamLeading = false;
+		private static ObscuredBool isLocalPlayerTeamLeading = false;
 
-		public static bool IsLocalPlayerTeamLeading {
+		public static ObscuredBool IsLocalPlayerTeamLeading {
 			get {
 				return isLocalPlayerTeamLeading;
 			}
@@ -232,7 +233,7 @@ namespace SandeepMattepu.Multiplayer
 			base.reportScore(whoKilledID, whoDiedID);
 			if (playersIdAndScore.ContainsKey(whoKilledID) && !IsGameOver)
 			{
-				int score = 0;
+				ObscuredInt score = 0;
 				playersIdAndScore.TryGetValue(whoKilledID, out score);
 				score ++;
 				playersIdAndScore.Remove(whoKilledID);

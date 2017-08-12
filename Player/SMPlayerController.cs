@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.Weapon;
 using SandeepMattepu.MobileTouch;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu
 {
@@ -32,7 +33,7 @@ namespace SandeepMattepu
 		/// <summary>
 		/// This responsiveness will determine how fast the player should respond to the joystick movements
 		/// </summary>
-		private float playerResponsiveness = 0.98f;
+		private ObscuredFloat playerResponsiveness = 0.98f;
 		/// <summary>
 		/// This angle will correct the character orientation if animations are slighly inclined in other angle.
 		/// DONT MODIFY THIS VALUE FROM SCRIPT THIS VALUE IS INTENDED TO CHANGE ONLY IN INSPECTOR
@@ -42,7 +43,7 @@ namespace SandeepMattepu
 		/// This value determines whether the character recieves input from joysticks or from Network
 		/// </summary>
 		[Tooltip("This value determines whether the character recieves input from joysticks or from Network")]
-		public bool isUsingMultiplayer = false;
+		public ObscuredBool isUsingMultiplayer = false;
 
 		/// <summary>
 		/// This timer will start ticking once the player makes new animation request
@@ -51,7 +52,7 @@ namespace SandeepMattepu
 		/// <summary>
 		/// This stores the spped of the player from range 0 to 1
 		/// </summary>
-		private float playerSpeed = 0.0f;
+		private ObscuredFloat playerSpeed = 0.0f;
 		/// <summary>
 		/// This value will get changed when user removes or presses the joystick. When user removes finger from joystick it will be set to false else it will
 		/// be set to true
@@ -70,7 +71,7 @@ namespace SandeepMattepu
 		/// The sensitivity of movement joystick.
 		/// </summary>
 		[Range(0.0f, 20.0f)]
-		public float sensitivityOfMovement = 20.0f;
+		public ObscuredFloat sensitivityOfMovement = 20.0f;
 
 		/// <summary>
 		/// This is used to report firing whenever player moves right stick beyond desired distance

@@ -9,6 +9,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.Weapon
 {
@@ -25,22 +26,22 @@ namespace SandeepMattepu.Weapon
 
 		[Tooltip("Type no of bullets that each gun clip can carry")]
 		[SerializeField]
-		private int noOfBulletsInClip;
+		private ObscuredInt noOfBulletsInClip;
 
 		[Tooltip("Type no of clips this gun can have excluding the one present in gun")]
 		[SerializeField]
-		private int extraNoOfClips;
+		private ObscuredInt extraNoOfClips;
 
 		[Tooltip("Type the speed at which reload happens")]
 		[SerializeField]
-		private float reloadTime = 2.0f;
+		private ObscuredFloat reloadTime = 2.0f;
 
 		/// <summary>
 		/// The damage made by the gun bullets to the player.
 		/// </summary>
 		[Tooltip("The damage made by the gun bullets to the player.")]
 		[SerializeField]
-		private float damageMade;
+		private ObscuredFloat damageMade;
 
 		/// <summary>
 		/// This holds the ammo details of the gun as struct
@@ -68,11 +69,6 @@ namespace SandeepMattepu.Weapon
 			ammoDetails.extraClipsLeft = extraNoOfClips;
 			ammoDetails.reloadTime = reloadTime;
 			ammoDetails.damageMade = damageMade;
-		}
-		
-		// Update is called once per frame
-		void Update () 
-		{
 		}
 
 		/// <summary>

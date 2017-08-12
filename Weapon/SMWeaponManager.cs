@@ -104,11 +104,6 @@ namespace SandeepMattepu.Weapon
 			photonViewComponent = GetComponent<PhotonView> ();
 			findCurrentHoldingWeapon ();	// At the begining player will have some weapon
 		}
-		
-		// Update is called once per frame
-		void Update () 
-		{
-		}
 
 		/// <summary>
 		/// This function will find out which weapon the player is holding and assigns currentHoldingGun when found the weapon in hand

@@ -9,6 +9,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 /// <summary>
 /// This class will help to identify the gun that is present in player's hand as different 
 /// </summary>
@@ -18,7 +19,7 @@ public class SMWeaponInHand : MonoBehaviour
 	/// This will dictate how fast the reloading should happen
 	/// </summary>
 	[Tooltip("This will dictate how fast the reloading should happen")]
-	public float reloadTime = 2.0f;
+	public ObscuredFloat reloadTime = 2.0f;
 	/// <summary>
 	/// This describes the weapon in hand
 	/// </summary>
@@ -27,7 +28,7 @@ public class SMWeaponInHand : MonoBehaviour
 	/// This will determine the firing speed of the gun
 	/// </summary>
 	[Range(0.1f,2.0f)]
-	public float secondsPerBullet = 0.2f;
+	public ObscuredFloat secondsPerBullet = 0.2f;
 	/// <summary>
 	/// This holds reference to audio clip that this gun makes while firing
 	/// </summary>
@@ -48,18 +49,18 @@ public class SMWeaponInHand : MonoBehaviour
 
 	[Tooltip("Type no of bullets that each gun clip can carry")]
 	[SerializeField]
-	private int noOfBulletsInClip;
+	private ObscuredInt noOfBulletsInClip;
 
 	[Tooltip("Type no of clips this gun can have excluding the one present in gun")]
 	[SerializeField]
-	private int extraNoOfClips;
+	private ObscuredInt extraNoOfClips;
 
 	/// <summary>
 	/// The damage made by the gun bullets to the player.
 	/// </summary>
 	[Tooltip("The damage made by the gun bullets to the player.")]
 	[SerializeField]
-	private float damageMade;
+	private ObscuredFloat damageMade;
 
 	/// <summary>
 	/// This holds the ammo details of the gun as struct

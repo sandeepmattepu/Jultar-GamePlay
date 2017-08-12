@@ -66,7 +66,7 @@ namespace SandeepMattepu
 			checkWhetherToShowPopUp ();
 		}
 
-		void OnApplicationQuit()
+		void OnDestroy()
 		{
 			PlayerPrefs.SetInt (TIMES_OPENED, TimesPlayerOpenedGame + 1);
 		}
@@ -132,7 +132,7 @@ namespace SandeepMattepu
 		{
 			if(!alreadyRated && isPlayerIntrestedInRating)
 			{
-				if(TimesPlayerOpenedGame >= 4 && TimesLobbySceneLoaded > 1)
+				if(TimesPlayerOpenedGame >= 8 && TimesLobbySceneLoaded > 1)
 				{
 					// then show rate us popup
 					alreadyRated = true;		// We dont save this. This is to avoid showing multiple popups in single game

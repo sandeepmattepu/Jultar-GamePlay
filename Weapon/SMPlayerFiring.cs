@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.MobileTouch;
 using SandeepMattepu.UI;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.Weapon
 {
@@ -34,7 +35,7 @@ namespace SandeepMattepu.Weapon
 		/// This value determines whether the character recieves input from joysticks or from Network
 		/// </summary>
 		[Tooltip("This value determines whether the character recieves input from joysticks or from Network")]
-		public bool isUsingMultiplayer = false;
+		public ObscuredBool isUsingMultiplayer = false;
 		[Tooltip("The blood particle effect created when it hits the player")]
 		public GameObject bloodSpatter;
 		[Tooltip("The spark particle effect created when it hits the wall")]
@@ -64,7 +65,7 @@ namespace SandeepMattepu.Weapon
 		/// <summary>
 		/// The total number of bullets available to the player.
 		/// </summary>
-		private int totalNumberOfBullets;
+		private ObscuredInt totalNumberOfBullets;
 		/// <summary>
 		/// This holds reference to SMWeaponInHand component that is present in current gun player is holding
 		/// </summary>
@@ -88,24 +89,24 @@ namespace SandeepMattepu.Weapon
 		/// <summary>
 		/// This will determine the firing speed of the gun
 		/// </summary>
-		private float secondsPerBullet = 0.2f;
+		private ObscuredFloat secondsPerBullet = 0.2f;
 		/// <summary>
 		/// Use this as reference to check whether timer has crossed fireRate, if it crossed then perform firing
 		/// </summary>
-		private float timer = 0.0f;
+		private ObscuredFloat timer = 0.0f;
 		/// <summary>
 		/// This shows whether reloading of the gun is finished or not
 		/// </summary>
-		private bool isReloadingFinished = true;
+		private ObscuredBool isReloadingFinished = true;
 		/// <summary>
 		/// The total number of grenads the player has
 		/// </summary>
 		[SerializeField]
-		private int numberOfGrenadeBombs = 2;
+		private ObscuredInt numberOfGrenadeBombs = 2;
 		/// <summary>
 		/// Does throwing a grenade is finsihed
 		/// </summary>
-		private bool isThrowingGrenadeFinished = true;
+		private ObscuredBool isThrowingGrenadeFinished = true;
 		/// <summary>
 		/// The UI button for grenade input.
 		/// </summary>
@@ -116,7 +117,7 @@ namespace SandeepMattepu.Weapon
 		/// This value indicates whether owner client has began firing.
 		/// </summary>
 		///
-		private bool ownerClientBeganFiring = false;
+		private ObscuredBool ownerClientBeganFiring = false;
 		#endregion
 
 		/// <summary>
@@ -147,9 +148,9 @@ namespace SandeepMattepu.Weapon
 		/// The right hand of the player.
 		/// </summary>
 		public GameObject rightHand;
-		public float maxUpwardForceForGranade = 0.0f;
-		public float maxForwardForceForGrenade = 0.0f;
-		private float intensityOfThrow = 0.0f;
+		public ObscuredFloat maxUpwardForceForGranade = 0.0f;
+		public ObscuredFloat maxForwardForceForGrenade = 0.0f;
+		private ObscuredFloat intensityOfThrow = 0.0f;
 		// Use this for initialization
 		void Start () 
 		{

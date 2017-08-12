@@ -8,6 +8,8 @@
 
 using SandeepMattepu;
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
+
 /// <summary>
 /// This class will handle player health and armor and sets the UI accordingly based on those values
 /// </summary>
@@ -17,16 +19,16 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// <summary>
 	/// The max health player can have.
 	/// </summary>
-	public float MaxHealth = 100.0f;
+	public ObscuredFloat MaxHealth = 100.0f;
 	/// <summary>
 	/// The max armor player can carry.
 	/// </summary>
-	public float MaxArmor = 100.0f;
+	public ObscuredFloat MaxArmor = 100.0f;
 	/// <summary>
 	/// The current health value of the player
 	/// </summary>
 	/// <value>The player health.</value>
-	public float PlayerHealth 
+	public ObscuredFloat PlayerHealth 
 	{
 		get {	return playerHealth;	}
 	}
@@ -34,7 +36,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// The current armor value of the player
 	/// </summary>
 	/// <value>The armor points.</value>
-	public float ArmorPoints 
+	public ObscuredFloat ArmorPoints 
 	{
 		get {	return armorPoints;		}
 	}
@@ -42,14 +44,14 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// Indicates whether the player is holding the armor or not
 	/// </summary>
 	/// <value><c>true</c> if armor available; otherwise, <c>false</c>.</value>
-	public bool armorAvailable 
+	public ObscuredBool armorAvailable 
 	{
 		get {	return _armorAvailable;	}
 	}
 	/// <summary>
 	/// The value determines whether the player is used in multiplayer or single player
 	/// </summary>
-	public bool isUsingMultiPlayer;
+	public ObscuredBool isUsingMultiPlayer;
 	/// <summary>
 	/// This handles the spawning of the player when player is dead
 	/// </summary>
@@ -74,15 +76,15 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// <summary>
 	/// The current player health.
 	/// </summary>
-	private float playerHealth = 0.0f;
+	private ObscuredFloat playerHealth = 0.0f;
 	/// <summary>
 	/// The current armor points.
 	/// </summary>
-	private float armorPoints = 0.0f;
+	private ObscuredFloat armorPoints = 0.0f;
 	/// <summary>
 	/// This value explains whether the armor is available or not
 	/// </summary>
-	private bool _armorAvailable = false;
+	private ObscuredBool _armorAvailable = false;
 	/// <summary>
 	/// The photon view component attached to the game object.
 	/// </summary>
@@ -95,16 +97,16 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// The seconds to regenerate full health.
 	/// </summary>
 	[SerializeField]
-	private float secondsToRegenerateFullHealth = 4.0f;
+	private ObscuredFloat secondsToRegenerateFullHealth = 4.0f;
 	/// <summary>
 	/// The seconds to wait before health regeneration.
 	/// </summary>
 	[SerializeField]
-	private float secondsToWaitBeforeHealthRegeneration = 3.0f;
+	private ObscuredFloat secondsToWaitBeforeHealthRegeneration = 3.0f;
 	/// <summary>
 	/// The timer that ticks for health regeneration waiting.
 	/// </summary>
-	private float timerForHealthRegenWaiting = 0.0f;
+	private ObscuredFloat timerForHealthRegenWaiting = 0.0f;
 
 	#endregion
 
@@ -364,8 +366,9 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// <param name="byValue">Increase health of the player by value</param>
 	public void restoreHealthOfThePlayer(float byValue)
 	{
+		float maxHealthFromObscured = MaxHealth;
 		byValue = byValue < 0.0f ? 0.0f : byValue;
-		byValue = byValue > MaxHealth ? MaxHealth : byValue;
+		byValue = byValue > maxHealthFromObscured ? maxHealthFromObscured : byValue;
 		playerHealth += byValue;
 		playerHealth = playerHealth > MaxHealth ? MaxHealth : playerHealth;
 		setSliderValues ();

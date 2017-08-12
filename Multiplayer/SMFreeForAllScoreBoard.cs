@@ -8,6 +8,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.Multiplayer
 {
@@ -39,7 +40,7 @@ namespace SandeepMattepu.Multiplayer
 		{
 			foreach (KeyValuePair<int, string> playerNamePair in SMMultiplayerGame.PlayersIdAndName)
 			{
-				foreach (KeyValuePair<int, int> playerScoresPair in SMFreeForAll.PlayersIdAndScore)
+				foreach (KeyValuePair<int, ObscuredInt> playerScoresPair in SMFreeForAll.PlayersIdAndScore)
 				{
 					if (playerNamePair.Key == playerScoresPair.Key)
 					{

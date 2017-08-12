@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.Multiplayer
 {
@@ -70,7 +71,7 @@ namespace SandeepMattepu.Multiplayer
 		{
 			foreach (KeyValuePair<int, string> playerNamePair in SMTeamDeathMatch.PlayersIdAndName)
 			{
-				foreach (KeyValuePair<int, int> playerScoresPair in SMTeamDeathMatch.PlayersIdAndScore)
+				foreach (KeyValuePair<int, ObscuredInt> playerScoresPair in SMTeamDeathMatch.PlayersIdAndScore)
 				{
 					if (playerNamePair.Key == playerScoresPair.Key)
 					{

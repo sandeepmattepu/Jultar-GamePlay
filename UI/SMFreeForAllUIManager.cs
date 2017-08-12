@@ -55,12 +55,10 @@ namespace SandeepMattepu.UI
 			if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL) 
 			{
 				base.OnScoreChange (sender, whoKilled, whoDied);
-				PlayerScoreUI theEffectedPlayer = new PlayerScoreUI();
 				foreach(PlayerScoreUI psui in playerScoreAndUI)
 				{
 					if(psui.playerID == whoKilled)
 					{
-						theEffectedPlayer = psui;
 						playersTextUI [psui.uiIndex].text = psui.name + " " + psui.score + "/" + psui.deaths;
 					}
 					else if(psui.playerID == whoDied)

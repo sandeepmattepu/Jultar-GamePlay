@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.MobileTouch;
 using SandeepMattepu.Weapon;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.Multiplayer
 {
@@ -24,12 +25,12 @@ namespace SandeepMattepu.Multiplayer
 		/// The kill strak for health boost.
 		/// </summary>
 		[SerializeField]
-		private int killStreakForHealthBoost = 6;
+		private ObscuredInt killStreakForHealthBoost = 6;
 		/// <summary>
 		/// The kill streak for rocket.
 		/// </summary>
 		[SerializeField]
-		private int killStreakForRocket = 4;
+		private ObscuredInt killStreakForRocket = 4;
 		/// <summary>
 		/// The touch manager.
 		/// </summary>
@@ -144,7 +145,7 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// Becomes true when rocket is in aiming position
 		/// </summary>
-		private bool rocketIsInAimingPosition = false;
+		private ObscuredBool rocketIsInAimingPosition = false;
 
 		/// <summary>
 		/// Ability types.

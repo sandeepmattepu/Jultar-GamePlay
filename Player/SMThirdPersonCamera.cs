@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SandeepMattepu.MobileTouch;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 /// <summary>
 /// This class will act as third person camera to the player.
@@ -21,17 +22,17 @@ public class SMThirdPersonCamera : MonoBehaviour
 	/// This angle will determine how much the camera should rotate around the player along the verical axis passing through player
 	/// </summary>
 	[Tooltip("This angle will determine how much the camera should rotate around the player along the verical axis passing through player")]
-	public float angleMadeWithVerticalFromPlayer = 45;
+	public ObscuredFloat angleMadeWithVerticalFromPlayer = 45;
 	/// <summary>
 	/// This angle will determine how much the camera should rotate up and down from player along the horizontal axis passing through player 
 	/// </summary>
 	[Tooltip("This angle will determine how much the camera should rotate up and down from player along the horizontal axis passing through player")]
-	public float angleMadeWithHorizontalFromPlayer = 57;
+	public ObscuredFloat angleMadeWithHorizontalFromPlayer = 57;
 	/// <summary>
 	/// The distance in magnitude from camera to target where camera is focussed on
 	/// </summary>
 	[Tooltip("The distance in magnitude from camera to target where camera is focussed on")]
-	public float distanceFromTarget;
+	public ObscuredFloat distanceFromTarget;
 	/// <summary>
 	/// This value will determine how faster the camera should rotate around vertical axis passing through the charaacter, while player touch and drags on the screen
 	/// </summary>

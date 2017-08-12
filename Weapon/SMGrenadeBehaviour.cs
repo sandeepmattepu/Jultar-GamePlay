@@ -9,6 +9,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.Weapon
 {
@@ -20,11 +21,11 @@ namespace SandeepMattepu.Weapon
 		/// <summary>
 		/// This tells whether the game that is multiplayer or not
 		/// </summary>
-		public bool isMultiplayer = true;
+		public ObscuredBool isMultiplayer = true;
 		/// <summary>
 		/// The ID of local player.
 		/// </summary>
-		private int IDOfLocalPlayer = 0;
+		private ObscuredInt IDOfLocalPlayer = 0;
 		/// <summary>
 		/// The players present in grenade radius
 		/// </summary>
@@ -33,7 +34,7 @@ namespace SandeepMattepu.Weapon
 		/// The life span of grenade.
 		/// </summary>
 		[SerializeField]
-		private float lifeSpanOfGrenade = 2.5f;
+		private ObscuredFloat lifeSpanOfGrenade = 2.5f;
 		/// <summary>
 		/// The grenade particle effect.
 		/// </summary>
@@ -43,7 +44,7 @@ namespace SandeepMattepu.Weapon
 		/// The blast radius.
 		/// </summary>
 		[SerializeField]
-		private float blastRadius = 8.0f;
+		private ObscuredFloat blastRadius = 8.0f;
 		/// <summary>
 		/// The blast sound.
 		/// </summary>

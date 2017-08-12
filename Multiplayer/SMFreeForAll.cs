@@ -9,6 +9,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.Multiplayer
 {
@@ -20,20 +21,20 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// This dictionary holds player's score as value and player's Id as key
 		/// </summary>
-		private static Dictionary<int, int> playersIdAndScore = new Dictionary<int, int>();
+		private static Dictionary<int, ObscuredInt> playersIdAndScore = new Dictionary<int, ObscuredInt>();
 		/// <summary>
 		/// This dictionary holds player's score as value and player's Id as key
 		/// </summary>
-		public static Dictionary<int, int> PlayersIdAndScore
+		public static Dictionary<int, ObscuredInt> PlayersIdAndScore
 		{
 			get { return playersIdAndScore;	}
 		}
 		/// <summary>
 		/// Is the local player leading
 		/// </summary>
-		private static bool isLocalPlayerLeading = false;
+		private static ObscuredBool isLocalPlayerLeading = false;
 
-		public static bool IsLocalPlayerLeading {
+		public static ObscuredBool IsLocalPlayerLeading {
 			get {
 				return isLocalPlayerLeading;
 			}
@@ -75,7 +76,7 @@ namespace SandeepMattepu.Multiplayer
 			base.reportScore(whoKilledID, whoDiedID);
 			if (playersIdAndScore.ContainsKey(whoKilledID) && !IsGameOver)
 			{
-				int score = 0;
+				ObscuredInt score = 0;
 				playersIdAndScore.TryGetValue(whoKilledID, out score);
 				score ++;
 				playersIdAndScore.Remove(whoKilledID);
@@ -146,10 +147,10 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		private void checkIfLocalPlayerIsLeading()
 		{
-			int scoreMadeByLocalPlayer;
+			ObscuredInt scoreMadeByLocalPlayer;
 			if(PlayersIdAndScore.TryGetValue (PhotonNetwork.player.ID, out scoreMadeByLocalPlayer))
 			{
-				foreach(KeyValuePair<int,int> kvp in playersIdAndScore)
+				foreach(KeyValuePair<int,ObscuredInt> kvp in playersIdAndScore)
 				{
 					if(kvp.Value > scoreMadeByLocalPlayer)
 					{

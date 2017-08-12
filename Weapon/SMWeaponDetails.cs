@@ -9,16 +9,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 /// <summary>
 /// Use this struct to describe how much ammo is left for a gun, reload time and damage the gun can make
 /// </summary>
 public struct SMGunAmmoDetails
 {
-	public int bulletsLeft;
-	public int extraClipsLeft;
-	public float reloadTime;
-	public float damageMade;
+	public ObscuredInt bulletsLeft;
+	public ObscuredInt extraClipsLeft;
+	public ObscuredFloat reloadTime;
+	public ObscuredFloat damageMade;
 }
 
 /// <summary>

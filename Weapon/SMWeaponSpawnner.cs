@@ -35,12 +35,6 @@ namespace SandeepMattepu.Weapon
 				spawnWeaponsInArea ();
 			}
 		}
-		
-		// Update is called once per frame
-		void Update () 
-		{
-			
-		}
 
 		/// <summary>
 		/// This function handles the logic of spawnning the weapons based on the number of weapons to spawn and 

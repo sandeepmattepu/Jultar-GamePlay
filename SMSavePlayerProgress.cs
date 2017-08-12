@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SandeepMattepu.Multiplayer;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu
 {
@@ -21,23 +22,23 @@ namespace SandeepMattepu
 		/// <summary>
 		/// The killes made by player in his entire game life.
 		/// </summary>
-		private int killesMade = UserManager.Stats[(int)Stat.Kills];
+		private ObscuredInt killesMade = UserManager.Stats[(int)Stat.Kills];
 		/// <summary>
 		/// The deaths encountered by player in his entire game life..
 		/// </summary>
-		private int deathsEncountered = UserManager.Stats[(int)Stat.Deaths];
+		private ObscuredInt deathsEncountered = UserManager.Stats[(int)Stat.Deaths];
 		/// <summary>
 		/// The time played by the player in his entire game time.
 		/// </summary>
-		private int timePlayed = UserManager.Stats[(int)Stat.TimePlayed];
+		private ObscuredInt timePlayed = UserManager.Stats[(int)Stat.TimePlayed];
 		/// <summary>
 		/// The total wins made by player.
 		/// </summary>
-		private int totalWinsMadeByPlayer = UserManager.Stats[(int)Stat.Won];
+		private ObscuredInt totalWinsMadeByPlayer = UserManager.Stats[(int)Stat.Won];
 		/// <summary>
 		/// The total loses made by player.
 		/// </summary>
-		private int totalLosesMadeByPlayer = UserManager.Stats[(int)Stat.Lost];
+		private ObscuredInt totalLosesMadeByPlayer = UserManager.Stats[(int)Stat.Lost];
 
 		// Use this for initialization
 		void Start () 
@@ -56,8 +57,8 @@ namespace SandeepMattepu
 		private void savePlayerData()
 		{
 			int localPlayerId = PhotonNetwork.player.ID;
-			int deathsNumber = 0;
-			int scoreMade;
+			ObscuredInt deathsNumber = 0;
+			ObscuredInt scoreMade;
 			bool isDataReadyToSave = false;
 
 			timePlayed += (int)SMMultiplayerGame.INSTANCE.gameSessionTime;

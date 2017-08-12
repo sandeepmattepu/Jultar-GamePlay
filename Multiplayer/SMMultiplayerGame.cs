@@ -9,6 +9,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using SandeepMattepu.UI;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.Multiplayer
 {
@@ -28,12 +29,12 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// The xp made by the player after kill.
 		/// </summary>
-		public int xpMadeAfterKill = 10;
+		public ObscuredInt xpMadeAfterKill = 10;
 		/// <summary>
 		/// The total xp made by local player.
 		/// </summary>
-		private int totalXpMadeByPlayer = 0;
-		public int TotalXpMadeByPlayer {
+		private ObscuredInt totalXpMadeByPlayer = 0;
+		public ObscuredInt TotalXpMadeByPlayer {
 			get {
 				return totalXpMadeByPlayer;
 			}
@@ -56,11 +57,11 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// This dictionary holds number of deaths a player gone through
 		/// </summary>
-		protected static Dictionary<int, int> playerIdAndDeaths = new Dictionary<int, int>();
+		protected static Dictionary<int, ObscuredInt> playerIdAndDeaths = new Dictionary<int, ObscuredInt>();
 		/// <summary>
 		/// This dictionary holds player names as values with player id as key
 		/// </summary>
-		public static Dictionary<int, int> PlayerIdAndDeaths
+		public static Dictionary<int, ObscuredInt> PlayerIdAndDeaths
 		{ get { return playerIdAndDeaths;}	}
 
 		/// <summary>
@@ -118,7 +119,7 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// This value tells whether friendly fire is applicable in the game or not
 		/// </summary>
-		public bool friendlyFire;
+		public ObscuredBool friendlyFire;
 		/// <summary>
 		/// The no of players in multiplayer game
 		/// </summary>
@@ -126,8 +127,8 @@ namespace SandeepMattepu.Multiplayer
 		/// <summary>
 		/// The kill streak of local player.
 		/// </summary>
-		private int killStreak = 0;
-		public int KillStreak {
+		private ObscuredInt killStreak = 0;
+		public ObscuredInt KillStreak {
 			get {
 				return killStreak;
 			}
@@ -200,7 +201,7 @@ namespace SandeepMattepu.Multiplayer
 		/// <param name="ID">ID of the player who died</param>
 		private void addDeathInformation(int ID)
 		{
-			int numberOfDeaths;
+			ObscuredInt numberOfDeaths;
 			if(playerIdAndDeaths.TryGetValue (ID, out numberOfDeaths))
 			{
 				numberOfDeaths += 1;
