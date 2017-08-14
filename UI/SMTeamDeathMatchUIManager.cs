@@ -120,6 +120,7 @@ namespace SandeepMattepu.UI
 					{
 						team1Players [i].uiIndex = i;
 						playersTextUI [i].text = team1Players [i].name + " " + team1Players [i].score + "/" + team1Players [i].deaths;
+						setUIColor (playersTextUI [i], MpPlayerRaceType.Monio, team1Players [i].playerID);
 					}
 				}
 				else if(theEffectedPlayer.teamIndex == 2)
@@ -129,6 +130,7 @@ namespace SandeepMattepu.UI
 					{
 						team2Players [i-3].uiIndex = i;
 						playersTextUI [i].text = team2Players [i-3].name + " " + team2Players [i-3].score + "/" + team2Players [i-3].deaths;
+						setUIColor (playersTextUI [i], MpPlayerRaceType.Jagur, team2Players [i].playerID);
 					}
 				}
 				int team1ScoreData = SMTeamDeathMatch.Team1Score;
@@ -150,7 +152,7 @@ namespace SandeepMattepu.UI
 						{
 							psui.uiIndex = i;
 							playersTextUI [i].text = psui.name + " " + psui.score + "/" + psui.deaths;
-							setUIColorBasedOnID (playersTextUI [i], MpPlayerRaceType.Monio);
+							setUIColor (playersTextUI [i], MpPlayerRaceType.Monio, psui.playerID);
 							team1Players.Add (psui);
 							break;
 						}
@@ -158,7 +160,7 @@ namespace SandeepMattepu.UI
 						{
 							psui.uiIndex = i;
 							playersTextUI [i].text = psui.name + " " + psui.score + "/" + psui.deaths;
-							setUIColorBasedOnID (playersTextUI [i], MpPlayerRaceType.Jagur);
+							setUIColor (playersTextUI [i], MpPlayerRaceType.Jagur, psui.playerID);
 							team2Players.Add (psui);
 							break;
 						}
@@ -171,9 +173,32 @@ namespace SandeepMattepu.UI
 		/// Sets the text user interface color based on player ID/Team ID.
 		/// </summary>
 		/// <param name="textUI">Text UI.</param>
-		private void setUIColorBasedOnID(Text textUI, MpPlayerRaceType raceType)
+		/// <param name="raceType">The race type</param>
+		private void setUIColor(Text textUI, MpPlayerRaceType raceType)
 		{
 			if(raceType == localPlayerRace)
+			{
+				textUI.color = friendlyTeamColor;
+			}
+			else
+			{
+				textUI.color = enemyTeamColor;
+			}
+		}
+
+		/// <summary>
+		/// Sets the text user interface color based on player ID/Team ID.
+		/// </summary>
+		/// <param name="textUI">Text UI.</param>
+		/// <param name="raceType">The race type</param>
+		/// <param name="ID">The Id of the player</param>
+		private void setUIColor(Text textUI, MpPlayerRaceType raceType, int ID)
+		{
+			if(ID == PhotonNetwork.player.ID)
+			{
+				textUI.color = localPlayerColor;
+			}
+			else if(raceType == localPlayerRace)
 			{
 				textUI.color = friendlyTeamColor;
 			}
@@ -233,8 +258,8 @@ namespace SandeepMattepu.UI
 			{
 				localPlayerRace = MpPlayerRaceType.Jagur;
 			}
-			setUIColorBasedOnID (monioRaceTotalScore, MpPlayerRaceType.Monio);
-			setUIColorBasedOnID (jagurRaceTotalScore, MpPlayerRaceType.Jagur);
+			setUIColor (monioRaceTotalScore, MpPlayerRaceType.Monio);
+			setUIColor (jagurRaceTotalScore, MpPlayerRaceType.Jagur);
 			monioRaceTotalScore.text = "Monio" + System.Environment.NewLine + "0";
 			jagurRaceTotalScore.text = "Jagur" + System.Environment.NewLine + "0";
 			assignUIIndexToPlayers ();

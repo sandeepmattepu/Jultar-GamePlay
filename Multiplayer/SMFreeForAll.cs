@@ -67,7 +67,6 @@ namespace SandeepMattepu.Multiplayer
 		/// <param name="whoDiedID">Identifier who died.</param>
 		public override void reportScore(int whoKilledID, int whoDiedID)
 		{
-			base.reportScore(whoKilledID, whoDiedID);
 			if (playersIdAndScore.ContainsKey(whoKilledID) && !IsGameOver)
 			{
 				ObscuredInt score = 0;
@@ -81,6 +80,7 @@ namespace SandeepMattepu.Multiplayer
 					checkIfLocalPlayerIsLeading ();
 				}
 			}
+			base.reportScore(whoKilledID, whoDiedID);
 		}
 
 		/// <summary>
