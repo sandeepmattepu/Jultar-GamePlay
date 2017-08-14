@@ -133,6 +133,15 @@ namespace SandeepMattepu.Multiplayer
 				return killStreak;
 			}
 		}
+		/// <summary>
+		/// This becomes true after game countdown is finished at the beginning
+		/// </summary>
+		private ObscuredBool isGameStarter = false;
+		public ObscuredBool IsGameStarter {
+			get {
+				return isGameStarter;
+			}
+		}
 
 		/// <summary>
 		/// This holds reference to the local player in the game
@@ -168,7 +177,29 @@ namespace SandeepMattepu.Multiplayer
 			{
 				OnGameRulesLoaded ();
 			}
+		}
 
+		protected virtual void Update()
+		{
+			checkGameTime ();
+		}
+
+		/// <summary>
+		/// This function checs wether the time of the game has reached max time of the game
+		/// </summary>
+		protected virtual void checkGameTime()
+		{
+			if(IsGameStarter)
+			{
+				if (gameTimer >= gameSessionTime)
+				{
+					gameOver ();
+				}
+				else
+				{
+					gameTimer += Time.deltaTime;
+				}
+			}
 		}
 
 		/// <summary>
@@ -245,6 +276,14 @@ namespace SandeepMattepu.Multiplayer
 				OnGameOver ();
 			}
 			isGameOver = true;
+		}
+
+		/// <summary>
+		/// This function will make game rules to start operating
+		/// </summary>
+		public void startTheGame()
+		{
+			isGameStarter = true;
 		}
 	}
 

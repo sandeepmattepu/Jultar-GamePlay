@@ -92,12 +92,6 @@ namespace SandeepMattepu.Multiplayer
 			splitPlayersIntoTeams ();
 		}
 
-		// Update is called once per frame
-		void Update()
-		{
-			checkGameTime ();
-		}
-
 		/// <summary>
 		/// This function downloads Xp reward data from server if there is any offer for players based on that day
 		/// </summary>
@@ -191,19 +185,13 @@ namespace SandeepMattepu.Multiplayer
 			return orderedPlayers;
 		}
 
-		/// <summary>
-		/// This function checs wether the time of the game has reached max time of the game
-		/// </summary>
-		private void checkGameTime()
+		protected override void checkGameTime ()
 		{
-			if (gameTimer >= gameSessionTime)
+			base.checkGameTime ();
+
+			if (gameTimer >= gameSessionTime) 
 			{
 				checkIfPlayerTeamIsLeading ();
-				gameOver ();
-			}
-			else
-			{
-				gameTimer += Time.deltaTime;
 			}
 		}
 

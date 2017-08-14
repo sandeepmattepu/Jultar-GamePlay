@@ -14,6 +14,7 @@ using SandeepMattepu.Multiplayer;
 using System.Collections;
 using SandeepMattepu.UI;
 using System.Collections.Generic;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 
 /// <summary>
@@ -118,10 +119,19 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// The area observer 2.
 	/// </summary>
 	public SMAreaObserver areaObserver2;
+	/// <summary>
+	/// The UI represents when the match starts in
+	/// </summary>
+	public Text matchStartsInUI;
+	/// <summary>
+	/// This is initial count down before match start
+	/// </summary>
+	public ObscuredInt timeDelayToStartMatch = 10;
 	// Use this for initialization
 	void Start () 
 	{
 		spawnGameRules();
+		hideUIAfterDeath ();		// To make player in ideal state until countdown is finished
 		StartCoroutine ("spawnPlayersAfterDelay");		// To fix double instantiation of the player 
 		SMMultiplayerGame.OnGameOver += hideUIAfterDeath;
 	}
@@ -175,6 +185,20 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 
 			scoreManager.setGameType (gameRulesThatSpawned);
 		}
+		StartCoroutine ("tickCountDownAtBeginingOfGame");
+	}
+
+	IEnumerator tickCountDownAtBeginingOfGame()
+	{
+		while(timeDelayToStartMatch > 0)
+		{
+			matchStartsInUI.text = "Match starts in " + timeDelayToStartMatch;
+			timeDelayToStartMatch -= 1;
+			yield return new WaitForSeconds (1.0f);
+		}
+		showUIAfterRespwan ();	// This makes hidden UI to show to player
+		matchStartsInUI.gameObject.SetActive(false);
+		gameRulesThatSpawned.startTheGame ();
 	}
 
 	/// <summary>

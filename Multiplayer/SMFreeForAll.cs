@@ -60,12 +60,6 @@ namespace SandeepMattepu.Multiplayer
 			startDownloadingXpRewardData();
 		}
 
-		// Update is called once per frame
-		void Update()
-		{
-			checkGameTime();
-		}
-
 		/// <summary>
 		/// Update the score to the score board
 		/// </summary>
@@ -103,19 +97,12 @@ namespace SandeepMattepu.Multiplayer
 			}
 		}
 
-		/// <summary>
-		/// This function checs wether the time of the game has reached max time of the game
-		/// </summary>
-		private void checkGameTime()
+		protected override void checkGameTime ()
 		{
-			if (gameTimer >= gameSessionTime)
+			base.checkGameTime ();
+			if (gameTimer >= gameSessionTime) 
 			{
 				checkIfLocalPlayerIsLeading ();
-				gameOver ();
-			}
-			else
-			{
-				gameTimer += Time.deltaTime;
 			}
 		}
 
