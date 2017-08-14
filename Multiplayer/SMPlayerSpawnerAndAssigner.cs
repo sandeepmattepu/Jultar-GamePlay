@@ -133,6 +133,12 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 		spawnGameRules();
 		hideUIAfterDeath ();		// To make player in ideal state until countdown is finished
 		StartCoroutine ("spawnPlayersAfterDelay");		// To fix double instantiation of the player
+		SMTeamDeathMatch.OnGameOver += hideUIAfterDeath;
+	}
+
+	void OnDestroy()
+	{
+		SMTeamDeathMatch.OnGameOver -= hideUIAfterDeath;
 	}
 
 	IEnumerator spawnPlayersAfterDelay()
@@ -367,14 +373,17 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// </summary>
 	private void showUIAfterRespwan()
 	{
-		foreach(GameObject playerUI in playInteractableUI)
+		if(!SMMultiplayerGame.IsGameOver)
 		{
-			playerUI.SetActive(true);
-		}
+			foreach(GameObject playerUI in playInteractableUI)
+			{
+				playerUI.SetActive(true);
+			}
 
-		foreach(GameObject playerUI in hideUIEvenAferRespawn)
-		{
-			playerUI.SetActive (false);
+			foreach(GameObject playerUI in hideUIEvenAferRespawn)
+			{
+				playerUI.SetActive (false);
+			}
 		}
 	}
 
