@@ -132,13 +132,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	{
 		spawnGameRules();
 		hideUIAfterDeath ();		// To make player in ideal state until countdown is finished
-		StartCoroutine ("spawnPlayersAfterDelay");		// To fix double instantiation of the player 
-		SMMultiplayerGame.OnGameOver += hideUIAfterDeath;
-	}
-
-	void OnDestroy()
-	{
-		SMMultiplayerGame.OnGameOver -= hideUIAfterDeath;
+		StartCoroutine ("spawnPlayersAfterDelay");		// To fix double instantiation of the player
 	}
 
 	IEnumerator spawnPlayersAfterDelay()

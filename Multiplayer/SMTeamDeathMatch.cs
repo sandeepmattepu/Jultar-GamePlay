@@ -262,9 +262,9 @@ namespace SandeepMattepu.Multiplayer
 					}
 				}
 				checkIfPlayerTeamIsLeading ();
+				base.reportScore(whoKilledID, whoDiedID);
 				checkEndGameScore(score);
 			}
-			base.reportScore(whoKilledID, whoDiedID);
 		}
 
 		/// <summary>

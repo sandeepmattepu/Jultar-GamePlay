@@ -209,20 +209,23 @@ namespace SandeepMattepu.Multiplayer
 		/// <param name="whoDiedID">ID of the player who died.</param>
 		public virtual void reportScore(int whoKilledID, int whoDiedID)
 		{
-			addDeathInformation (whoDiedID);
-			if(PhotonNetwork.player.ID == whoKilledID)
+			if(!isGameOver)
 			{
-				SMShowXpMadeInstantly.addXPToQueue(xpMadeAfterKill);
-				killStreak += 1;
-				totalXpMadeByPlayer += xpMadeAfterKill;
-				if(OnKillStreakChange != null)
+				addDeathInformation (whoDiedID);
+				if(PhotonNetwork.player.ID == whoKilledID)
 				{
-					OnKillStreakChange (killStreak);
+					SMShowXpMadeInstantly.addXPToQueue(xpMadeAfterKill);
+					killStreak += 1;
+					totalXpMadeByPlayer += xpMadeAfterKill;
+					if(OnKillStreakChange != null)
+					{
+						OnKillStreakChange (killStreak);
+					}
 				}
-			}
-			if(OnScoreChange != null)
-			{
-				OnScoreChange (this, whoKilledID, whoDiedID);
+				if(OnScoreChange != null)
+				{
+					OnScoreChange (this, whoKilledID, whoDiedID);
+				}
 			}
 		}
 

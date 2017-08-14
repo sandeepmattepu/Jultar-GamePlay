@@ -130,7 +130,7 @@ namespace SandeepMattepu.UI
 					{
 						team2Players [i-3].uiIndex = i;
 						playersTextUI [i].text = team2Players [i-3].name + " " + team2Players [i-3].score + "/" + team2Players [i-3].deaths;
-						setUIColor (playersTextUI [i], MpPlayerRaceType.Jagur, team2Players [i].playerID);
+						setUIColor (playersTextUI [i], MpPlayerRaceType.Jagur, team2Players [i-3].playerID);
 					}
 				}
 				int team1ScoreData = SMTeamDeathMatch.Team1Score;
