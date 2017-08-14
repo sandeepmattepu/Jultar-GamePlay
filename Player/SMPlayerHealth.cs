@@ -399,9 +399,12 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	{
 		if(stream.isWriting)
 		{
-			stream.SendNext (PlayerHealth);
-			stream.SendNext (ArmorPoints);
-			stream.SendNext (_armorAvailable);
+			float playerHealthDataToTransfer = PlayerHealth;
+			float armorDataToTransfer = ArmorPoints;
+			bool armorAvaialableData = _armorAvailable;
+			stream.SendNext (playerHealthDataToTransfer);
+			stream.SendNext (armorDataToTransfer);
+			stream.SendNext (armorAvaialableData);
 		}
 		else
 		{

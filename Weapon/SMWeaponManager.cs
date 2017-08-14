@@ -347,10 +347,15 @@ namespace SandeepMattepu.Weapon
 					{
 						Vector3 pos = new Vector3 (transform.position.x, yPos, transform.position.z);
 						// Building ammo data to be transferred
-						object[] data = {	dataToBeTransferredToFloorGun.bulletsLeft,
-											dataToBeTransferredToFloorGun.extraClipsLeft,
-											dataToBeTransferredToFloorGun.reloadTime,
-											dataToBeTransferredToFloorGun.damageMade
+						int bulletsLeftData = dataToBeTransferredToFloorGun.bulletsLeft;
+						int extraClipsLeftData = dataToBeTransferredToFloorGun.extraClipsLeft;
+						float reloadTimeData = dataToBeTransferredToFloorGun.reloadTime;
+						float damageMadedata = dataToBeTransferredToFloorGun.damageMade;
+
+						object[] data = {	bulletsLeftData,
+											extraClipsLeftData,
+											reloadTimeData,
+											damageMadedata
 										};
 						PhotonNetwork.InstantiateSceneObject (weaponToInstantiate.name, pos, Quaternion.identity, 0, data);
 					}
@@ -358,12 +363,16 @@ namespace SandeepMattepu.Weapon
 					{
 						// send request to master to instantiate a prefab there
 						Vector3 pos = new Vector3 (transform.position.x, yPos, transform.position.z);
-						// Building ammo data to be transferred
-						object[] data = {	dataToBeTransferredToFloorGun.bulletsLeft,
-											dataToBeTransferredToFloorGun.extraClipsLeft,
-											dataToBeTransferredToFloorGun.reloadTime,
-											dataToBeTransferredToFloorGun.damageMade
-						};
+						int bulletsLeftData = dataToBeTransferredToFloorGun.bulletsLeft;
+						int extraClipsLeftData = dataToBeTransferredToFloorGun.extraClipsLeft;
+						float reloadTimeData = dataToBeTransferredToFloorGun.reloadTime;
+						float damageMadedata = dataToBeTransferredToFloorGun.damageMade;
+
+						object[] data = {	bulletsLeftData,
+											extraClipsLeftData,
+											reloadTimeData,
+											damageMadedata
+										};
 						photonViewComponent.RPC ("sendRequestToInstantiateGun", PhotonTargets.MasterClient, weaponToInstantiate.name, pos, data);
 					}
 				}

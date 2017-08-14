@@ -709,7 +709,8 @@ namespace SandeepMattepu.Weapon
 		{
 			if(stream.isWriting)
 			{
-				stream.SendNext (ownerClientBeganFiring);
+				bool dataToTransfer = ownerClientBeganFiring;
+				stream.SendNext (dataToTransfer);
 			}
 			else
 			{
