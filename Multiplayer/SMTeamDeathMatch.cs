@@ -69,6 +69,24 @@ namespace SandeepMattepu.Multiplayer
 				return isLocalPlayerTeamLeading;
 			}
 		}
+		/// <summary>
+		/// The score of team 1
+		/// </summary>
+		private static ObscuredInt team1Score;
+		public static ObscuredInt Team1Score {
+			get {
+				return team1Score;
+			}
+		}
+		/// <summary>
+		/// The score of team 2
+		/// </summary>
+		private static ObscuredInt team2Score;
+		public static ObscuredInt Team2Score {
+			get {
+				return team2Score;
+			}
+		}
 
 		void Awake()
 		{
@@ -82,6 +100,8 @@ namespace SandeepMattepu.Multiplayer
 			playerIdAndDeaths.Clear ();
 			playersInTeam.Clear ();
 			isLocalPlayerTeamLeading = false;
+			team1Score = 0;
+			team2Score = 0;
 		}
 
 		// Use this for initialization
@@ -218,7 +238,6 @@ namespace SandeepMattepu.Multiplayer
 		/// <param name="whoDiedID">Identifier who died.</param>
 		public override void reportScore(int whoKilledID, int whoDiedID)
 		{
-			base.reportScore(whoKilledID, whoDiedID);
 			if (playersIdAndScore.ContainsKey(whoKilledID) && !IsGameOver)
 			{
 				ObscuredInt score = 0;
@@ -226,17 +245,26 @@ namespace SandeepMattepu.Multiplayer
 				score ++;
 				playersIdAndScore.Remove(whoKilledID);
 				playersIdAndScore.Add(whoKilledID, score);
-				checkEndGameScore(score);
 				foreach(PlayerInTeam pit in playersInTeam)
 				{
 					if(pit.ID == whoKilledID)
 					{
 						pit.Score = score;
+						if(pit.TeamID == 1)
+						{
+							team1Score += 1;
+						}
+						else if(pit.TeamID == 2)
+						{
+							team2Score += 1;
+						}
 						break;
 					}
 				}
 				checkIfPlayerTeamIsLeading ();
+				checkEndGameScore(score);
 			}
+			base.reportScore(whoKilledID, whoDiedID);
 		}
 
 		/// <summary>
@@ -246,7 +274,7 @@ namespace SandeepMattepu.Multiplayer
 		{
 			if (hasKillsLimit)
 			{
-				if (score >= maxKillsToEndGame)
+				if (team1Score >= maxKillsToEndGame || team2Score >= maxKillsToEndGame)
 				{
 					checkIfPlayerTeamIsLeading ();
 					gameOver ();

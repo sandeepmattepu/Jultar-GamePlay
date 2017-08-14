@@ -73,6 +73,16 @@ namespace SandeepMattepu.UI
 		/// The type of the multiplayer rules in the game.
 		/// </summary>
 		protected MPGameTypes multiplayerType;
+		/// <summary>
+		/// The color of the enemy team.
+		/// </summary>
+		[SerializeField]
+		protected Color enemyTeamColor;
+		/// <summary>
+		/// The color of the local player.
+		/// </summary>
+		[SerializeField]
+		protected Color localPlayerColor;
 
 		protected void Awake () 
 		{

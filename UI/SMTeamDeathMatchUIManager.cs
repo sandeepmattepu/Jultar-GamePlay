@@ -27,6 +27,36 @@ namespace SandeepMattepu.UI
 		/// The team2 players in the game.
 		/// </summary>
 		private List<PlayerScoreUI> team2Players = new List<PlayerScoreUI>();
+		/// <summary>
+		/// This text ui shows 3 Vs 3(example)
+		/// </summary>
+		[SerializeField]
+		private Text pVsPText;
+		/// <summary>
+		/// Text UI for monio race total score.
+		/// </summary>
+		[SerializeField]
+		private Text monioRaceTotalScore;
+		/// <summary>
+		/// Text UI for jagur race total score.
+		/// </summary>
+		[SerializeField]
+		private Text jagurRaceTotalScore;
+		/// <summary>
+		/// The local player race.
+		/// </summary>
+		private MpPlayerRaceType localPlayerRace;
+		/// <summary>
+		/// The color of the friendly team.
+		/// </summary>
+		[SerializeField]
+		private Color friendlyTeamColor;
+
+		protected virtual void Start()
+		{
+			int halfTeam = PhotonNetwork.playerList.Length / 2;
+			pVsPText.text = halfTeam + " VS " + (PhotonNetwork.playerList.Length - halfTeam);
+		}
 
 		void hideUIInNonContext()
 		{
@@ -36,6 +66,9 @@ namespace SandeepMattepu.UI
 				{
 					textUI.gameObject.SetActive (false);
 				}
+				pVsPText.gameObject.SetActive (false);
+				monioRaceTotalScore.gameObject.SetActive (false);
+				jagurRaceTotalScore.gameObject.SetActive (false);
 			}
 		}
 
@@ -98,6 +131,10 @@ namespace SandeepMattepu.UI
 						playersTextUI [i].text = team2Players [i-3].name + " " + team2Players [i-3].score + "/" + team2Players [i-3].deaths;
 					}
 				}
+				int team1ScoreData = SMTeamDeathMatch.Team1Score;
+				int team2ScoreData = SMTeamDeathMatch.Team2Score;
+				monioRaceTotalScore.text = "Monio"+ System.Environment.NewLine + team1ScoreData.ToString();
+				jagurRaceTotalScore.text = "Jagur"+ System.Environment.NewLine + team2ScoreData.ToString();
 			}
 		}
 
@@ -113,6 +150,7 @@ namespace SandeepMattepu.UI
 						{
 							psui.uiIndex = i;
 							playersTextUI [i].text = psui.name + " " + psui.score + "/" + psui.deaths;
+							setUIColorBasedOnID (playersTextUI [i], MpPlayerRaceType.Monio);
 							team1Players.Add (psui);
 							break;
 						}
@@ -120,11 +158,28 @@ namespace SandeepMattepu.UI
 						{
 							psui.uiIndex = i;
 							playersTextUI [i].text = psui.name + " " + psui.score + "/" + psui.deaths;
+							setUIColorBasedOnID (playersTextUI [i], MpPlayerRaceType.Jagur);
 							team2Players.Add (psui);
 							break;
 						}
 					}
 				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the text user interface color based on player ID/Team ID.
+		/// </summary>
+		/// <param name="textUI">Text UI.</param>
+		private void setUIColorBasedOnID(Text textUI, MpPlayerRaceType raceType)
+		{
+			if(raceType == localPlayerRace)
+			{
+				textUI.color = friendlyTeamColor;
+			}
+			else
+			{
+				textUI.color = enemyTeamColor;
 			}
 		}
 
@@ -170,6 +225,18 @@ namespace SandeepMattepu.UI
 				playersTextUI [6 - unUsedUILength].gameObject.SetActive (false);
 			}
 
+			if(SMTeamDeathMatch.LocalPlayerTeamIndex == 1)
+			{
+				localPlayerRace = MpPlayerRaceType.Monio;
+			}
+			else if(SMTeamDeathMatch.LocalPlayerTeamIndex == 2)
+			{
+				localPlayerRace = MpPlayerRaceType.Jagur;
+			}
+			setUIColorBasedOnID (monioRaceTotalScore, MpPlayerRaceType.Monio);
+			setUIColorBasedOnID (jagurRaceTotalScore, MpPlayerRaceType.Jagur);
+			monioRaceTotalScore.text = "Monio" + System.Environment.NewLine + "0";
+			jagurRaceTotalScore.text = "Jagur" + System.Environment.NewLine + "0";
 			assignUIIndexToPlayers ();
 		}
 	}	
