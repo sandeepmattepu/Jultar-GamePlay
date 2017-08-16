@@ -196,30 +196,30 @@ public class SMThirdPersonCamera : MonoBehaviour
 	{
 		if(targetCameraShouldFocus != this.transform && targetCameraShouldFocus != null)
 		{
-			Vector3 directionVector = virtualCameraTransform.position - targetCameraShouldFocus.position;
-			rayFromTargetToCamera = new Ray (targetCameraShouldFocus.position, directionVector);
-			Debug.DrawRay (targetCameraShouldFocus.position, directionVector);
-			Physics.Raycast (rayFromTargetToCamera, out hitInfo, distanceFromTarget);
-			if(hitInfo.collider != null && hitInfo.collider.tag == "Building")
-			{
-				transform.position = Vector3.Lerp(transform.position, hitInfo.point, Time.deltaTime * cameraTransitionSpeed);
-				transform.LookAt (targetCameraShouldFocus);
-				if(meshRenderer != null)
-				{
-					meshRenderer.enabled = true;
-					meshRenderer = null;
-				}
-			}
-			else if(hitInfo.collider != null && hitInfo.collider.tag == "HideMesh")
-			{
-				meshRenderer = hitInfo.collider.gameObject.GetComponent<MeshRenderer>();
-				if(meshRenderer != null)
-				{
-					meshRenderer.enabled = false;
-				}
-			}
-			else
-			{
+//			Vector3 directionVector = virtualCameraTransform.position - targetCameraShouldFocus.position;
+//			rayFromTargetToCamera = new Ray (targetCameraShouldFocus.position, directionVector);
+//			Debug.DrawRay (targetCameraShouldFocus.position, directionVector);
+//			Physics.Raycast (rayFromTargetToCamera, out hitInfo, distanceFromTarget);
+//			if(hitInfo.collider != null && hitInfo.collider.tag == "Building")
+//			{
+//				transform.position = Vector3.Lerp(transform.position, hitInfo.point, Time.deltaTime * cameraTransitionSpeed);
+//				transform.LookAt (targetCameraShouldFocus);
+//				if(meshRenderer != null)
+//				{
+//					meshRenderer.enabled = true;
+//					meshRenderer = null;
+//				}
+//			}
+//			else if(hitInfo.collider != null && hitInfo.collider.tag == "HideMesh")
+//			{
+//				meshRenderer = hitInfo.collider.gameObject.GetComponent<MeshRenderer>();
+//				if(meshRenderer != null)
+//				{
+//					meshRenderer.enabled = false;
+//				}
+//			}
+//			else
+//			{
 				cameraOrientation = Quaternion.Euler(angleMadeWithHorizontalFromPlayer, -angleMadeWithVerticalFromPlayer, 0);
 				cameraPosition = cameraOrientation * new Vector3(0, 0, -distanceFromTarget) + targetCameraShouldFocus.position;
 				transform.rotation = Quaternion.Slerp(transform.rotation, cameraOrientation, Time.deltaTime * cameraTransitionSpeed);
@@ -229,7 +229,7 @@ public class SMThirdPersonCamera : MonoBehaviour
 					meshRenderer.enabled = true;
 					meshRenderer = null;
 				}
-			}
+			//}
 		}
 	}
 
