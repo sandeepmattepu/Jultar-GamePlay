@@ -102,7 +102,7 @@ namespace SandeepMattepu.MobileTouch
 							{
 								if(OnSingleGameTap != null)
 								{
-									OnSingleGameTap (this, gameTouch);
+									OnSingleGameTap (this, gameTouch.position);
 								}
 							}
 							isGameTouchMade = false;

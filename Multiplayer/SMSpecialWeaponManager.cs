@@ -167,7 +167,7 @@ namespace SandeepMattepu.Multiplayer
 		{
 			if(Input.GetMouseButtonDown(0))
 			{
-				requestForRocketFire (this, new Touch ());
+				requestForRocketFire (this, Input.mousePosition);
 			}
 		}
 
@@ -352,18 +352,18 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="touch">Touch.</param>
-		private void requestForRocketFire(object sender, Touch touch)
+		private void requestForRocketFire(object sender, Vector3 touchPositionOnScreen)
 		{
 			if(rocketIsInAimingPosition)
 			{
 				Ray touchRay;
 				if(Input.touchCount > 0)
 				{
-					touchRay = Camera.main.ScreenPointToRay (touch.position);
+					touchRay = Camera.main.ScreenPointToRay (touchPositionOnScreen);
 				}
 				else if(Input.GetMouseButtonDown(0))
 				{
-					touchRay = Camera.main.ScreenPointToRay (Input.mousePosition);
+					touchRay = Camera.main.ScreenPointToRay (touchPositionOnScreen);
 				}
 				RaycastHit hitInfo;
 				int layerMask = 1 << 18;				// 18 is to ignore barriers collider

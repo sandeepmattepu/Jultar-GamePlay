@@ -27,7 +27,6 @@ public class SMWeaponInHand : MonoBehaviour
 	/// <summary>
 	/// This will determine the firing speed of the gun
 	/// </summary>
-	[Range(0.1f,2.0f)]
 	public ObscuredFloat secondsPerBullet = 0.2f;
 	/// <summary>
 	/// This holds reference to audio clip that this gun makes while firing
