@@ -526,6 +526,10 @@ namespace SandeepMattepu.Weapon
 				totalNumberOfBullets = (ammoDetails.bulletsLeft + (noOfBulletsInClip(guntype) * ammoDetails.extraClipsLeft));
 				// Get gun sound and assign to audio source
 				audioClip = weaponInHandComponent.getGunSound ();
+				if(audioSource == null)
+				{
+					audioSource = GetComponent<AudioSource>();
+				}
 				audioSource.clip = audioClip;
 				// Assigning fire rate
 				secondsPerBullet = weaponInHandComponent.getSecondsPerBullet();

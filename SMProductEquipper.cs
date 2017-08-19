@@ -196,7 +196,7 @@ namespace SandeepMattepu
 				{
 					if(ObscuredPrefs.HasKey("DateAndTime"))
 					{
-						ObscuredPrefs.SetString ("DateAndTime", "03000");
+						ObscuredPrefs.SetString ("DateAndTime", "13000");
 					}
 				}
 			}
@@ -217,7 +217,7 @@ namespace SandeepMattepu
 			}
 			else
 			{
-				string value = "03000";
+				string value = "13000";
 				ObscuredPrefs.SetString ("DateAndTime", value);		// Key is to trick the hackers
 			}
 		}
