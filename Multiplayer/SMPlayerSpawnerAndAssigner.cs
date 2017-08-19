@@ -418,5 +418,6 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			}
 		}
 		specialWeaponManager.registerMultiplayerGame(gameRulesThatSpawned);
+		gameRulesThatSpawned.xpMadeAfterKill *= SMProductEquipper.INSTANCE.CurrentExpBoostMultiplier;
 	}
 }
