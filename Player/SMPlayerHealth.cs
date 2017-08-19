@@ -375,6 +375,16 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	}
 
 	/// <summary>
+	/// Adds the health points to max health by.
+	/// </summary>
+	/// <param name="byValue">By value.</param>
+	public void addPointsToMaxHealthBy(float byValue)
+	{
+		MaxHealth += byValue;
+		playerHealth = MaxHealth;
+	}
+
+	/// <summary>
 	/// Call this function when player is respawned and needs health
 	/// </summary>
 	public void restoreHealthOfThePlayer()
