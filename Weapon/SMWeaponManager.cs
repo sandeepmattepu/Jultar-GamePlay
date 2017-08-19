@@ -103,6 +103,63 @@ namespace SandeepMattepu.Weapon
 			playerFiring = GetComponent<SMPlayerFiring> ();
 			photonViewComponent = GetComponent<PhotonView> ();
 			findCurrentHoldingWeapon ();	// At the begining player will have some weapon
+			if((isUsingMultiplayer && photonViewComponent.isMine) || !isUsingMultiplayer)
+			{
+				setGunBasedOnCustomizationData();
+			}
+		}
+
+		/// <summary>
+		/// This function will make sure that player is holding the appropriate gun based on what he choosed in customization panel
+		/// </summary>
+		private void setGunBasedOnCustomizationData()
+		{
+			GUN_TYPE playerChoosenType = (GUN_TYPE)((int)SMProductEquipper.INSTANCE.CurrentEquippedGunType);
+			GameObject temp = null;
+
+			switch(playerChoosenType)
+			{
+			case GUN_TYPE.GreenEye:
+				temp = greeneyeHoldingPrefab;
+				break;
+			case GUN_TYPE.July11:
+				temp = july11HoldingPrefab;
+				break;
+			case GUN_TYPE.LeoBlackDog:
+				temp = leoBlackDogHoldingPrefab;
+				break;
+			case GUN_TYPE.Mrozyk:
+				temp = mrozykHoldingPrefab;
+				break;
+			case GUN_TYPE.Blonde:
+				temp = blondeHoldingPrefab;
+				break;
+			case GUN_TYPE.Raini:
+				temp = rainiHoldingPrefab;
+				break;
+			case GUN_TYPE.Smilere:
+				temp = smilereHoldingPrefab;
+				break;
+			case GUN_TYPE.Sniper:
+				temp = sniperHoldingPrefab;
+				break;
+			}
+			currentHoldingGun.transform.SetParent (null);			// Detach child before destroying to avoid bugs
+			Destroy (currentHoldingGun);
+			currentHoldingGun = null;
+			Transform position = temp.transform;
+			GameObject gunToHold = Instantiate (temp, transform) as GameObject;
+			gunToHold.transform.localPosition = position.position;
+			gunToHold.transform.localRotation = position.rotation;
+
+			playerFiring.reportWeaponChange ();
+			findCurrentHoldingWeapon ();
+			placeIKAppropriately ();
+
+			if(isUsingMultiplayer && photonViewComponent.isMine)		// Send weapon change message to other remote clients who represent this client
+			{
+				photonViewComponent.RPC ("setGunTypeOfRemoteBotPlayer", PhotonTargets.Others, identifierOfWeaponHolding.ToString ());
+			}
 		}
 
 		/// <summary>
@@ -460,6 +517,14 @@ namespace SandeepMattepu.Weapon
 
 			if(gunToInstantiate != null)	// Perform instantiation if there is change in weapon
 			{
+				// Below code is to avoid null error
+				ikControl = GetComponent<IKControl> ();
+				playerFiring = GetComponent<SMPlayerFiring> ();
+				photonViewComponent = GetComponent<PhotonView> ();
+				if(currentHoldingGun == null)
+				{
+					findCurrentHoldingWeapon ();
+				}
 				Transform posAndRot = currentHoldingGun.transform;
 				currentHoldingGun.transform.SetParent (null);
 				Destroy (currentHoldingGun);
