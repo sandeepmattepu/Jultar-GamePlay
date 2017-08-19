@@ -27,7 +27,7 @@ public struct SMGunAmmoDetails
 /// </summary>
 public enum GUN_TYPE
 {
-	July11,
+	July11 = 0,
 	GreenEye,
 	LeoBlackDog,
 	Mrozyk,
