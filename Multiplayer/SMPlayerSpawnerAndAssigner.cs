@@ -152,7 +152,11 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// </summary>
 	private void spawnPlayers()
 	{
-		GameObject player = PhotonNetwork.Instantiate (playerToBeSpawned.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+		object[] dataToTransfer = { 
+			((int)SMProductEquipper.INSTANCE.CurrentHelmet)
+		};
+		GameObject player = PhotonNetwork.Instantiate (playerToBeSpawned.name, Vector3.zero, Quaternion.identity, 0
+			, dataToTransfer) as GameObject;
 		Transform playerPosition = placePlayerPositionAtStart ();
 		player.transform.position = playerPosition.position;
 
@@ -310,11 +314,15 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// </summary>
 	public void spawnSinglePlayer()
 	{
+		object[] dataToTransfer = { 
+			((int)SMProductEquipper.INSTANCE.CurrentHelmet)
+		};
 		if(OnPlayerRespawned != null)
 		{
 			OnPlayerRespawned ();
 		}
-		GameObject player = PhotonNetwork.Instantiate(playerToBeSpawned.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+		GameObject player = PhotonNetwork.Instantiate(playerToBeSpawned.name, Vector3.zero, Quaternion.identity, 0,
+			dataToTransfer) as GameObject;
 		if(areaObserver1.NumberOfEnimeiesInRegion > areaObserver2.NumberOfEnimeiesInRegion)
 		{
 			int random = Random.Range (0, region2SpawnPoints.Length);

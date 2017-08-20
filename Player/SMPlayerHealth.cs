@@ -179,8 +179,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 					setSliderValues ();
 					hidePlayerInteractiveUI();
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
-					Destroy(this.gameObject);
 					createDeadBody(true, true);
+					Destroy(this.gameObject);
 				}
 			}
 		}
@@ -240,8 +240,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 					setSliderValues ();
 					hidePlayerInteractiveUI();
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
-					Destroy(this.gameObject);
 					createDeadBody(true, true);
+					Destroy(this.gameObject);
 				}
 			}
 		}
@@ -299,6 +299,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 		SMDestroyRagdoll destroyRagdoll = ragdollBody.GetComponent<SMDestroyRagdoll>();
 		destroyRagdoll.isMultiplayer = isMultiplayer;
 		destroyRagdoll.canListenToAudio = canListenAudio;
+		ragdollBody.GetComponent<SMPlayerEquipper> ().assignHelmetToDeadBody ((int)SMProductEquipper.INSTANCE.CurrentHelmet);
 		Camera gameCamera = transform.GetComponent<SMPlayerController>().characterFocusedCamera;
 		if(gameCamera != null)
 		{
@@ -368,8 +369,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 					spawnManager.spawnAfterDeath();
 					hidePlayerInteractiveUI();
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
-					Destroy(this.gameObject);
 					createDeadBody(true, true);
+					Destroy(this.gameObject);
 				}
 			}
 		}
@@ -436,8 +437,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 					spawnManager.spawnAfterDeath();
 					hidePlayerInteractiveUI();
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
-					Destroy(this.gameObject);
 					createDeadBody(true, true);
+					Destroy(this.gameObject);
 				}
 			}
 		}
@@ -548,8 +549,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	[PunRPC]
 	public void sendDeathMessage()
 	{
-		Destroy(this.gameObject);
 		createDeadBody(true, false);
+		Destroy(this.gameObject);
 	}
 
 	#region IPunObservable implementation

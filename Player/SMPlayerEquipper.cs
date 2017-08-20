@@ -37,41 +37,83 @@ namespace SandeepMattepu
 		private ObscuredFloat pilotarControllerSpeed = 1.0f;
 		[SerializeField]
 		private ObscuredFloat tsTacticalControllerSpeed = 1.05f;
+		private PhotonView photonViewComponent;
+		[SerializeField]
+		private ObscuredBool isUsingMultiplayer = false;
+		private ObscuredInt currentEquippedHelmet = 0;
+		/// <summary>
+		/// Gets the current equipped helmet.
+		/// </summary>
+		/// <value>The int value of current equipped helmet.</value>
+		public ObscuredInt CurrentEquippedHelmet {
+			get {
+				return currentEquippedHelmet;
+			}
+		}
 
 		void Start () 
 		{
 			playerHealth = GetComponent<SMPlayerHealth> ();
 			animator = GetComponent<Animator> ();
-			assignHelmet ();
+			photonViewComponent = GetComponent<PhotonView> ();
+
+			if(photonViewComponent != null && isUsingMultiplayer)
+			{
+				object[] dataFromInstantiation = photonViewComponent.instantiationData;
+				if(dataFromInstantiation != null)
+				{
+					assignHelmet ((int)dataFromInstantiation[0]);
+				}
+			}
+			else if(!isUsingMultiplayer)
+			{
+				assignHelmet ((int)(SMProductEquipper.INSTANCE.CurrentHelmet));
+			}
 		}
 
-		private void assignHelmet()
+		private void assignHelmet(int helmetTypeValue)
 		{
-			Helmet_Type helmetType = ((Helmet_Type)((int)SMProductEquipper.INSTANCE.CurrentHelmet));
+			currentEquippedHelmet = helmetTypeValue;
+			Helmet_Type helmetType = ((Helmet_Type)helmetTypeValue);
+			float speedOfAnimator = 1.0f;
 			switch(helmetType)
 			{
 			case Helmet_Type.BREATHOR:
 				brethorHelmet.SetActive (true);
 				playerHealth.addPointsToMaxHealthBy (25.0f);
 				playerHealth.setPlayerImmunityTowardsGasBombs (true);
-				animator.speed = breathorControllerSpeed;
+				speedOfAnimator = breathorControllerSpeed;
 				break;
 			case Helmet_Type.OPERATIVE:
 				operativeHelmet.SetActive (true);
 				playerHealth.addPointsToMaxHealthBy (10.0f);
-				animator.speed = operativeControllerSpeed;
+				speedOfAnimator = operativeControllerSpeed;
 				break;
 			case Helmet_Type.PILOTAR:
 				pilotarHelmet.SetActive (true);
 				playerHealth.addPointsToMaxHealthBy (20.0f);
-				animator.speed = pilotarControllerSpeed;
+				speedOfAnimator = pilotarControllerSpeed;
 				break;
 			case Helmet_Type.TS_TACTICAL:
 				tsTacticalHelmet.SetActive (true);
 				playerHealth.addPointsToMaxHealthBy (10.0f);
-				animator.speed = tsTacticalControllerSpeed;
+				speedOfAnimator = tsTacticalControllerSpeed;
 				break;
 			}
+
+			if(animator != null)
+			{
+				animator.speed = speedOfAnimator;
+			}
+		}
+
+		/// <summary>
+		/// Assigns the helmet to dead body.
+		/// </summary>
+		/// <param name="helmetType">Helmet type.</param>
+		public void assignHelmetToDeadBody(int helmetType)
+		{
+			assignHelmet (helmetType);
 		}
 	}
 }
