@@ -127,6 +127,14 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// This is initial count down before match start
 	/// </summary>
 	public ObscuredInt timeDelayToStartMatch = 10;
+	/// <summary>
+	/// The respawn time for player who has operative helmet.
+	/// </summary>
+	public ObscuredFloat respawnTimeForOperative = 1.0f;
+	/// <summary>
+	/// The respawn time for player who has no helmets.
+	/// </summary>
+	public ObscuredFloat respawnTimeForNormalPlayers = 3.0f;
 	// Use this for initialization
 	void Start () 
 	{
@@ -297,13 +305,17 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	{
 		respawnText.gameObject.SetActive(true);
 		youDiedText.gameObject.SetActive (true);
-		respawnText.text = "Respawn in 3";
-		yield return new WaitForSeconds(1.0f);
-		respawnText.text = "Respawn in 2";
-		yield return new WaitForSeconds(1.0f);
-		respawnText.text = "Respawn in 1";
-		yield return new WaitForSeconds(1.0f);
-
+		float spawnTime = respawnTimeForNormalPlayers;
+		if((int)SMProductEquipper.INSTANCE.CurrentHelmet == (int)Helmet_Type.OPERATIVE)		// Operative has faster respawn
+		{
+			spawnTime = respawnTimeForOperative;
+		}
+		while(spawnTime > 0.0f)
+		{
+			respawnText.text = "Respawn in " + spawnTime.ToString();
+			spawnTime -= 1.0f;
+			yield return new WaitForSeconds (1.0f);
+		}
 		respawnText.gameObject.SetActive(false);
 		youDiedText.gameObject.SetActive (false);
 		spawnSinglePlayer();

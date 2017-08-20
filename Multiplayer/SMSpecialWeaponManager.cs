@@ -367,6 +367,7 @@ namespace SandeepMattepu.Multiplayer
 				}
 				RaycastHit hitInfo;
 				int layerMask = 1 << 18;				// 18 is to ignore barriers collider
+				layerMask |= 1 << 8;					// 8 is to ignore player(To avoid rocket flare on player head)
 				layerMask = ~layerMask;
 				if(Physics.Raycast(touchRay, out hitInfo, 500.0f, layerMask))
 				{
