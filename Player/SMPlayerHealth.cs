@@ -49,6 +49,13 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 		get {	return _armorAvailable;	}
 	}
 	/// <summary>
+	/// Gets a value indicating whether player is immune to gas bombs.
+	/// </summary>
+	public ObscuredBool IsPlayerImmuneToGasBombs 
+	{
+		get { return isPlayerImmuneToGasBombs; }
+	}
+	/// <summary>
 	/// The value determines whether the player is used in multiplayer or single player
 	/// </summary>
 	public ObscuredBool isUsingMultiPlayer;
@@ -107,6 +114,10 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// The timer that ticks for health regeneration waiting.
 	/// </summary>
 	private ObscuredFloat timerForHealthRegenWaiting = 0.0f;
+	/// <summary>
+	/// Is player immune to gas bombs.
+	/// </summary>
+	private ObscuredBool isPlayerImmuneToGasBombs = false;
 
 	#endregion
 
@@ -135,6 +146,67 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// <param name="value">Value.</param>
 	public void reduceHealthPointsBy(float value)
 	{
+		if(_armorAvailable)			// If player has armor
+		{
+			if(armorPoints > 0)			// If player has armor
+			{
+				armorPoints -= value;
+			}
+
+			if(armorPoints <= 0)			// Handling the condition when armor becomes negative
+			{
+				playerHealth -= armorPoints;
+				_armorAvailable = false;
+			}
+		} 
+		else 					// If player won't have any armor
+		{
+			playerHealth -= value;
+			if(playerHealth <= 0)
+			{
+				playerHealth = 0.0f;
+				// remove hands ik, deactivate collider of player perform death and destroy weapon in hand drop the weapon in hand to floor
+			}
+		}
+		if(isUsingMultiPlayer)
+		{
+			if(photonViewComponent.isMine)
+			{
+				setSliderValues ();
+
+				if(playerHealth <= 0.0f)
+				{
+					setSliderValues ();
+					hidePlayerInteractiveUI();
+					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
+					Destroy(this.gameObject);
+					createDeadBody(true, true);
+				}
+			}
+		}
+		else
+		{
+			setSliderValues ();
+			if (playerHealth <= 0.0f)
+			{
+				hidePlayerInteractiveUI();
+				createDeadBody(false, true);
+				Destroy(this.gameObject);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Call this function to set the amount of damage the player recieved from gas related weapons
+	/// </summary>
+	/// <param name="value">Value.</param>
+	/// <param name="isGasWeapon">Is the weapon creating damage is gas bomb.</param>
+	public void reduceHealthPointsBy(float value, bool isGasWeapon)
+	{
+		if(isGasWeapon && isPlayerImmuneToGasBombs)
+		{
+			return;
+		}
 		if(_armorAvailable)			// If player has armor
 		{
 			if(armorPoints > 0)			// If player has armor
@@ -314,6 +386,74 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	}
 
 	/// <summary>
+	/// Call this function to set the amount of damage the player recieved by gas related weapons.
+	/// USE THIS FUNCTION ONLY IN MULTIPLAYER CONTEXT.  
+	/// </summary>
+	/// <param name="value">Value.</param>
+	/// <param name="ID">Id of the player who made the damage.</param>
+	/// <param name="isGasBomb">Is death due to gas bomb.</param>
+	public void reduceHealthPointsBy(float value, int ID, bool isGasBomb)
+	{
+		if(isGasBomb && isPlayerImmuneToGasBombs)
+		{
+			return;
+		}
+		if (_armorAvailable)            // If player has armor
+		{
+			if (armorPoints > 0)            // If player has armor
+			{
+				armorPoints -= value;
+			}
+
+			if (armorPoints <= 0)           // Handling the condition when armor becomes negative
+			{
+				playerHealth -= armorPoints;
+				_armorAvailable = false;
+			}
+		}
+		else                    // If player won't have any armor
+		{
+			playerHealth -= value;
+			if (playerHealth <= 0)
+			{
+				playerHealth = 0.0f;
+				// remove hands ik, deactivate collider of player perform death and destroy weapon in hand drop the weapon in hand to floor
+			}
+		}
+		if (isUsingMultiPlayer)
+		{
+			if (photonViewComponent.isMine)
+			{
+				setSliderValues();
+
+				if (playerHealth <= 0.0f)
+				{
+					if(ID >= 0)				// Sometimes ID will have -ve value due to death traps
+					{
+						playerIdentifier.reportScore(ID);
+					}
+					setSliderValues();
+					spawnManager.spawnAfterDeath();
+					hidePlayerInteractiveUI();
+					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
+					Destroy(this.gameObject);
+					createDeadBody(true, true);
+				}
+			}
+		}
+		else
+		{
+			setSliderValues();
+			if(playerHealth <= 0.0f)
+			{
+				hidePlayerInteractiveUI();
+				createDeadBody(false, true);
+				Destroy(this.gameObject);
+			}
+		}
+	}
+
+	/// <summary>
 	/// This function hides player interactble UI when he dies
 	/// </summary>
 	private void hidePlayerInteractiveUI()
@@ -391,6 +531,15 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	{
 		playerHealth = MaxHealth;
 		setSliderValues ();
+	}
+
+	/// <summary>
+	/// Sets the player immunity towards gas bombs.
+	/// </summary>
+	/// <param name="isImmune">If player is immune.</param>
+	public void setPlayerImmunityTowardsGasBombs(bool isImmune)
+	{
+		isPlayerImmuneToGasBombs = isImmune;
 	}
 
 	/// <summary>

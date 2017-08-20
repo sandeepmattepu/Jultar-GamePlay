@@ -53,6 +53,7 @@ namespace SandeepMattepu
 			case Helmet_Type.BREATHOR:
 				brethorHelmet.SetActive (true);
 				playerHealth.addPointsToMaxHealthBy (25.0f);
+				playerHealth.setPlayerImmunityTowardsGasBombs (true);
 				animator.speed = breathorControllerSpeed;
 				break;
 			case Helmet_Type.OPERATIVE:

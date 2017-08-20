@@ -147,12 +147,12 @@ namespace SandeepMattepu.Weapon
 				int idOfThisPlayer = player.GetComponent<PhotonView> ().owner.ID;
 				if(idOfThisPlayer == IDOfLocalPlayer)
 				{
-					player.reduceHealthPointsBy (damage, photonViewComponent.owner.ID);
+					player.reduceHealthPointsBy (damage, photonViewComponent.owner.ID, true);
 				}
 			}
 			else
 			{
-				player.reduceHealthPointsBy (damage);
+				player.reduceHealthPointsBy (damage, true);
 			}
 		}
 
