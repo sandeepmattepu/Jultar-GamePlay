@@ -175,6 +175,19 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		[SerializeField]
 		private ObscuredInt numberOfBulletsFromDeadBody = 20;
+		/// <summary>
+		/// Can player gun has laser
+		/// </summary>
+		private ObscuredBool canHaveLaserToGun = false;
+		/// <summary>
+		/// The laser game object.
+		/// </summary>
+		[SerializeField]
+		private GameObject laserGameObject;
+		/// <summary>
+		/// The color of laser.
+		/// </summary>
+		private Color colorOfLaser;
 		// Use this for initialization
 		void Start () 
 		{
@@ -256,7 +269,8 @@ namespace SandeepMattepu.Weapon
 
 		void OnCollisionEnter(Collision collision)
 		{
-			if(collision.transform.parent.gameObject.tag == "Ragdoll")
+			Transform parent = collision.transform.parent;
+			if(parent != null && parent.gameObject.tag == "Ragdoll")
 			{
 				if(isUsingMultiplayer && photonViewComponent.isMine)
 				{
@@ -378,9 +392,35 @@ namespace SandeepMattepu.Weapon
 							gunTip = childInChild.gameObject;
 							lineRenderer = gunTip.GetComponent<LineRenderer> ();
 							lightFromGunFire = gunTip.GetComponent<Light> ();
+							assignLaserToGun (childInChild);
+							// Hide gun aim of other players in player's device
+							if(isUsingMultiplayer && !photonViewComponent.isMine)
+							{
+								Transform gunAim = childInChild.FindChild ("Aimer");
+								gunAim.gameObject.SetActive (false);
+							}
 						}
 					}
 					return;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Assigns the laser to gun.
+		/// </summary>
+		/// <param name="gunTip">Gun tip.</param>
+		private void assignLaserToGun(Transform gunTip)
+		{
+			if((isUsingMultiplayer && photonViewComponent.isMine) || (!isUsingMultiplayer))
+			{
+				if(canHaveLaserToGun)
+				{
+					GameObject laserAfterInstantiation = Instantiate (laserGameObject, Vector3.zero,
+						                                     laserGameObject.transform.rotation, gunTip) as GameObject;
+					SMLaserBehaviour laserBehaviour = laserAfterInstantiation.GetComponent<SMLaserBehaviour> ();
+					laserBehaviour.colorOfLaser = colorOfLaser;
+					laserBehaviour.maxDistanceOfLaser /= gunTip.parent.localScale.x;
 				}
 			}
 		}
@@ -808,6 +848,17 @@ namespace SandeepMattepu.Weapon
 		public void assignPlayerCollectBulletsFromDeadBody(bool canCollect)
 		{
 			canRecieveBulletsFromDeadBody = canCollect;
+		}
+
+		/// <summary>
+		/// Assigns the whether player gun can have laser.
+		/// </summary>
+		/// <param name="canHave">Can have laser.</param>
+		/// <param name="colorOfLas">Color of laser.</param>
+		public void assignWhetherPlayerHasLaser(bool canHave, Color colorOfLas)
+		{
+			canHaveLaserToGun = canHave;
+			colorOfLaser = colorOfLas;
 		}
 
 		#region IPunObservable implementation

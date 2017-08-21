@@ -61,6 +61,7 @@ namespace SandeepMattepu
 			photonViewComponent = GetComponent<PhotonView> ();
 
 			assignPerks ((int)SMProductEquipper.INSTANCE.CurrentPerk);
+			assignLaser ((int)SMProductEquipper.INSTANCE.CurrentLaserType);
 			if(photonViewComponent != null && isUsingMultiplayer)
 			{
 				object[] dataFromInstantiation = photonViewComponent.instantiationData;
@@ -72,6 +73,53 @@ namespace SandeepMattepu
 			else if(!isUsingMultiplayer)
 			{
 				assignHelmet ((int)(SMProductEquipper.INSTANCE.CurrentHelmet));
+			}
+		}
+
+		/// <summary>
+		/// Assigns the laser to all player guns.
+		/// </summary>
+		/// <param name="laserType">Laser type.</param>
+		private void assignLaser(int laserType)
+		{
+			ObscuredBool canAssignLaser = false;
+			if(playerFiring != null)
+			{
+				if(isUsingMultiplayer && photonViewComponent.isMine)
+				{
+					canAssignLaser = true;
+				}
+				else if(!isUsingMultiplayer)
+				{
+					canAssignLaser = true;
+				}
+
+				if(canAssignLaser)
+				{
+					Laser_Type laserTypePlayerGunCanHave = (Laser_Type)laserType;
+					Color colorOfLaser = Color.white;
+					ObscuredBool canHaveLaserGun = false;
+					switch(laserTypePlayerGunCanHave)
+					{
+					case Laser_Type.BLUE_LASER:
+						canHaveLaserGun = true;
+						colorOfLaser = Color.blue;
+						break;
+					case Laser_Type.GREEN_LASER:
+						canHaveLaserGun = true;
+						colorOfLaser = Color.green;
+						break;
+					case Laser_Type.RED_LASER:
+						canHaveLaserGun = true;
+						colorOfLaser = Color.red;
+						break;
+					}
+
+					if(canHaveLaserGun)
+					{
+						playerFiring.assignWhetherPlayerHasLaser (true, colorOfLaser);
+					}
+				}
 			}
 		}
 
