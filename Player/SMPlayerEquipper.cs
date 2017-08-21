@@ -60,6 +60,7 @@ namespace SandeepMattepu
 			animator = GetComponent<Animator> ();
 			photonViewComponent = GetComponent<PhotonView> ();
 
+			assignPerks ((int)SMProductEquipper.INSTANCE.CurrentPerk);
 			if(photonViewComponent != null && isUsingMultiplayer)
 			{
 				object[] dataFromInstantiation = photonViewComponent.instantiationData;
@@ -74,6 +75,44 @@ namespace SandeepMattepu
 			}
 		}
 
+		/// <summary>
+		/// Assigns the perks to the player.
+		/// </summary>
+		private void assignPerks(int perkType)
+		{
+			if(playerFiring != null)
+			{
+				ObscuredBool canAssignPerk = false;
+				if(isUsingMultiplayer && photonViewComponent.isMine)
+				{
+					canAssignPerk = true;
+				}
+				else if(!isUsingMultiplayer)
+				{
+					canAssignPerk = true;
+				}
+
+				if(canAssignPerk)
+				{
+					Perks_Type perkTypeForPlayer = (Perks_Type)perkType;
+
+					switch (perkTypeForPlayer) 
+					{
+					case Perks_Type.RUSHER:
+						playerFiring.addGrenadeBombsToPlayerBy (1);
+						break;
+					case Perks_Type.STRATEGY:
+						playerFiring.addMagazineToGunBy (1);
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// This function assigns helmet to the player
+		/// </summary>
+		/// <param name="helmetTypeValue">Helmet type value.</param>
 		private void assignHelmet(int helmetTypeValue)
 		{
 			currentEquippedHelmet = helmetTypeValue;

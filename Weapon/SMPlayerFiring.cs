@@ -158,6 +158,14 @@ namespace SandeepMattepu.Weapon
 		/// </summary>
 		[SerializeField]
 		private ObscuredFloat damagePerMadeByGrenadeAtBoundary = 0.15f;
+		/// <summary>
+		/// This describes whether magazine is already added
+		/// </summary>
+		private ObscuredBool hadAlreadyAddedMagazineToGun = false;
+		/// <summary>
+		/// Has this instance receieved ammo data from player for first gun/ for first time
+		/// </summary>
+		private ObscuredBool hasRecievedAmmoDataFirstTime = false;
 		// Use this for initialization
 		void Start () 
 		{
@@ -544,6 +552,7 @@ namespace SandeepMattepu.Weapon
 			{
 				weaponInHandComponent = gunPlayerIsHolding.GetComponent<SMWeaponInHand> ();
 				ammoDetails = weaponInHandComponent.getAmmunationDetails ();
+				hasRecievedAmmoDataFirstTime = true;
 				guntype = weaponInHandComponent.getGunType ();
 				totalNumberOfBullets = (ammoDetails.bulletsLeft + (noOfBulletsInClip(guntype) * ammoDetails.extraClipsLeft));
 				// Get gun sound and assign to audio source
@@ -727,6 +736,41 @@ namespace SandeepMattepu.Weapon
 				audioSource.Stop ();
 			}
 			audioSource.Play ();
+		}
+
+		/// <summary>
+		/// Adds the grenade bombs to player by.
+		/// </summary>
+		/// <param name="value">Value to add.</param>
+		public void addGrenadeBombsToPlayerBy(int value)
+		{
+			value = value < 0 ? 0 : value;
+			numberOfGrenadeBombs += value;
+		}
+
+		/// <summary>
+		/// Adds the magazine to gun by given value.
+		/// </summary>
+		/// <param name="value">Value to increase.</param>
+		public void addMagazineToGunBy(int value)
+		{
+			value = value < 0 ? 0 : value;
+			if(!hadAlreadyAddedMagazineToGun)
+			{
+				hadAlreadyAddedMagazineToGun = true;
+				StartCoroutine (addMagazineToGunAtProperTime (value));		// This is to avoid bugs when other scripts are called first
+			}
+		}
+
+		/// <summary>
+		/// This gets executed only when this instance has got data about ammo data
+		/// </summary>
+		private IEnumerator addMagazineToGunAtProperTime(int value)
+		{
+			yield return new WaitUntil (() => hasRecievedAmmoDataFirstTime);
+			ammoDetails.extraClipsLeft += value;
+			totalNumberOfBullets = (ammoDetails.bulletsLeft + (noOfBulletsInClip(guntype) * ammoDetails.extraClipsLeft));
+			setAmmoDetailsUI ();
 		}
 
 		#region IPunObservable implementation
