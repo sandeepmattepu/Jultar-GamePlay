@@ -104,7 +104,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// The seconds to regenerate full health.
 	/// </summary>
 	[SerializeField]
-	private ObscuredFloat secondsToRegenerateFullHealth = 4.0f;
+	private ObscuredFloat secondsToRegenerateFullHealth = 8.0f;
 	/// <summary>
 	/// The seconds to wait before health regeneration.
 	/// </summary>
@@ -523,6 +523,16 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	{
 		MaxHealth += byValue;
 		playerHealth = MaxHealth;
+	}
+
+	/// <summary>
+	/// Assigns the health regeneration rate.
+	/// </summary>
+	/// <param name="secondsToFillHealth">Seconds to fill health.</param>
+	public void assignHealthRegenerationRate(float secondsToFillHealth)
+	{
+		secondsToFillHealth = secondsToFillHealth < 0.5f? 0.5f : secondsToFillHealth;
+		secondsToRegenerateFullHealth = secondsToFillHealth;
 	}
 
 	/// <summary>

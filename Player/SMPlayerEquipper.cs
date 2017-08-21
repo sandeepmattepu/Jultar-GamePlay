@@ -80,7 +80,7 @@ namespace SandeepMattepu
 		/// </summary>
 		private void assignPerks(int perkType)
 		{
-			if(playerFiring != null)
+			if(playerFiring != null && playerHealth != null)
 			{
 				ObscuredBool canAssignPerk = false;
 				if(isUsingMultiplayer && photonViewComponent.isMine)
@@ -103,6 +103,9 @@ namespace SandeepMattepu
 						break;
 					case Perks_Type.STRATEGY:
 						playerFiring.addMagazineToGunBy (1);
+						break;
+					case Perks_Type.TRY_HARD:
+						playerHealth.assignHealthRegenerationRate (4.0f);
 						break;
 					}
 				}
