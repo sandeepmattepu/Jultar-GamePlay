@@ -269,18 +269,17 @@ namespace SandeepMattepu.Weapon
 
 		void OnCollisionEnter(Collision collision)
 		{
-			Transform parent = collision.transform.parent;
+			Transform parent = collision.transform.root;
 			if(parent != null && parent.gameObject.tag == "Ragdoll")
 			{
 				if(isUsingMultiplayer && photonViewComponent.isMine)
 				{
 					if(canRecieveBulletsFromDeadBody)
 					{
-						bool isLootSuccessful = collision.gameObject.GetComponent<SMDeadBodyBulletsHolder> ().lootSpareBulletsFromBody ();
+						bool isLootSuccessful = parent.gameObject.GetComponent<SMDeadBodyBulletsHolder> ().lootSpareBulletsFromBody ();
 						if(isLootSuccessful)
 						{
-							ammoDetails.bulletsLeft += numberOfBulletsFromDeadBody;
-							totalNumberOfBullets = (ammoDetails.bulletsLeft + (noOfBulletsInClip(guntype) * ammoDetails.extraClipsLeft));
+							totalNumberOfBullets += numberOfBulletsFromDeadBody;
 							setAmmoDetailsUI ();
 						}
 					}
@@ -392,12 +391,23 @@ namespace SandeepMattepu.Weapon
 							gunTip = childInChild.gameObject;
 							lineRenderer = gunTip.GetComponent<LineRenderer> ();
 							lightFromGunFire = gunTip.GetComponent<Light> ();
-							assignLaserToGun (childInChild);
+							bool hasAssignedLaser = assignLaserToGun (childInChild);
 							// Hide gun aim of other players in player's device
 							if(isUsingMultiplayer && !photonViewComponent.isMine)
 							{
 								Transform gunAim = childInChild.FindChild ("Aimer");
-								gunAim.gameObject.SetActive (false);
+								if(gunAim != null)
+								{
+									gunAim.gameObject.SetActive (false);
+								}
+							}
+							else if(hasAssignedLaser)
+							{
+								Transform gunAim = childInChild.FindChild ("Aimer");
+								if(gunAim != null)
+								{
+									gunAim.gameObject.SetActive (false);
+								}
 							}
 						}
 					}
@@ -409,20 +419,26 @@ namespace SandeepMattepu.Weapon
 		/// <summary>
 		/// Assigns the laser to gun.
 		/// </summary>
+		/// <returns><c>true</c>, if laser to gun was assigned, <c>false</c> When when no assigned.</returns>
 		/// <param name="gunTip">Gun tip.</param>
-		private void assignLaserToGun(Transform gunTip)
+		private bool assignLaserToGun(Transform gunTip)
 		{
+			photonViewComponent = GetComponent<PhotonView> ();
 			if((isUsingMultiplayer && photonViewComponent.isMine) || (!isUsingMultiplayer))
 			{
 				if(canHaveLaserToGun)
 				{
 					GameObject laserAfterInstantiation = Instantiate (laserGameObject, Vector3.zero,
 						                                     laserGameObject.transform.rotation, gunTip) as GameObject;
+					laserAfterInstantiation.transform.localPosition = Vector3.zero;
+					laserAfterInstantiation.transform.localRotation = Quaternion.Euler (new Vector3 (0.0f, 90.0f, 0.0f));
 					SMLaserBehaviour laserBehaviour = laserAfterInstantiation.GetComponent<SMLaserBehaviour> ();
 					laserBehaviour.colorOfLaser = colorOfLaser;
 					laserBehaviour.maxDistanceOfLaser /= gunTip.parent.localScale.x;
+					return true;
 				}
 			}
+			return false;
 		}
 
 		/// <summary>
@@ -859,6 +875,8 @@ namespace SandeepMattepu.Weapon
 		{
 			canHaveLaserToGun = canHave;
 			colorOfLaser = colorOfLas;
+
+			findCurrentHoldingWeapon ();
 		}
 
 		#region IPunObservable implementation
