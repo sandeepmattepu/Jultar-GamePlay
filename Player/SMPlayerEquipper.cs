@@ -107,6 +107,9 @@ namespace SandeepMattepu
 					case Perks_Type.TRY_HARD:
 						playerHealth.assignHealthRegenerationRate (4.0f);
 						break;
+					case Perks_Type.THINKER:
+						playerFiring.assignPlayerCollectBulletsFromDeadBody (true);
+						break;
 					}
 				}
 			}

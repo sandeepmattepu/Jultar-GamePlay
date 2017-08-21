@@ -166,6 +166,15 @@ namespace SandeepMattepu.Weapon
 		/// Has this instance receieved ammo data from player for first gun/ for first time
 		/// </summary>
 		private ObscuredBool hasRecievedAmmoDataFirstTime = false;
+		/// <summary>
+		/// Can recieve bullets from dead body.
+		/// </summary>
+		private ObscuredBool canRecieveBulletsFromDeadBody = false;
+		/// <summary>
+		/// The number of bullets that player can receive from dead body.
+		/// </summary>
+		[SerializeField]
+		private ObscuredInt numberOfBulletsFromDeadBody = 20;
 		// Use this for initialization
 		void Start () 
 		{
@@ -219,8 +228,7 @@ namespace SandeepMattepu.Weapon
 				ikControl.OnClientReloadFinished -= OnClientReloadAnimationFinished;
 			}
 		}
-		
-		// Update is called once per frame
+
 		void Update () 
 		{
 			if(photonViewComponent.isMine)
@@ -242,6 +250,26 @@ namespace SandeepMattepu.Weapon
 				{
 					timer = 0.0f;
 					stopAllComponenets ();
+				}
+			}
+		}
+
+		void OnCollisionEnter(Collision collision)
+		{
+			if(collision.transform.parent.gameObject.tag == "Ragdoll")
+			{
+				if(isUsingMultiplayer && photonViewComponent.isMine)
+				{
+					if(canRecieveBulletsFromDeadBody)
+					{
+						bool isLootSuccessful = collision.gameObject.GetComponent<SMDeadBodyBulletsHolder> ().lootSpareBulletsFromBody ();
+						if(isLootSuccessful)
+						{
+							ammoDetails.bulletsLeft += numberOfBulletsFromDeadBody;
+							totalNumberOfBullets = (ammoDetails.bulletsLeft + (noOfBulletsInClip(guntype) * ammoDetails.extraClipsLeft));
+							setAmmoDetailsUI ();
+						}
+					}
 				}
 			}
 		}
@@ -771,6 +799,15 @@ namespace SandeepMattepu.Weapon
 			ammoDetails.extraClipsLeft += value;
 			totalNumberOfBullets = (ammoDetails.bulletsLeft + (noOfBulletsInClip(guntype) * ammoDetails.extraClipsLeft));
 			setAmmoDetailsUI ();
+		}
+
+		/// <summary>
+		/// Assigns whether player can collect bullets from dead body.
+		/// </summary>
+		/// <param name="canCollect">If set to <c>true</c> then player can collect bullets.</param>
+		public void assignPlayerCollectBulletsFromDeadBody(bool canCollect)
+		{
+			canRecieveBulletsFromDeadBody = canCollect;
 		}
 
 		#region IPunObservable implementation
