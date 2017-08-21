@@ -151,6 +151,13 @@ namespace SandeepMattepu.Weapon
 		public ObscuredFloat maxUpwardForceForGranade = 0.0f;
 		public ObscuredFloat maxForwardForceForGrenade = 0.0f;
 		private ObscuredFloat intensityOfThrow = 0.0f;
+		/// <summary>
+		/// Grenade creates max damage(kills directly) when player is within less than blast radius. 
+		/// When player is after the half of blast radius it's value get's reduced linearly upto this value 
+		/// at end of the radius.
+		/// </summary>
+		[SerializeField]
+		private ObscuredFloat damagePerMadeByGrenadeAtBoundary = 0.15f;
 		// Use this for initialization
 		void Start () 
 		{
@@ -267,8 +274,11 @@ namespace SandeepMattepu.Weapon
 			//TODO Instantiate stuff
 			if(isUsingMultiplayer && photonViewComponent.isMine)
 			{
+				object[] dataToTransfer = { 
+					(float)damagePerMadeByGrenadeAtBoundary
+				};
 				GameObject grenade = PhotonNetwork.Instantiate (grenadePrefab.name, 
-					rightHand.transform.position, Quaternion.identity, 0) as GameObject;
+					rightHand.transform.position, Quaternion.identity, 0, dataToTransfer) as GameObject;
 				Vector3 grenadeThrowDirection = Vector3.forward;
 				grenadeThrowDirection.z *= (maxForwardForceForGrenade * intensityOfThrow);
 				grenadeThrowDirection.y *= (maxUpwardForceForGranade * intensityOfThrow);
@@ -285,8 +295,20 @@ namespace SandeepMattepu.Weapon
 				grenadeThrowDirection = transform.TransformDirection (grenadeThrowDirection);
 				grenade.GetComponent<Rigidbody> ().AddForce (grenadeThrowDirection, ForceMode.Force);
 				grenade.GetComponent<SMGrenadeBehaviour> ().isMultiplayer = false;
+				grenade.GetComponent<SMGrenadeBehaviour> ().setDamageAtBoundary (damagePerMadeByGrenadeAtBoundary);
 				numberOfGrenadeBombs -= 1;
 			}
+		}
+
+		/// <summary>
+		/// Sets the grenade outer damage value. Note: 1 means 100% damage and 0 means 0% damage
+		/// </summary>
+		/// <param name="value">Value.</param>
+		public void setGrenadeOuterDamageValue(float value)
+		{
+			ObscuredFloat finalValue = value < 0.0f ? 0.0f : value;
+			finalValue = value > 1.0f ? 1.0f : (float)finalValue;
+			damagePerMadeByGrenadeAtBoundary = finalValue;
 		}
 
 		private void setIntensityOfThrow(float intensity)

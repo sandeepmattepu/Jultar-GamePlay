@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SandeepMattepu.Multiplayer;
 using CodeStage.AntiCheat.ObscuredTypes;
+using SandeepMattepu.Weapon;
 
 namespace SandeepMattepu
 {
@@ -50,10 +51,12 @@ namespace SandeepMattepu
 				return currentEquippedHelmet;
 			}
 		}
+		private SMPlayerFiring playerFiring;
 
 		void Start () 
 		{
 			playerHealth = GetComponent<SMPlayerHealth> ();
+			playerFiring = GetComponent<SMPlayerFiring> ();
 			animator = GetComponent<Animator> ();
 			photonViewComponent = GetComponent<PhotonView> ();
 
@@ -92,6 +95,7 @@ namespace SandeepMattepu
 			case Helmet_Type.PILOTAR:
 				pilotarHelmet.SetActive (true);
 				playerHealth.addPointsToMaxHealthBy (20.0f);
+				playerFiring.setGrenadeOuterDamageValue (0.55f);
 				speedOfAnimator = pilotarControllerSpeed;
 				break;
 			case Helmet_Type.TS_TACTICAL:

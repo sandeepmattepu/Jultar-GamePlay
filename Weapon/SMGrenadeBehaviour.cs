@@ -59,6 +59,11 @@ namespace SandeepMattepu.Weapon
 		/// The photon view component.
 		/// </summary>
 		private PhotonView photonViewComponent;
+		/// <summary>
+		/// The % damage made at boundary of grenade.
+		/// </summary>
+		[SerializeField]
+		private ObscuredFloat damageMadeAtBoundary = 0.15f;
 		// Use this for initialization
 		void Start () 
 		{
@@ -68,6 +73,16 @@ namespace SandeepMattepu.Weapon
 			{
 				gameObject.GetComponent<Rigidbody> ().isKinematic = true;
 			}
+
+			if(photonViewComponent != null)
+			{
+				object[] dataReceived = photonViewComponent.instantiationData;
+				if(dataReceived != null)
+				{
+					damageMadeAtBoundary = (float)dataReceived [0];
+				}
+			}
+
 			StartCoroutine ("waitUntilGreandeLife");
 		}
 
@@ -121,18 +136,25 @@ namespace SandeepMattepu.Weapon
 				}
 				else if(distanceGrenadeAndPlayer >= blastRadius)
 				{
-					createDamageToPlayer (player, (player.MaxHealth * 0.15f));
+					createDamageToPlayer (player, (player.MaxHealth * damageMadeAtBoundary));
 				}
 				else
 				{
 					float distancePercentage = findPercentage (blastRadius/2.0f, blastRadius, distanceGrenadeAndPlayer);
 					float damageRate = 1 - distancePercentage;
-					float damageTobeMade = findActualValueFromPercentage (0.15f, player.MaxHealth, damageRate);
+					float damageTobeMade = findActualValueFromPercentage (damageMadeAtBoundary, player.MaxHealth, damageRate);
 					createDamageToPlayer (player, damageTobeMade);
 				}
 			}
 
 			Destroy (this.gameObject);
+		}
+
+		public void setDamageAtBoundary(float value)
+		{
+			ObscuredFloat finalValue = value < 0.0f ? 0.0f : value;
+			finalValue = value > 1.0f ? 1.0f : (float)finalValue;
+			damageMadeAtBoundary = finalValue;
 		}
 
 		/// <summary>
