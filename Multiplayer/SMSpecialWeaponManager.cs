@@ -158,6 +158,7 @@ namespace SandeepMattepu.Multiplayer
 
 		void Start()
 		{
+			analyzeForEgoPerk ();
 			currentSpecialAbilities.Clear ();
 			rocketButton.interactable = false;
 			healthBoostButton.interactable = false;
@@ -176,6 +177,18 @@ namespace SandeepMattepu.Multiplayer
 			multiplayerGame.OnKillStreakChange -= onKillStreakHandler;
 			PhotonNetwork.OnEventCall -= recieveAnnouncementsFromOtherClients;
 			touchManager.OnSingleGameTap -= requestForRocketFire;
+		}
+
+		/// <summary>
+		/// Ego perk has -1 less to reach kill streak for any special ability
+		/// </summary>
+		private void analyzeForEgoPerk()
+		{
+			if((int)Perks_Type.EGO == (int)SMProductEquipper.INSTANCE.CurrentPerk)
+			{
+				killStreakForRocket -= 1;
+				killStreakForHealthBoost -= 1;
+			}
 		}
 
 		/// <summary>
