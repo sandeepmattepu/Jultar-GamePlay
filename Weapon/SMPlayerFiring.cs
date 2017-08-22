@@ -691,8 +691,10 @@ namespace SandeepMattepu.Weapon
 			// Create physics ray cast
 			RaycastHit hitInfo;
 			Vector3 direction = endPod - gunTip.transform.position;
+			int layerMask = 1 << 18;		// 18 is to ignore barriers
+			layerMask = ~layerMask;
 			Ray ray = new Ray (gunTip.transform.position, direction);
-			Physics.Raycast (ray, out hitInfo);
+			Physics.Raycast (ray, out hitInfo, 1000.0f, layerMask);
 			if(hitInfo.collider != null)
 			{
 				endPod = hitInfo.point;

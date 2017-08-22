@@ -81,6 +81,23 @@ public class SMJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 	}
 
 	/// <summary>
+	/// In this function reset the joystick
+	/// </summary>
+	void OnDisable()
+	{
+		positionKnob (Vector2.zero);
+		if (joyStickType == JoyStickType.MOVEMENT)
+		{
+			inputPositionVector = Vector2.zero;
+		}
+		else
+		{
+			inputPositionVector = 0.2f * (inputPositionVector);
+		}
+		isPlayerTouchingJoyStick = false;
+	}
+
+	/// <summary>
 	/// This function ticks the timers while touching and not touching.
 	/// </summary>
 	private void tickTimersWhileTouchingAndNot()
@@ -210,7 +227,10 @@ public class SMJoyStick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 	/// <param name="knobPosition">Pass the Knob position vector</param>
 	private void positionKnob(Vector2 knobPosition)
 	{
-		joyStickKnob.rectTransform.anchoredPosition = knobPosition;
+		if(joyStickKnob != null)
+		{
+			joyStickKnob.rectTransform.anchoredPosition = knobPosition;
+		}
 	}
 
 	// Note :- You can use this function for retriving the vector of joystick
