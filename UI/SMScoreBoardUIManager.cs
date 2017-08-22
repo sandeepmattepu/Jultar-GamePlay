@@ -83,6 +83,14 @@ namespace SandeepMattepu.UI
 		/// </summary>
 		[SerializeField]
 		protected Color localPlayerColor;
+		/// <summary>
+		/// This becomes true when game is already showing scoreboard.
+		/// </summary>
+		protected bool showButtonAlreadyCalled = false;
+		/// <summary>
+		/// The amount of time score board should be shown on screen.
+		/// </summary>
+		protected float timeScoreBoardShouldBeShownOnScreen = 3.0f;
 
 		protected virtual void Start()
 		{
@@ -98,6 +106,26 @@ namespace SandeepMattepu.UI
 			{
 				playersTextUI [psui.uiIndex].gameObject.SetActive (true);
 			}
+		}
+
+		/// <summary>
+		/// This function is called when show scoreboard button is pressed
+		/// </summary>
+		public virtual void showScoreBoardButtonPressed()
+		{
+			if(!showButtonAlreadyCalled)
+			{
+				showButtonAlreadyCalled = true;
+				showActivePlayersHiddenScoreUI ();
+				StartCoroutine ("autoHideUIAfterSomeTime");
+			}
+		}
+
+		private IEnumerator autoHideUIAfterSomeTime()
+		{
+			yield return new WaitForSeconds (timeScoreBoardShouldBeShownOnScreen);
+			hideAllUI ();
+			showButtonAlreadyCalled = false;
 		}
 
 		/// <summary>

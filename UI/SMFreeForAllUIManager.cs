@@ -78,6 +78,14 @@ namespace SandeepMattepu.UI
 			}
 		}
 
+		public override void showScoreBoardButtonPressed ()
+		{
+			if(SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
+			{
+				base.showScoreBoardButtonPressed ();
+			}
+		}
+
 		private void assignUIAtBeginning()
 		{
 			for(int i = 0; i < playersTextUI.Length; i++)

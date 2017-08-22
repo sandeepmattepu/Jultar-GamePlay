@@ -158,6 +158,14 @@ namespace SandeepMattepu.UI
 			}
 		}
 
+		public override void showScoreBoardButtonPressed ()
+		{
+			if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
+			{
+				base.showScoreBoardButtonPressed ();
+			}
+		}
+
 		private void assignUIIndexToPlayers()
 		{
 			for(int i = 0; i < playersTextUI.Length; i++)
