@@ -52,8 +52,9 @@ namespace SandeepMattepu.UI
 		[SerializeField]
 		private Color friendlyTeamColor;
 
-		protected virtual void Start()
+		protected override void Start()
 		{
+			base.Start ();
 			int halfTeam = PhotonNetwork.playerList.Length / 2;
 			pVsPText.text = halfTeam + " VS " + (PhotonNetwork.playerList.Length - halfTeam);
 		}
@@ -69,6 +70,22 @@ namespace SandeepMattepu.UI
 				pVsPText.gameObject.SetActive (false);
 				monioRaceTotalScore.gameObject.SetActive (false);
 				jagurRaceTotalScore.gameObject.SetActive (false);
+			}
+		}
+
+		/// <summary>
+		/// Shows the active player's hidden score UI.
+		/// </summary>
+		public override void showActivePlayersHiddenScoreUI ()
+		{
+			foreach(PlayerScoreUI psui in team1Players)
+			{
+				playersTextUI [psui.uiIndex].gameObject.SetActive (true);
+			}
+
+			foreach(PlayerScoreUI psui in team2Players)
+			{
+				playersTextUI [psui.uiIndex].gameObject.SetActive (true);
 			}
 		}
 
@@ -92,6 +109,7 @@ namespace SandeepMattepu.UI
 				SMTeamDeathMatch.OnPlayersSplittedToTeams += onTeamSplitted;
 			}
 			hideUIInNonContext ();
+			hideAllUI ();
 		}
 
 		protected override void OnScoreChange (object sender, int whoKilled, int whoDied)

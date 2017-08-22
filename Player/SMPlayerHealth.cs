@@ -75,6 +75,14 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// This UI is the main UI where the player interacts with the game
 	/// </summary>
 	public GameObject[] playInteractableUI;
+	/// <summary>
+	/// Delegate when player is dead
+	/// </summary>
+	public delegate void onPlayerDead();
+	/// <summary>
+	/// Occurs when local player is dead in multiplayer context.
+	/// </summary>
+	public event onPlayerDead OnLocalPlayerDead;
 
 
 	#endregion
@@ -295,6 +303,13 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// <param name="canListenAudio">Value which indicates whether ragdoll can hear sounds are not</param>
 	private void createDeadBody(bool isMultiplayer, bool canListenAudio)
 	{
+		if(isMultiplayer && photonViewComponent.isMine)
+		{
+			if(OnLocalPlayerDead != null)
+			{
+				OnLocalPlayerDead ();
+			}
+		}
 		GameObject ragdollBody = Instantiate(ragdoll, transform.position, transform.rotation) as GameObject;
 		SMDestroyRagdoll destroyRagdoll = ragdollBody.GetComponent<SMDestroyRagdoll>();
 		destroyRagdoll.isMultiplayer = isMultiplayer;

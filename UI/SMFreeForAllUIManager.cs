@@ -48,6 +48,7 @@ namespace SandeepMattepu.UI
 				SMMultiplayerGame.INSTANCE.OnScoreChange += OnScoreChange;
 			}
 			hideUIInNonContext ();
+			hideAllUI ();
 		}
 
 		protected override void OnScoreChange (object sender, int whoKilled, int whoDied)

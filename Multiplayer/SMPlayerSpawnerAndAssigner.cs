@@ -135,6 +135,14 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// The respawn time for player who has no helmets.
 	/// </summary>
 	public ObscuredFloat respawnTimeForNormalPlayers = 3.0f;
+	/// <summary>
+	/// The team death match user interface manager.
+	/// </summary>
+	public SMTeamDeathMatchUIManager teamDeathMatchUIManager;
+	/// <summary>
+	/// The free for all user interface manager.
+	/// </summary>
+	public SMFreeForAllUIManager freeForAllUIManager;
 	// Use this for initialization
 	void Start () 
 	{
@@ -190,6 +198,8 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 
 			player.transform.GetComponent<SMPlayerHealth>().spawnManager = this;
 			player.GetComponent<SMPlayerHealth>().playInteractableUI = playInteractableUI;
+			player.GetComponent<SMPlayerHealth> ().OnLocalPlayerDead += teamDeathMatchUIManager.showActivePlayersHiddenScoreUI;
+			player.GetComponent<SMPlayerHealth> ().OnLocalPlayerDead += freeForAllUIManager.showActivePlayersHiddenScoreUI;
 
 			gameRulesThatSpawned.localPlayer = player.GetComponent<SMPlayerIdentifier>();
 			player.GetComponent<SMPlayerIdentifier>().gameType = gameRulesThatSpawned;
@@ -368,6 +378,8 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 
 			player.transform.GetComponent<SMPlayerHealth>().spawnManager = this;
 			player.GetComponent<SMPlayerHealth>().playInteractableUI = playInteractableUI;
+			player.GetComponent<SMPlayerHealth> ().OnLocalPlayerDead += teamDeathMatchUIManager.showActivePlayersHiddenScoreUI;
+			player.GetComponent<SMPlayerHealth> ().OnLocalPlayerDead += freeForAllUIManager.showActivePlayersHiddenScoreUI;
 
 			gameRulesThatSpawned.localPlayer = player.GetComponent<SMPlayerIdentifier>();
 			player.GetComponent<SMPlayerIdentifier>().gameType = gameRulesThatSpawned;

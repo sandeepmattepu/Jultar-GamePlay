@@ -84,6 +84,33 @@ namespace SandeepMattepu.UI
 		[SerializeField]
 		protected Color localPlayerColor;
 
+		protected virtual void Start()
+		{
+			SMPlayerSpawnerAndAssigner.OnPlayerRespawned += hideAllUI;
+		}
+
+		/// <summary>
+		/// Shows the active player's hidden score UI.
+		/// </summary>
+		public virtual void showActivePlayersHiddenScoreUI()
+		{
+			foreach(PlayerScoreUI psui in playerScoreAndUI)
+			{
+				playersTextUI [psui.uiIndex].gameObject.SetActive (true);
+			}
+		}
+
+		/// <summary>
+		/// This function hides all scoreboard
+		/// </summary>
+		protected void hideAllUI()
+		{
+			foreach(Text ui in playersTextUI)
+			{
+				ui.gameObject.SetActive (false);
+			}
+		}
+
 		protected void Awake () 
 		{
 			playerScoreAndUI.Clear ();
@@ -94,6 +121,7 @@ namespace SandeepMattepu.UI
 		{
 			SMMultiplayerGame.OnGameRulesLoaded -= OnRulesCreated;
 			SMMultiplayerGame.INSTANCE.OnScoreChange -= OnScoreChange;
+			SMPlayerSpawnerAndAssigner.OnPlayerRespawned -= hideAllUI;
 		}
 
 		/// <summary>
