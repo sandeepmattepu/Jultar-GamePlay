@@ -288,6 +288,15 @@ namespace SandeepMattepu.Multiplayer
 		{
 			isGameStarter = true;
 		}
+
+		/// <summary>
+		/// Sets the game timer.
+		/// </summary>
+		/// <param name="timerValue">Timer value.</param>
+		public void setGameTimer(float timerValue)
+		{
+			gameTimer = timerValue;
+		}
 	}
 
 	/// <summary>

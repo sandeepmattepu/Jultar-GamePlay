@@ -57,6 +57,6 @@ namespace SandeepMattepu.Multiplayer
 	/// </summary>
 	public enum MultiplayerEvents
 	{
-		FreeForAll = 1, TeamDeathMatch, Announcements, Votes
+		FreeForAll = 1, TeamDeathMatch, Announcements, Votes, RequestForTime, ReceiveTime
 	}
 }

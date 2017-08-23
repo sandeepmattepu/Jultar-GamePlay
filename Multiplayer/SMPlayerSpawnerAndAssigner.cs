@@ -126,7 +126,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// <summary>
 	/// This is initial count down before match start
 	/// </summary>
-	public ObscuredInt timeDelayToStartMatch = 10;
+	public ObscuredFloat timeDelayToStartMatch = 10;
 	/// <summary>
 	/// The respawn time for player who has operative helmet.
 	/// </summary>
@@ -143,9 +143,14 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// The free for all user interface manager.
 	/// </summary>
 	public SMFreeForAllUIManager freeForAllUIManager;
+	/// <summary>
+	/// This becomes true when we recieve time data from master for first time
+	/// </summary>
+	private ObscuredBool hasRecievedTimeDataFromMaster = false;
 	// Use this for initialization
 	void Start () 
 	{
+		PhotonNetwork.OnEventCall += OnEvent;
 		spawnGameRules();
 		hideUIAfterDeath ();		// To make player in ideal state until countdown is finished
 		StartCoroutine ("spawnPlayersAfterDelay");		// To fix double instantiation of the player
@@ -155,6 +160,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	void OnDestroy()
 	{
 		SMTeamDeathMatch.OnGameOver -= hideUIAfterDeath;
+		PhotonNetwork.OnEventCall -= OnEvent;
 	}
 
 	IEnumerator spawnPlayersAfterDelay()
@@ -212,6 +218,18 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 
 	IEnumerator tickCountDownAtBeginingOfGame()
 	{
+		if(PhotonNetwork.isMasterClient)
+		{
+			hasRecievedTimeDataFromMaster = true;
+		}
+		else
+		{
+			requestTimeToMasterClient ();
+		}
+		matchStartsInUI.text = "Match starts in ...";
+
+		yield return new WaitUntil (() => hasRecievedTimeDataFromMaster);
+
 		while(timeDelayToStartMatch > 0)
 		{
 			matchStartsInUI.text = "Match starts in " + timeDelayToStartMatch;
@@ -451,5 +469,67 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 		}
 		specialWeaponManager.registerMultiplayerGame(gameRulesThatSpawned);
 		gameRulesThatSpawned.xpMadeAfterKill *= SMProductEquipper.INSTANCE.CurrentExpBoostMultiplier;
+	}
+
+	/// <summary>
+	/// Event raised by Photon network
+	/// </summary>
+	/// <param name="eventCode">Event code.</param>
+	/// <param name="content">Content.</param>
+	/// <param name="senderID">Sender I.</param>
+	private void OnEvent(byte eventCode, object content, int senderID)
+	{
+		if(eventCode == (int)MultiplayerEvents.ReceiveTime && !PhotonNetwork.isMasterClient)
+		{
+			receiveTimeDataFromMaster ((float[])content);
+		}
+		else if(eventCode == (int)MultiplayerEvents.RequestForTime && PhotonNetwork.isMasterClient)
+		{
+			receiveRequestForTimeFromOtherClientsAndRespond ();
+		}
+	}
+
+	/// <summary>
+	/// This function request the master client for time remaining to start the game
+	/// </summary>
+	private void requestTimeToMasterClient()
+	{
+		if(!PhotonNetwork.isMasterClient)
+		{
+			PhotonNetwork.RaiseEvent ((int)MultiplayerEvents.RequestForTime, null, true, null);
+		}
+	}
+
+	/// <summary>
+	/// Receives the request for time from other clients and respond them with time data.
+	/// </summary>
+	private void receiveRequestForTimeFromOtherClientsAndRespond()
+	{
+		float[] times = { 
+			(float)timeDelayToStartMatch,
+			SMMultiplayerGame.INSTANCE.GameTimer,
+		};
+
+		if(PhotonNetwork.isMasterClient)
+		{
+			PhotonNetwork.RaiseEvent ((int)MultiplayerEvents.ReceiveTime, (object)times, true, null);
+		}
+	}
+
+	/// <summary>
+	/// Receives the time data from master cleint.
+	/// </summary>
+	/// <param name="times">Times data.</param>
+	private void receiveTimeDataFromMaster(float[] times)
+	{
+		if(!hasRecievedTimeDataFromMaster)
+		{
+			timeDelayToStartMatch = times [0];
+			if(gameRulesThatSpawned != null)
+			{
+				gameRulesThatSpawned.setGameTimer (times [1]);
+			}
+			hasRecievedTimeDataFromMaster = true;
+		}
 	}
 }
