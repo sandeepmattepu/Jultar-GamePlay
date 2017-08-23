@@ -95,6 +95,7 @@ namespace SandeepMattepu.UI
 		protected virtual void Start()
 		{
 			SMPlayerSpawnerAndAssigner.OnPlayerRespawned += hideAllUI;
+			SMMultiplayerGame.OnGameOver += showActivePlayersHiddenScoreUI;
 		}
 
 		/// <summary>
@@ -150,6 +151,7 @@ namespace SandeepMattepu.UI
 			SMMultiplayerGame.OnGameRulesLoaded -= OnRulesCreated;
 			SMMultiplayerGame.INSTANCE.OnScoreChange -= OnScoreChange;
 			SMPlayerSpawnerAndAssigner.OnPlayerRespawned -= hideAllUI;
+			SMMultiplayerGame.OnGameOver -= showActivePlayersHiddenScoreUI;
 		}
 
 		/// <summary>
