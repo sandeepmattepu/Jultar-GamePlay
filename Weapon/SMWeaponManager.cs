@@ -314,6 +314,88 @@ namespace SandeepMattepu.Weapon
 		}
 
 		/// <summary>
+		/// Drops the holding weapon to floor when dead.
+		/// </summary>
+		public void dropHoldingWeaponToFloorWhenDead()
+		{
+			if(isUsingMultiplayer && photonViewComponent.isMine)
+			{
+				playerFiring.setDataForSwapping ();
+				dataToBeTransferredToFloorGun = currentHoldingGun.GetComponent<SMWeaponInHand> ().getAmmunationDetails ();
+				identifierOfWeaponHolding = currentHoldingGun.GetComponent<SMWeaponInHand> ().weaponInHandIdentifier;
+				GameObject weaponToInstantiate = null;
+
+				switch(identifierOfWeaponHolding)
+				{
+				case GUN_TYPE.GreenEye:
+					weaponToInstantiate = greeneyeOnFloorPrefab;
+					break;
+				case GUN_TYPE.July11:
+					weaponToInstantiate = july11OnFloorPrefab;
+					break;
+				case GUN_TYPE.LeoBlackDog:
+					weaponToInstantiate = leoBlackDogOnFloorPrefab;
+					break;
+				case GUN_TYPE.Mrozyk:
+					weaponToInstantiate = mrozykOnFloorPrefab;
+					break;
+				case GUN_TYPE.Blonde:
+					weaponToInstantiate = blondeOnFloorPrefab;
+					break;
+				case GUN_TYPE.Raini:
+					weaponToInstantiate = rainiOnFloorPrefab;
+					break;
+				case GUN_TYPE.Smilere:
+					weaponToInstantiate = smilereOnFloorPrefab;
+					break;
+				case GUN_TYPE.Sniper:
+					weaponToInstantiate = sniperOnFloorPrefab;
+					break;
+				}
+
+				float yPos = transform.position.y + 0.725f;
+				if (weaponToInstantiate != null) 
+				{
+					if (isUsingMultiplayer) 
+					{
+						if (PhotonNetwork.connectedAndReady && PhotonNetwork.isMasterClient) 
+						{
+							Vector3 pos = new Vector3 (transform.position.x, yPos, transform.position.z);
+							// Building ammo data to be transferred
+							int bulletsLeftData = dataToBeTransferredToFloorGun.bulletsLeft;
+							int extraClipsLeftData = dataToBeTransferredToFloorGun.extraClipsLeft;
+							float reloadTimeData = dataToBeTransferredToFloorGun.reloadTime;
+							float damageMadedata = dataToBeTransferredToFloorGun.damageMade;
+
+							object[] data = {	bulletsLeftData,
+								extraClipsLeftData,
+								reloadTimeData,
+								damageMadedata
+							};
+							PhotonNetwork.InstantiateSceneObject (weaponToInstantiate.name, pos, Quaternion.identity, 0, data);
+						}
+						else 
+						{
+							// send request to master to instantiate a prefab there
+							Vector3 pos = new Vector3 (transform.position.x, yPos, transform.position.z);
+							int bulletsLeftData = dataToBeTransferredToFloorGun.bulletsLeft;
+							int extraClipsLeftData = dataToBeTransferredToFloorGun.extraClipsLeft;
+							float reloadTimeData = dataToBeTransferredToFloorGun.reloadTime;
+							float damageMadedata = dataToBeTransferredToFloorGun.damageMade;
+
+							object[] data = {	bulletsLeftData,
+								extraClipsLeftData,
+								reloadTimeData,
+								damageMadedata
+							};
+							photonViewComponent.RPC ("sendRequestToInstantiateGun", PhotonTargets.MasterClient, weaponToInstantiate.name, pos, data);
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// This function identifies on which gun, player is standing on and returns which prefab it needs to instantiate at hand position when player hits pickup button
 		/// </summary>
 		/// <returns>The prefab to instantiate at player's hand</returns>

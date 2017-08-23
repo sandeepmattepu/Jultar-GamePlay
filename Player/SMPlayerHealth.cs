@@ -9,6 +9,7 @@
 using SandeepMattepu;
 using UnityEngine;
 using CodeStage.AntiCheat.ObscuredTypes;
+using SandeepMattepu.Weapon;
 
 /// <summary>
 /// This class will handle player health and armor and sets the UI accordingly based on those values
@@ -309,6 +310,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			{
 				OnLocalPlayerDead ();
 			}
+			transform.GetComponent<SMWeaponManager> ().dropHoldingWeaponToFloorWhenDead ();
 		}
 		GameObject ragdollBody = Instantiate(ragdoll, transform.position, transform.rotation) as GameObject;
 		SMDestroyRagdoll destroyRagdoll = ragdollBody.GetComponent<SMDestroyRagdoll>();
