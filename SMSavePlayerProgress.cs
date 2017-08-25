@@ -132,15 +132,29 @@ namespace SandeepMattepu
 		/// </summary>
 		private void checkPlayerEligibleToNextLevel()
 		{
-			int experienceRequiredForNextLevel = (int)Mathf.Pow (2.0f, (float)((int)currentLevelOfPlayer)) * 1000;
-			if (additionalXpOfPlayer >= experienceRequiredForNextLevel) 
+			ObscuredInt xpRequiredForEachLevel = calculateTotalXpRequiredForNextLevel (currentLevelOfPlayer);
+			if (additionalXpOfPlayer >= xpRequiredForEachLevel) 
 			{
 				if (currentLevelOfPlayer <= 91)
 				{
 					currentLevelOfPlayer += 1;
-					additionalXpOfPlayer = (additionalXpOfPlayer - experienceRequiredForNextLevel);
+					additionalXpOfPlayer = (additionalXpOfPlayer - xpRequiredForEachLevel);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Calculates the xp required for next level.
+		/// </summary>
+		/// <returns>The xp required for next level.</returns>
+		/// <param name="currentLevel">Current level.</param>
+		public static int calculateTotalXpRequiredForNextLevel(int currentLevel)
+		{
+			int factor = currentLevel / 10;
+			int xpRequiredUptoNextTenLevels = 70000 * (factor * 5000);
+			xpRequiredUptoNextTenLevels = factor >= 8 ? (200000) : xpRequiredUptoNextTenLevels;
+			int xpRequiredForEachLevel = (factor == 0 ? (xpRequiredUptoNextTenLevels / 9) : (xpRequiredUptoNextTenLevels / 10));
+			return xpRequiredForEachLevel;
 		}
 	}
 }
