@@ -228,11 +228,11 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 		}
 		matchStartsInUI.text = "Match starts in ...";
 
-		yield return new WaitUntil (() => hasRecievedTimeDataFromMaster);
+		yield return new WaitUntil (() => (hasRecievedTimeDataFromMaster || PhotonNetwork.isMasterClient));
 
 		while(timeDelayToStartMatch > 0)
 		{
-			matchStartsInUI.text = "Match starts in " + timeDelayToStartMatch;
+			matchStartsInUI.text = "Match starts in " + ((int)timeDelayToStartMatch);
 			timeDelayToStartMatch -= 1;
 			yield return new WaitForSeconds (1.0f);
 		}

@@ -39,6 +39,14 @@ namespace SandeepMattepu
 		/// The total loses made by player.
 		/// </summary>
 		private ObscuredInt totalLosesMadeByPlayer = UserManager.Stats[(int)Stat.Lost];
+		/// <summary>
+		/// The current level of player.
+		/// </summary>
+		private ObscuredInt currentLevelOfPlayer = UserManager.Stats[(int)Stat.Level];
+		/// <summary>
+		/// The additional xp of player.
+		/// </summary>
+		private ObscuredInt additionalXpOfPlayer = UserManager.Stats[(int)Stat.AdditionalXp];
 
 		// Use this for initialization
 		void Start () 
@@ -62,6 +70,7 @@ namespace SandeepMattepu
 			bool isDataReadyToSave = false;
 
 			timePlayed += (int)SMMultiplayerGame.INSTANCE.gameSessionTime;
+			additionalXpOfPlayer += SMMultiplayerGame.INSTANCE.TotalXpMadeByPlayer;
 			if(SMMultiplayerGame.PlayerIdAndDeaths.TryGetValue (localPlayerId, out deathsNumber))
 			{
 				deathsEncountered += deathsNumber;
@@ -104,14 +113,34 @@ namespace SandeepMattepu
 
 			if(isDataReadyToSave)
 			{
+				checkPlayerEligibleToNextLevel ();
 				UserManager.Stats [(int)Stat.Kills] = killesMade;
 				UserManager.Stats [(int)Stat.Deaths] = deathsEncountered;
 				UserManager.Stats [(int)Stat.TimePlayed] = timePlayed;
 				UserManager.Stats [(int)Stat.Won] = totalWinsMadeByPlayer;
 				UserManager.Stats [(int)Stat.Lost] = totalLosesMadeByPlayer;
+				UserManager.Stats [(int)Stat.AdditionalXp] = additionalXpOfPlayer;
+				UserManager.Stats [(int)Stat.Experience] = currentLevelOfPlayer;
 				UserManager.SaveCloud ();
 			}
 
+		}
+
+		/// <summary>
+		/// This function checks the no of xp points in experiencePoints and compare it with points required for next level and promots the player
+		/// to next level if necessary.
+		/// </summary>
+		private void checkPlayerEligibleToNextLevel()
+		{
+			int experienceRequiredForNextLevel = (int)Mathf.Pow (2.0f, (float)((int)currentLevelOfPlayer)) * 1000;
+			if (additionalXpOfPlayer >= experienceRequiredForNextLevel) 
+			{
+				if (currentLevelOfPlayer <= 91)
+				{
+					currentLevelOfPlayer += 1;
+					additionalXpOfPlayer = (additionalXpOfPlayer - experienceRequiredForNextLevel);
+				}
+			}
 		}
 	}
 }
