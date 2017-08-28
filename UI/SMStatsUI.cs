@@ -92,7 +92,7 @@ namespace SandeepMattepu.UI
 		/// </summary>
 		private void assignDataToUI()
 		{
-			currentLevelText.text = "Current Level : " + currentLevel.ToString ();
+			currentLevelText.text = "Level: " + currentLevel.ToString ();
 			killsMadeText.text = "Kills : " + killsMade.ToString ();
 			deathsEncounteredText.text = "Deaths : " + deathsEncountered.ToString ();
 			winToLoseRatioText.text = "W/L Ratio : " + winToLoseRatio.ToString ();

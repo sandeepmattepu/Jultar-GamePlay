@@ -151,7 +151,7 @@ namespace SandeepMattepu
 		public static int calculateTotalXpRequiredForNextLevel(int currentLevel)
 		{
 			int factor = currentLevel / 10;
-			int xpRequiredUptoNextTenLevels = 70000 * (factor * 5000);
+			int xpRequiredUptoNextTenLevels = 70000 + (factor * 5000);
 			xpRequiredUptoNextTenLevels = factor >= 8 ? (200000) : xpRequiredUptoNextTenLevels;
 			int xpRequiredForEachLevel = (factor == 0 ? (xpRequiredUptoNextTenLevels / 9) : (xpRequiredUptoNextTenLevels / 10));
 			return xpRequiredForEachLevel;
