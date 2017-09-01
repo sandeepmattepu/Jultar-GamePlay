@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SandeepMattepu.Android;
 
 namespace SandeepMattepu.UI
 {
@@ -106,12 +107,12 @@ namespace SandeepMattepu.UI
 		/// </summary>
 		private void loadDataToDisplay()
 		{
-			currentLevel = UserManager.Stats [(int)Stat.Level];
-			additionalXpOfUser = UserManager.Stats [(int)Stat.AdditionalXp];
-			killsMade = UserManager.Stats [(int)Stat.Kills];
-			deathsEncountered = UserManager.Stats [(int)Stat.Deaths];
-			totalWins = UserManager.Stats [(int)Stat.Won];
-			totalLoses = UserManager.Stats [(int)Stat.Lost];
+			currentLevel = SMPlayerDataManager.PlayerData.playerLevel;
+			additionalXpOfUser = SMPlayerDataManager.PlayerData.additionalXp;
+			killsMade = SMPlayerDataManager.PlayerData.killsMadeByPlayer;
+			deathsEncountered = SMPlayerDataManager.PlayerData.deathsOccuredToPlayer;
+			totalWins = SMPlayerDataManager.PlayerData.totalWins;
+			totalLoses = SMPlayerDataManager.PlayerData.totalLoses;
 			if(totalLoses == 0)
 			{
 				winToLoseRatio = totalWins > 0 ? totalWins : 0;

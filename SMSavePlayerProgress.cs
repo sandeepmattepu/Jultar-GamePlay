@@ -23,31 +23,31 @@ namespace SandeepMattepu
 		/// <summary>
 		/// The killes made by player in his entire game life.
 		/// </summary>
-		private ObscuredInt killesMade = SMPlayerDataManager.LocalPlayerData.killsMadeByPlayer;
+		private ObscuredInt killesMade = SMPlayerDataManager.PlayerData.killsMadeByPlayer;
 		/// <summary>
 		/// The deaths encountered by player in his entire game life..
 		/// </summary>
-		private ObscuredInt deathsEncountered = SMPlayerDataManager.LocalPlayerData.deathsOccuredToPlayer;
+		private ObscuredInt deathsEncountered = SMPlayerDataManager.PlayerData.deathsOccuredToPlayer;
 		/// <summary>
 		/// The time played by the player in his entire game time.
 		/// </summary>
-		private ObscuredInt timePlayed = SMPlayerDataManager.LocalPlayerData.timePlayerPlayed;
+		private ObscuredInt timePlayed = SMPlayerDataManager.PlayerData.timePlayerPlayed;
 		/// <summary>
 		/// The total wins made by player.
 		/// </summary>
-		private ObscuredInt totalWinsMadeByPlayer = SMPlayerDataManager.LocalPlayerData.totalWins;
+		private ObscuredInt totalWinsMadeByPlayer = SMPlayerDataManager.PlayerData.totalWins;
 		/// <summary>
 		/// The total loses made by player.
 		/// </summary>
-		private ObscuredInt totalLosesMadeByPlayer = SMPlayerDataManager.LocalPlayerData.totalLoses;
+		private ObscuredInt totalLosesMadeByPlayer = SMPlayerDataManager.PlayerData.totalLoses;
 		/// <summary>
 		/// The current level of player.
 		/// </summary>
-		private ObscuredInt currentLevelOfPlayer = SMPlayerDataManager.LocalPlayerData.playerLevel;
+		private ObscuredInt currentLevelOfPlayer = SMPlayerDataManager.PlayerData.playerLevel;
 		/// <summary>
 		/// The additional xp of player.
 		/// </summary>
-		private ObscuredInt additionalXpOfPlayer = SMPlayerDataManager.LocalPlayerData.additionalXp;
+		private ObscuredInt additionalXpOfPlayer = SMPlayerDataManager.PlayerData.additionalXp;
 
 		// Use this for initialization
 		void Start () 
@@ -115,14 +115,14 @@ namespace SandeepMattepu
 			if(isDataReadyToSave)
 			{
 				checkPlayerEligibleToNextLevel ();
-				SMPlayerDataManager.LocalPlayerData.killsMadeByPlayer = killesMade;
-				SMPlayerDataManager.LocalPlayerData.deathsOccuredToPlayer = deathsEncountered;
-				SMPlayerDataManager.LocalPlayerData.timePlayerPlayed = timePlayed;
-				SMPlayerDataManager.LocalPlayerData.totalWins = totalWinsMadeByPlayer;
-				SMPlayerDataManager.LocalPlayerData.totalLoses = totalLosesMadeByPlayer;
-				SMPlayerDataManager.LocalPlayerData.additionalXp = additionalXpOfPlayer;
-				SMPlayerDataManager.LocalPlayerData.playerLevel = currentLevelOfPlayer;
-				SMPlayerDataManager.LocalPlayerData.reformatStringWithChanges ();
+				SMPlayerDataManager.PlayerData.killsMadeByPlayer = killesMade;
+				SMPlayerDataManager.PlayerData.deathsOccuredToPlayer = deathsEncountered;
+				SMPlayerDataManager.PlayerData.timePlayerPlayed = timePlayed;
+				SMPlayerDataManager.PlayerData.totalWins = totalWinsMadeByPlayer;
+				SMPlayerDataManager.PlayerData.totalLoses = totalLosesMadeByPlayer;
+				SMPlayerDataManager.PlayerData.additionalXp = additionalXpOfPlayer;
+				SMPlayerDataManager.PlayerData.playerLevel = currentLevelOfPlayer;
+				SMPlayerDataManager.PlayerData.reformatStringWithChanges ();
 				SMPlayerDataManager.saveData ();
 			}
 

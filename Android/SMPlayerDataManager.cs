@@ -31,25 +31,22 @@ namespace SandeepMattepu.Android
 		/// The local player data.
 		/// </summary>
 		private static SMPlayerDataFormatter localPlayerData = null;
-		/// <summary>
-		/// The local player data.
-		/// </summary>
-		public static SMPlayerDataFormatter LocalPlayerData {
-			get {
-				return localPlayerData;
-			}
-		}
 
 		/// <summary>
 		/// The cloud player data(Can be null if failed to load).
 		/// </summary>
 		private static SMPlayerDataFormatter cloudPlayerData = null;
+
 		/// <summary>
-		/// The cloud player data(Can be null if failed to load).
+		/// The player data which will be referenced by other scripts.
 		/// </summary>
-		public static SMPlayerDataFormatter CloudPlayerData {
+		private static SMPlayerDataFormatter playerData = null;
+		/// <summary>
+		/// The player data which will be referenced by other scripts.
+		/// </summary>
+		public static SMPlayerDataFormatter PlayerData {
 			get {
-				return cloudPlayerData;
+				return playerData;
 			}
 		}
 
@@ -123,18 +120,22 @@ namespace SandeepMattepu.Android
 				{
 					if(LocalTime > CloudTime)
 					{
-						cloudPlayerData = new SMPlayerDataFormatter (localPlayerData);
+						playerData = new SMPlayerDataFormatter (localPlayerData);
+						cloudPlayerData = new SMPlayerDataFormatter (playerData);
+						localPlayerData = new SMPlayerDataFormatter (playerData);
 						saveData ();
 					}
 					else
 					{
-						localPlayerData = new SMPlayerDataFormatter (cloudPlayerData);
-						saveData ();
+						playerData = new SMPlayerDataFormatter (cloudPlayerData);
+						localPlayerData = new SMPlayerDataFormatter (playerData);
+						saveDataLocally ();
 					}
 				}
 				else
 				{
-					localPlayerData = new SMPlayerDataFormatter (cloudPlayerData);
+					playerData = new SMPlayerDataFormatter (cloudPlayerData);
+					localPlayerData = new SMPlayerDataFormatter (playerData);
 					localPlayerData.isBackedUpByGoogle = true;
 					localPlayerData = localPlayerData.reformatStringWithChanges ();
 					saveDataLocally ();
@@ -190,6 +191,9 @@ namespace SandeepMattepu.Android
 			}
 			else
 			{
+
+				cloudPlayerData = new SMPlayerDataFormatter (playerData);
+				localPlayerData = new SMPlayerDataFormatter(playerData);
 				saveDataLocally ();
 			}
 		}
@@ -201,7 +205,11 @@ namespace SandeepMattepu.Android
 		{
 			if(Status == SavedGameRequestStatus.Success)
 			{
-				string DataString = cloudPlayerData.formattedString;
+				cloudPlayerData = new SMPlayerDataFormatter (playerData);
+				localPlayerData = new SMPlayerDataFormatter(playerData);
+				playerData.isBackedUpByGoogle = true;
+				playerData.reformatStringWithChanges ();
+				string DataString = playerData.formattedString;
 				byte[] Data = Encoding.ASCII.GetBytes(DataString);
 				SavedGameMetadataUpdate.Builder _Builder = new SavedGameMetadataUpdate.Builder();
 
@@ -210,6 +218,8 @@ namespace SandeepMattepu.Android
 			}
 			else
 			{
+				cloudPlayerData = new SMPlayerDataFormatter (playerData);
+				localPlayerData = new SMPlayerDataFormatter(playerData);
 				saveDataLocally ();
 			}
 		}
@@ -221,7 +231,6 @@ namespace SandeepMattepu.Android
 		{
 			if(Status == SavedGameRequestStatus.Success)
 			{
-				localPlayerData = new SMPlayerDataFormatter(cloudPlayerData);
 				saveDataLocally ();
 			}
 			else
