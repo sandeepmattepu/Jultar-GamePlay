@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SandeepMattepu.Multiplayer;
 using CodeStage.AntiCheat.ObscuredTypes;
+using SandeepMattepu.Android;
 
 namespace SandeepMattepu
 {
@@ -22,31 +23,31 @@ namespace SandeepMattepu
 		/// <summary>
 		/// The killes made by player in his entire game life.
 		/// </summary>
-		private ObscuredInt killesMade = UserManager.Stats[(int)Stat.Kills];
+		private ObscuredInt killesMade = SMPlayerDataManager.LocalPlayerData.killsMadeByPlayer;
 		/// <summary>
 		/// The deaths encountered by player in his entire game life..
 		/// </summary>
-		private ObscuredInt deathsEncountered = UserManager.Stats[(int)Stat.Deaths];
+		private ObscuredInt deathsEncountered = SMPlayerDataManager.LocalPlayerData.deathsOccuredToPlayer;
 		/// <summary>
 		/// The time played by the player in his entire game time.
 		/// </summary>
-		private ObscuredInt timePlayed = UserManager.Stats[(int)Stat.TimePlayed];
+		private ObscuredInt timePlayed = SMPlayerDataManager.LocalPlayerData.timePlayerPlayed;
 		/// <summary>
 		/// The total wins made by player.
 		/// </summary>
-		private ObscuredInt totalWinsMadeByPlayer = UserManager.Stats[(int)Stat.Won];
+		private ObscuredInt totalWinsMadeByPlayer = SMPlayerDataManager.LocalPlayerData.totalWins;
 		/// <summary>
 		/// The total loses made by player.
 		/// </summary>
-		private ObscuredInt totalLosesMadeByPlayer = UserManager.Stats[(int)Stat.Lost];
+		private ObscuredInt totalLosesMadeByPlayer = SMPlayerDataManager.LocalPlayerData.totalLoses;
 		/// <summary>
 		/// The current level of player.
 		/// </summary>
-		private ObscuredInt currentLevelOfPlayer = UserManager.Stats[(int)Stat.Level];
+		private ObscuredInt currentLevelOfPlayer = SMPlayerDataManager.LocalPlayerData.playerLevel;
 		/// <summary>
 		/// The additional xp of player.
 		/// </summary>
-		private ObscuredInt additionalXpOfPlayer = UserManager.Stats[(int)Stat.AdditionalXp];
+		private ObscuredInt additionalXpOfPlayer = SMPlayerDataManager.LocalPlayerData.additionalXp;
 
 		// Use this for initialization
 		void Start () 
@@ -114,14 +115,15 @@ namespace SandeepMattepu
 			if(isDataReadyToSave)
 			{
 				checkPlayerEligibleToNextLevel ();
-				UserManager.Stats [(int)Stat.Kills] = killesMade;
-				UserManager.Stats [(int)Stat.Deaths] = deathsEncountered;
-				UserManager.Stats [(int)Stat.TimePlayed] = timePlayed;
-				UserManager.Stats [(int)Stat.Won] = totalWinsMadeByPlayer;
-				UserManager.Stats [(int)Stat.Lost] = totalLosesMadeByPlayer;
-				UserManager.Stats [(int)Stat.AdditionalXp] = additionalXpOfPlayer;
-				UserManager.Stats [(int)Stat.Experience] = currentLevelOfPlayer;
-				UserManager.SaveCloud ();
+				SMPlayerDataManager.LocalPlayerData.killsMadeByPlayer = killesMade;
+				SMPlayerDataManager.LocalPlayerData.deathsOccuredToPlayer = deathsEncountered;
+				SMPlayerDataManager.LocalPlayerData.timePlayerPlayed = timePlayed;
+				SMPlayerDataManager.LocalPlayerData.totalWins = totalWinsMadeByPlayer;
+				SMPlayerDataManager.LocalPlayerData.totalLoses = totalLosesMadeByPlayer;
+				SMPlayerDataManager.LocalPlayerData.additionalXp = additionalXpOfPlayer;
+				SMPlayerDataManager.LocalPlayerData.playerLevel = currentLevelOfPlayer;
+				SMPlayerDataManager.LocalPlayerData.reformatStringWithChanges ();
+				SMPlayerDataManager.saveData ();
 			}
 
 		}
