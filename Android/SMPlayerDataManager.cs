@@ -69,6 +69,8 @@ namespace SandeepMattepu.Android
 			else
 			{
 				loadLocalData ();
+				cloudPlayerData = new SMPlayerDataFormatter (localPlayerData);
+				playerData = new SMPlayerDataFormatter (localPlayerData);
 			}
 		}
 
@@ -84,6 +86,8 @@ namespace SandeepMattepu.Android
 			else
 			{
 				loadLocalData ();
+				cloudPlayerData = new SMPlayerDataFormatter (localPlayerData);
+				playerData = new SMPlayerDataFormatter (localPlayerData);
 			}
 		}
 
@@ -144,6 +148,8 @@ namespace SandeepMattepu.Android
 			else
 			{
 				loadLocalData ();
+				cloudPlayerData = new SMPlayerDataFormatter (localPlayerData);
+				playerData = new SMPlayerDataFormatter (localPlayerData);
 			}
 		}
 
@@ -231,6 +237,8 @@ namespace SandeepMattepu.Android
 		{
 			if(Status == SavedGameRequestStatus.Success)
 			{
+				cloudPlayerData = new SMPlayerDataFormatter (playerData);
+				localPlayerData = new SMPlayerDataFormatter (playerData);
 				saveDataLocally ();
 			}
 			else
