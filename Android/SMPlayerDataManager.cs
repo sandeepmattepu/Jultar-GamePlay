@@ -109,6 +109,7 @@ namespace SandeepMattepu.Android
 					cloudPlayerData = new SMPlayerDataFormatter (CloudSaveString);
 					cloudPlayerData.isBackedUpByGoogle = true;
 					cloudPlayerData = cloudPlayerData.reformatStringWithChanges ();
+					playerData = new SMPlayerDataFormatter (cloudPlayerData);
 					saveData ();
 				}
 				else
@@ -119,8 +120,10 @@ namespace SandeepMattepu.Android
 				double CloudTime = cloudPlayerData.timeStamp;
 				double LocalTime = localPlayerData.timeStamp;
 				bool cloudBackUpToLocal = localPlayerData.isBackedUpByGoogle;
+				string playerNameInLocalData = localPlayerData.playerUniqueID;
+				string playerNameInCloudData = cloudPlayerData.playerUniqueID;
 
-				if(cloudBackUpToLocal)
+				if(cloudBackUpToLocal && (playerNameInCloudData == playerNameInLocalData))
 				{
 					if(LocalTime > CloudTime)
 					{
@@ -189,6 +192,8 @@ namespace SandeepMattepu.Android
 		{
 			if (Social.localUser.authenticated)
 			{
+				playerData.playerUniqueID = Social.localUser.id;
+				playerData.reformatStringWithChanges ();
 				((PlayGamesPlatform)Social.Active).SavedGame.OpenWithAutomaticConflictResolution
 				("JultarSave",
 					DataSource.ReadCacheOrNetwork,
@@ -274,7 +279,7 @@ namespace SandeepMattepu.Android
 		/// <returns>The default data.</returns>
 		private static string getDefaultData()
 		{
-			SMPlayerDataFormatter defaultData = new SMPlayerDataFormatter (1, 1, 0, 0, 0, 0, 0, 0, 0, false);
+			SMPlayerDataFormatter defaultData = new SMPlayerDataFormatter (1, "Not-Logged-Player", 1, 0, 0, 0, 0, 0, 0, 0, false);
 			return defaultData.FormattedString;
 		}
 	}
@@ -290,6 +295,7 @@ namespace SandeepMattepu.Android
 		private static DateTime gameDevelopedTime = new DateTime(2017, 8, 27, 0, 0, 0, 0, DateTimeKind.Utc);
 
 		public ObscuredInt gameVersionNumber;
+		public ObscuredString playerUniqueID;
 		public ObscuredInt playerLevel;
 		public ObscuredInt additionalXp;
 		public ObscuredInt killsMadeByPlayer;
@@ -312,10 +318,11 @@ namespace SandeepMattepu.Android
 			}
 		}
 
-		public SMPlayerDataFormatter(int gameVersion, int PlayerLevel, int AdditionalXP, int playerMadeKills,
+		public SMPlayerDataFormatter(int gameVersion, string UniqueID, int PlayerLevel, int AdditionalXP, int playerMadeKills,
 			int deathsToPlayer, int TotalWins, int TotalLoses, int timePlayed, int crownsNumber, bool backedUpGoogle)
 		{
 			gameVersionNumber = gameVersion;
+			playerUniqueID = UniqueID;
 			playerLevel = PlayerLevel;
 			additionalXp = AdditionalXP;
 			killsMadeByPlayer = playerMadeKills;
@@ -343,6 +350,7 @@ namespace SandeepMattepu.Android
 		public SMPlayerDataFormatter(SMPlayerDataFormatter dataFormatter)
 		{
 			gameVersionNumber = dataFormatter.gameVersionNumber;
+			playerUniqueID = dataFormatter.playerUniqueID;
 			playerLevel = dataFormatter.playerLevel;
 			additionalXp = dataFormatter.additionalXp;
 			killsMadeByPlayer = dataFormatter.killsMadeByPlayer;
@@ -380,6 +388,8 @@ namespace SandeepMattepu.Android
 			stringBuilder.Append ("|");
 
 			// Data
+			stringBuilder.Append((string)playerUniqueID);
+			stringBuilder.Append ("%");
 			stringBuilder.Append((int)playerLevel);
 			stringBuilder.Append ("%");
 			stringBuilder.Append ((int)additionalXp);
@@ -422,14 +432,15 @@ namespace SandeepMattepu.Android
 
 			// Data
 			string[] playerData = splittedData[1].Split('%');
-			playerLevel = int.Parse(playerData[0]);
-			additionalXp = int.Parse (playerData [1]);
-			killsMadeByPlayer = int.Parse(playerData[2]);
-			deathsOccuredToPlayer = int.Parse(playerData[3]);
-			totalWins = int.Parse(playerData[4]);
-			totalLoses = int.Parse (playerData [5]);
-			timePlayerPlayed = int.Parse(playerData[6]);
-			numberOfCrowns = int.Parse(playerData[7]);
+			playerUniqueID = playerData [0];
+			playerLevel = int.Parse(playerData[1]);
+			additionalXp = int.Parse (playerData [2]);
+			killsMadeByPlayer = int.Parse(playerData[3]);
+			deathsOccuredToPlayer = int.Parse(playerData[4]);
+			totalWins = int.Parse(playerData[5]);
+			totalLoses = int.Parse (playerData [6]);
+			timePlayerPlayed = int.Parse(playerData[7]);
+			numberOfCrowns = int.Parse(playerData[8]);
 
 			// Backed up by google
 			isBackedUpByGoogle = bool.Parse(splittedData[2]);

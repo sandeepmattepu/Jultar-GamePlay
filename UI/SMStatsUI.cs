@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.Android;
+using SandeepMattepu.Testing;
 
 namespace SandeepMattepu.UI
 {
@@ -84,8 +85,7 @@ namespace SandeepMattepu.UI
 
 		private void Start () 
 		{
-			loadDataToDisplay ();
-			assignDataToUI ();
+			StartCoroutine ("loadDataToDisplay");
 		}
 
 		/// <summary>
@@ -105,8 +105,11 @@ namespace SandeepMattepu.UI
 		/// <summary>
 		/// This function loads the data to be displayed on UI
 		/// </summary>
-		private void loadDataToDisplay()
+		private IEnumerator loadDataToDisplay()
 		{
+			SMCustomDebug.showDebugMessage ("UNITY_STAT_LOADING", "Waiting for loading");
+			yield return new WaitUntil (() => SMPlayerDataManager.PlayerData != null);
+			SMCustomDebug.showDebugMessage ("UNITY_STAT_LOADING", "Loading Finished");
 			currentLevel = SMPlayerDataManager.PlayerData.playerLevel;
 			additionalXpOfUser = SMPlayerDataManager.PlayerData.additionalXp;
 			killsMade = SMPlayerDataManager.PlayerData.killsMadeByPlayer;
@@ -122,6 +125,8 @@ namespace SandeepMattepu.UI
 				winToLoseRatio = (totalWins / totalLoses);
 			}
 			requiredXpForNextLevel = SMSavePlayerProgress.calculateTotalXpRequiredForNextLevel (currentLevel);
+
+			assignDataToUI ();
 		}
 	}
 }
