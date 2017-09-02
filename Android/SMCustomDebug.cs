@@ -19,7 +19,7 @@ namespace SandeepMattepu.Testing
 	{
 		private static string DEFAULT_TAG = "UNITY_SANDEEP";
 
-		#if UNITY_ANDROID
+		#if UNITY_ANDROID && !UNITY_EDITOR
 		/// <summary>
 		/// This holds reference to android java class which shows custom debug messages
 		/// </summary>
@@ -30,10 +30,12 @@ namespace SandeepMattepu.Testing
 		/// Shows the debug message in android monitor or in xcode debugger.
 		/// </summary>
 		/// <param name="message">Message to be shown.</param>
-		private static void showDebugMessage(string message)
+		public static void showDebugMessage(string message)
 		{
-			#if UNITY_ANDROID
+			#if UNITY_ANDROID && !UNITY_EDITOR
 			androidCustomDebugClass.CallStatic("showCustomLogWithTag",DEFAULT_TAG,message);
+			#else
+			Debug.Log(DEFAULT_TAG + " " + message);
 			#endif
 		}
 
@@ -42,10 +44,12 @@ namespace SandeepMattepu.Testing
 		/// </summary>
 		/// <param name="tag">Tag to filter in debugger.</param>
 		/// <param name="message">Message to be shown.</param>
-		private static void showDebugMessage(string tag, string message)
+		public static void showDebugMessage(string tag, string message)
 		{
-			#if UNITY_ANDROID
+			#if UNITY_ANDROID && !UNITY_EDITOR
 			androidCustomDebugClass.CallStatic("showCustomLogWithTag",tag,message);
+			#else
+			Debug.Log(tag + " " + message);
 			#endif
 		}
 	}
