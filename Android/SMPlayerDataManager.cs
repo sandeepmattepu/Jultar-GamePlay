@@ -116,11 +116,11 @@ namespace SandeepMattepu.Android
 					cloudPlayerData = new SMPlayerDataFormatter (CloudSaveString);
 				}
 
-				double CloudTime = double.Parse(CloudSaveString.Split('|')[3]);
-				double LocalTime = double.Parse(LocalSaveString.Split('|')[3]);
-				int cloudBackUpToLocal = int.Parse (LocalSaveString.Split ('|') [2]);
+				double CloudTime = cloudPlayerData.timeStamp;
+				double LocalTime = localPlayerData.timeStamp;
+				bool cloudBackUpToLocal = localPlayerData.isBackedUpByGoogle;
 
-				if(cloudBackUpToLocal == 1)
+				if(cloudBackUpToLocal)
 				{
 					if(LocalTime > CloudTime)
 					{
