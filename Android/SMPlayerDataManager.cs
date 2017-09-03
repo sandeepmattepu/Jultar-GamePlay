@@ -53,6 +53,17 @@ namespace SandeepMattepu.Android
 			}
 		}
 
+		private static SMPlayerPurchasedProducts playerPurchasedProducts = new SMPlayerPurchasedProducts(false);
+		/// <summary>
+		/// This has data of which product is purchased and which product is not. WARNING : - DONT CHANGE CONTENTS OF IT UNLESS YOU ARE SURE
+		/// </summary>
+		/// <value>The player purchased products.</value>
+		public static SMPlayerPurchasedProducts PlayerPurchasedProducts {
+			get {
+				return playerPurchasedProducts;
+			}
+		}
+
 		#region Loading Data
 
 		#region Load from cloud
@@ -476,25 +487,182 @@ namespace SandeepMattepu.Android
 
 	public struct SMPlayerPurchasedProducts
 	{
+		// XP boost
+		public ObscuredBool xp2Boost;
+		public ObscuredBool xp5Boost;
+		public ObscuredBool xp8Boost;
+
 		// Guns
 		public ObscuredBool greenEyeGunBought;
-		public ObscuredBool blackDogGunBought;
+		public ObscuredBool leoBlackDogGunBought;
 		public ObscuredBool jully11Bought;
 		public ObscuredBool blondeGunBought;
+		public ObscuredBool mrozykGunBought;
+		public ObscuredBool rainiGunBought;
+		public ObscuredBool smilerieGunBought;
+		public ObscuredBool sniperGunBought;
 
-		// 
+		// Perks
+		public ObscuredBool egoPerkBought;
 		public ObscuredBool rusherPerkBought;
-		public ObscuredBool strategyGunBought;
+		public ObscuredBool strategyPerkBought;
+		public ObscuredBool thinkerPerkBought;
+		public ObscuredBool tryHardPerkBought;
+
+		// Lasers
+		public ObscuredBool blueLaserBought;
+		public ObscuredBool greenLaserBought;
+		public ObscuredBool redLaserBought;
+
+		// Helmet
+		public ObscuredBool breathoreHelmetBought;
+		public ObscuredBool maskeraHelmetBought;
+		public ObscuredBool operativeHelmetBought;
+		public ObscuredBool pilotarHelmetBought;
+		public ObscuredBool tsTacticalHelmetBought;
 
 		public SMPlayerPurchasedProducts(bool defaultValue)
 		{
-			greenEyeGunBought = false;
-			blackDogGunBought = false;
-			jully11Bought = false;
-			blondeGunBought = false;
+			xp2Boost = defaultValue;
+			xp5Boost = defaultValue;
+			xp8Boost = defaultValue;
 
-			rusherPerkBought = false;
-			strategyGunBought = false;
+			greenEyeGunBought = defaultValue;
+			leoBlackDogGunBought = defaultValue;
+			jully11Bought = defaultValue;
+			blondeGunBought = defaultValue;
+			mrozykGunBought = true;
+			rainiGunBought = defaultValue;
+			smilerieGunBought = defaultValue;
+			sniperGunBought = defaultValue;
+
+			egoPerkBought = defaultValue;
+			rusherPerkBought = defaultValue;
+			strategyPerkBought = defaultValue;
+			thinkerPerkBought = defaultValue;
+			tryHardPerkBought = defaultValue;
+
+			// Lasers
+			blueLaserBought = defaultValue;
+			greenLaserBought = defaultValue;
+			redLaserBought = defaultValue;
+
+			// Helmet
+			breathoreHelmetBought = defaultValue;
+			maskeraHelmetBought = defaultValue;
+			operativeHelmetBought = defaultValue;
+			pilotarHelmetBought = defaultValue;
+			tsTacticalHelmetBought = defaultValue;
+		}
+
+		/// <summary>
+		/// This function will make highest xp available to player when he bought
+		/// </summary>
+		/// <param name="boostType">Boost type player bought.</param>
+		public void purchasedXp(Boost boostType)
+		{
+			switch(boostType)
+			{
+			case Boost.EightTimesExp:
+				xp2Boost = false;
+				xp5Boost = false;
+				xp8Boost = true;
+				break;
+			case Boost.FiveTimesExp:
+				if (!xp8Boost) 
+				{
+					xp2Boost = false;
+					xp5Boost = true;
+				} 
+				else 
+				{
+					xp2Boost = false;
+					xp5Boost = false;
+				}
+				break;
+			case Boost.TwoTimesExp:
+				if (!xp8Boost && !xp5Boost) 
+				{
+					xp2Boost = true;
+				}
+				else 
+				{
+					xp2Boost = false;
+				}
+				break;
+			}
+		}
+
+		/// <summary>
+		/// This function will get access to perk in the game
+		/// </summary>
+		/// <param name="perkType">Perk type player bought.</param>
+		public void purchasePerk(Perk perkType)
+		{
+			switch(perkType)
+			{
+			case Perk.Ego:
+				egoPerkBought = true;
+				break;
+			case Perk.Rusher:
+				rusherPerkBought = true;
+				break;
+			case Perk.Strategy:
+				strategyPerkBought = true;
+				break;
+			case Perk.Thinker:
+				thinkerPerkBought = true;
+				break;
+			case Perk.Tryhard:
+				tryHardPerkBought = true;
+				break;
+			}
+		}
+
+		/// <summary>
+		/// This function will get access to laser in the game
+		/// </summary>
+		/// <param name="laserType">Laser type that is purchased.</param>
+		public void purchaseLaser(Laser laserType)
+		{
+			switch(laserType)
+			{
+			case Laser.BlueLaser:
+				blueLaserBought = true;
+				break;
+			case Laser.GreenLaser:
+				greenLaserBought = true;
+				break;
+			case Laser.RedLaser:
+				redLaserBought = true;
+				break;
+			}
+		}
+
+		/// <summary>
+		/// This function will get access to helmet in game
+		/// </summary>
+		/// <param name="helmetType">Helmet type that is purchased.</param>
+		public void purchaseHelmet(Helmet helmetType)
+		{
+			switch(helmetType)
+			{
+			case Helmet.Breathore:
+				breathoreHelmetBought = true;
+				break;
+			case Helmet.Maskere:
+				maskeraHelmetBought = true;
+				break;
+			case Helmet.Operative:
+				operativeHelmetBought = true;
+				break;
+			case Helmet.Pilotar:
+				pilotarHelmetBought = true;
+				break;
+			case Helmet.TSTactical:
+				tsTacticalHelmetBought = true;
+				break;
+			}
 		}
 
 	}
