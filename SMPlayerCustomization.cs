@@ -10,6 +10,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SandeepMattepu.Multiplayer;
+using UnityEngine.UI;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.UI
 {
@@ -118,6 +120,141 @@ namespace SandeepMattepu.UI
 			jagurPilotarHelmet.SetActive (false);
 			jagurTacticalHelmet.SetActive (false);
 			jagurBreathoreHelemt.SetActive (false);
+		}
+	}
+
+	/// <summary>
+	/// This class will make the make collective UI elements to interact and change themselves based on availabity 
+	/// of the product that these UI represent
+	/// </summary>
+	[System.Serializable]
+	public class SMProductEquipUI
+	{
+		[SerializeField]
+		protected Text levelToUnlockUI;
+		[SerializeField]
+		protected Button productEquipperButton;
+		[SerializeField]
+		protected Text productAvialabilityUI;
+
+		/// <summary>
+		/// Is product available
+		/// </summary>
+		protected ObscuredBool isProductAvailable = false;
+
+		/// <summary>
+		/// Sets the product availability.
+		/// </summary>
+		/// <param name="isAvailable">If set to <c>true</c> then product is available.</param>
+		/// <param name="messageToShowProductAvailable">Message to show when product available.</param>
+		/// <param name="messageToShowProductNotAvailable">Message to show when product not available.</param>
+		/// <param name="levelWhenUnlocks">Level when unlocks.</param>
+		public virtual void setProductAvailability(bool isAvailable, string messageToShowProductAvailable, string 
+			messageToShowProductNotAvailable, string levelWhenUnlocks)
+		{
+			isProductAvailable = isAvailable;
+
+			if(isProductAvailable)
+			{
+				if(productEquipperButton != null)
+				{
+					productAvialabilityUI.color = Color.white;
+				}
+
+				if(levelToUnlockUI != null)
+				{
+					levelToUnlockUI.gameObject.SetActive (false);
+				}
+
+				if(productAvialabilityUI != null)
+				{
+					productAvialabilityUI.text = messageToShowProductAvailable;
+					productAvialabilityUI.color = Color.green;
+				}
+			}
+			else
+			{
+				if(productEquipperButton != null)
+				{
+					productAvialabilityUI.color = Color.grey;
+				}
+
+				if(levelToUnlockUI != null)
+				{
+					levelToUnlockUI.gameObject.SetActive (true);
+					levelToUnlockUI.color = Color.red;
+				}
+
+				if(productAvialabilityUI != null)
+				{
+					productAvialabilityUI.text = messageToShowProductNotAvailable;
+					productAvialabilityUI.color = Color.green;
+				}
+			}
+		}
+
+		/// <summary>
+		/// This function sets the method which will be called when button is pressed
+		/// </summary>
+		/// <param name="methodToBeCalled">Method to be called.</param>
+		public virtual void setOnClickProductEquipButtonMethod(UnityEngine.Events.UnityAction methodToBeCalled)
+		{
+			if(productEquipperButton != null)
+			{
+				productEquipperButton.onClick.AddListener (methodToBeCalled);
+			}
+		}
+	}
+
+	/// <summary>
+	/// This class will make the make collective UI elements to interact and change themselves based on availabity 
+	/// of the product that these UI represent. This is mainly used to represent Helmet UI
+	/// </summary>
+	public class SMHelmetEquipUI : SMProductEquipUI
+	{
+		[SerializeField]
+		protected Button viewHelmetButton;
+
+		/// <summary>
+		/// Sets the product availability.
+		/// </summary>
+		/// <param name="isAvailable">If set to <c>true</c> then product is available.</param>
+		/// <param name="messageToShowProductAvailable">Message to show when product available.</param>
+		/// <param name="messageToShowProductNotAvailable">Message to show when product not available.</param>
+		/// <param name="levelWhenUnlocks">Level when unlocks.</param>
+		public override void setProductAvailability (bool isAvailable, string messageToShowProductAvailable,
+			string messageToShowProductNotAvailable, string levelWhenUnlocks)
+		{
+			base.setProductAvailability (isAvailable, messageToShowProductAvailable, messageToShowProductNotAvailable, levelWhenUnlocks);
+
+			if(levelToUnlockUI != null)
+			{
+				levelToUnlockUI.gameObject.SetActive (false);
+			}
+		}
+
+		/// <summary>
+		/// Sets the product availability.
+		/// </summary>
+		/// <param name="isAvailable">If set to <c>true</c> then product is available.</param>
+		/// <param name="messageToShowProductAvailable">Message to show when product available.</param>
+		/// <param name="messageToShowProductNotAvailable">Message to show when product not available.</param>
+		public virtual void setProductAvailability (bool isAvailable, string messageToShowProductAvailable,
+			string messageToShowProductNotAvailable)
+		{
+			setProductAvailability (isAvailable, messageToShowProductAvailable, messageToShowProductNotAvailable, "0");
+		}
+
+		/// <summary>
+		/// This function sets the method which will be called when view button is pressed
+		/// </summary>
+		/// <param name="methodToBeCalled">Method to be called.</param>
+		public virtual void setOnClickViewButtonMethod(UnityEngine.Events.UnityAction methodToBeCalled)
+		{
+			if(viewHelmetButton != null)
+			{
+				viewHelmetButton.onClick.AddListener (methodToBeCalled);
+			}
 		}
 	}
 }
