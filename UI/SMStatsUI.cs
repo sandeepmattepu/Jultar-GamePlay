@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.Android;
 using SandeepMattepu.Testing;
+using System;
 
 namespace SandeepMattepu.UI
 {
@@ -41,6 +42,11 @@ namespace SandeepMattepu.UI
 		/// </summary>
 		[SerializeField]
 		private Text winToLoseRatioText;
+		/// <summary>
+		/// The time played UI.
+		/// </summary>
+		[SerializeField]
+		private Text timePlayedUI;
 		/// <summary>
 		/// This slider indicated how much xp is required for next level
 		/// </summary>
@@ -81,6 +87,10 @@ namespace SandeepMattepu.UI
 		/// The win to lose ratio.
 		/// </summary>
 		private float winToLoseRatio;
+		/// <summary>
+		/// The time played.
+		/// </summary>
+		private int timePlayed;
 		#endregion
 
 		private void Start () 
@@ -100,6 +110,7 @@ namespace SandeepMattepu.UI
 			xpRequiredForNextLevelSlider.minValue = 0;
 			xpRequiredForNextLevelSlider.maxValue = requiredXpForNextLevel;
 			xpRequiredForNextLevelSlider.value = additionalXpOfUser;
+			assignTimeToUI (timePlayed);
 		}
 
 		/// <summary>
@@ -107,15 +118,14 @@ namespace SandeepMattepu.UI
 		/// </summary>
 		private IEnumerator loadDataToDisplay()
 		{
-			SMCustomDebug.showDebugMessage ("UNITY_STAT_LOADING", "Waiting for loading");
 			yield return new WaitUntil (() => SMPlayerDataManager.PlayerData != null);
-			SMCustomDebug.showDebugMessage ("UNITY_STAT_LOADING", "Loading Finished");
 			currentLevel = SMPlayerDataManager.PlayerData.playerLevel;
 			additionalXpOfUser = SMPlayerDataManager.PlayerData.additionalXp;
 			killsMade = SMPlayerDataManager.PlayerData.killsMadeByPlayer;
 			deathsEncountered = SMPlayerDataManager.PlayerData.deathsOccuredToPlayer;
 			totalWins = SMPlayerDataManager.PlayerData.totalWins;
 			totalLoses = SMPlayerDataManager.PlayerData.totalLoses;
+			timePlayed = SMPlayerDataManager.PlayerData.timePlayerPlayed;
 			if(totalLoses == 0)
 			{
 				winToLoseRatio = totalWins > 0 ? totalWins : 0;
@@ -127,6 +137,17 @@ namespace SandeepMattepu.UI
 			requiredXpForNextLevel = SMSavePlayerProgress.calculateTotalXpRequiredForNextLevel (currentLevel);
 
 			assignDataToUI ();
+		}
+
+		/// <summary>
+		/// This function assignes time to UI in required format
+		/// </summary>
+		/// <param name="time">Total time in seconds.</param>
+		private void assignTimeToUI(int time)
+		{
+			TimeSpan timeSpan = new TimeSpan (time);
+			timePlayedUI.text = timeSpan.Days.ToString () + " Days " + timeSpan.Hours.ToString ()
+			+ " Hours " + timeSpan.Minutes.ToString () + " Minutes " + timeSpan.Seconds.ToString () + " Seconds";
 		}
 	}
 }

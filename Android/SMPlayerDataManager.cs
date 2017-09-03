@@ -18,6 +18,9 @@ using GooglePlayGames.BasicApi.SavedGame;
 
 namespace SandeepMattepu.Android
 {
+	/// <summary>
+	/// This class handles loading and saving data from local and cloud in android platform
+	/// </summary>
 	public class SMPlayerDataManager : MonoBehaviour 
 	{
 		/// <summary>
@@ -123,19 +126,30 @@ namespace SandeepMattepu.Android
 				string playerNameInLocalData = localPlayerData.playerUniqueID;
 				string playerNameInCloudData = cloudPlayerData.playerUniqueID;
 
-				if(cloudBackUpToLocal && (playerNameInCloudData == playerNameInLocalData))
+				if(playerNameInCloudData == playerNameInLocalData)
 				{
-					if(LocalTime > CloudTime)
+					if(cloudBackUpToLocal)
 					{
-						playerData = new SMPlayerDataFormatter (localPlayerData);
-						cloudPlayerData = new SMPlayerDataFormatter (playerData);
-						localPlayerData = new SMPlayerDataFormatter (playerData);
-						saveData ();
+						if(LocalTime > CloudTime)
+						{
+							playerData = new SMPlayerDataFormatter (localPlayerData);
+							cloudPlayerData = new SMPlayerDataFormatter (playerData);
+							localPlayerData = new SMPlayerDataFormatter (playerData);
+							saveData ();
+						}
+						else
+						{
+							playerData = new SMPlayerDataFormatter (cloudPlayerData);
+							localPlayerData = new SMPlayerDataFormatter (playerData);
+							saveDataLocally ();
+						}
 					}
 					else
 					{
 						playerData = new SMPlayerDataFormatter (cloudPlayerData);
 						localPlayerData = new SMPlayerDataFormatter (playerData);
+						localPlayerData.isBackedUpByGoogle = true;
+						localPlayerData = localPlayerData.reformatStringWithChanges ();
 						saveDataLocally ();
 					}
 				}
@@ -281,6 +295,16 @@ namespace SandeepMattepu.Android
 		{
 			SMPlayerDataFormatter defaultData = new SMPlayerDataFormatter (1, "Not-Logged-Player", 1, 0, 0, 0, 0, 0, 0, 0, false);
 			return defaultData.FormattedString;
+		}
+
+		/// <summary>
+		/// This function resets all data and assigns to null
+		/// </summary>
+		public static void resetAllData()
+		{
+			cloudPlayerData = null;
+			playerData = null;
+			localPlayerData = null;
 		}
 	}
 
@@ -448,6 +472,31 @@ namespace SandeepMattepu.Android
 			// Time stamp
 			timeStamp = double.Parse(splittedData[3]);
 		}
+	}
+
+	public struct SMPlayerPurchasedProducts
+	{
+		// Guns
+		public ObscuredBool greenEyeGunBought;
+		public ObscuredBool blackDogGunBought;
+		public ObscuredBool jully11Bought;
+		public ObscuredBool blondeGunBought;
+
+		// 
+		public ObscuredBool rusherPerkBought;
+		public ObscuredBool strategyGunBought;
+
+		public SMPlayerPurchasedProducts(bool defaultValue)
+		{
+			greenEyeGunBought = false;
+			blackDogGunBought = false;
+			jully11Bought = false;
+			blondeGunBought = false;
+
+			rusherPerkBought = false;
+			strategyGunBought = false;
+		}
+
 	}
 }
 
