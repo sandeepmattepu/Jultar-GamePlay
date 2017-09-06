@@ -304,7 +304,8 @@ namespace SandeepMattepu.Android
 		/// <returns>The default data.</returns>
 		private static string getDefaultData()
 		{
-			SMPlayerDataFormatter defaultData = new SMPlayerDataFormatter (1, "Not-Logged-Player", 1, 0, 0, 0, 0, 0, 0, 0, false);
+			SMPlayerDataFormatter defaultData = new SMPlayerDataFormatter (1, "Not-Logged-Player", 1, 0, 0, 0, 0, 0, 0, 0
+				, new SMPlayerPurchasedProducts(false), false);
 			return defaultData.FormattedString;
 		}
 
@@ -339,6 +340,7 @@ namespace SandeepMattepu.Android
 		public ObscuredInt totalLoses;
 		public ObscuredInt timePlayerPlayed;
 		public ObscuredInt numberOfCrowns;
+		public SMPlayerPurchasedProducts gunsAndPerksData;
 		public ObscuredBool isBackedUpByGoogle;
 		public ObscuredDouble timeStamp;
 		public ObscuredString formattedString;
@@ -354,7 +356,8 @@ namespace SandeepMattepu.Android
 		}
 
 		public SMPlayerDataFormatter(int gameVersion, string UniqueID, int PlayerLevel, int AdditionalXP, int playerMadeKills,
-			int deathsToPlayer, int TotalWins, int TotalLoses, int timePlayed, int crownsNumber, bool backedUpGoogle)
+			int deathsToPlayer, int TotalWins, int TotalLoses, int timePlayed, int crownsNumber, 
+			SMPlayerPurchasedProducts playerPurchasedProducts, bool backedUpGoogle)
 		{
 			gameVersionNumber = gameVersion;
 			playerUniqueID = UniqueID;
@@ -366,6 +369,7 @@ namespace SandeepMattepu.Android
 			totalLoses = TotalLoses;
 			timePlayerPlayed = timePlayed;
 			numberOfCrowns = crownsNumber;
+			gunsAndPerksData = playerPurchasedProducts;
 			isBackedUpByGoogle = backedUpGoogle;
 			formatDataToStringForSavingOrLoading ();
 		}
@@ -394,6 +398,7 @@ namespace SandeepMattepu.Android
 			totalLoses = dataFormatter.totalLoses;
 			timePlayerPlayed = dataFormatter.timePlayerPlayed;
 			numberOfCrowns = dataFormatter.numberOfCrowns;
+			gunsAndPerksData = dataFormatter.gunsAndPerksData;
 			isBackedUpByGoogle = dataFormatter.isBackedUpByGoogle;
 			timeStamp = dataFormatter.timeStamp;
 			formattedString = dataFormatter.formattedString;
@@ -442,6 +447,36 @@ namespace SandeepMattepu.Android
 			stringBuilder.Append((int)numberOfCrowns);
 			stringBuilder.Append ("|");
 
+			// Guns Data
+			stringBuilder.Append((bool)gunsAndPerksData.mrozykGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.blondeGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.greenEyeGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.jully11Bought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.leoBlackDogGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.rainiGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.smilerieGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.sniperGunBought);
+			stringBuilder.Append ("|");
+
+			// Perks data
+			stringBuilder.Append((bool)gunsAndPerksData.egoPerkBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.rusherPerkBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.strategyPerkBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.thinkerPerkBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)gunsAndPerksData.tryHardPerkBought);
+			stringBuilder.Append ("|");
+
 			// Backed up by google
 			stringBuilder.Append ((bool)isBackedUpByGoogle);
 			stringBuilder.Append ("|");
@@ -477,14 +512,38 @@ namespace SandeepMattepu.Android
 			timePlayerPlayed = int.Parse(playerData[7]);
 			numberOfCrowns = int.Parse(playerData[8]);
 
+			gunsAndPerksData = new SMPlayerPurchasedProducts (false);
+
+			// Guns
+			string[] gunData = splittedData[2].Split('%');
+			gunsAndPerksData.mrozykGunBought = true;
+			gunsAndPerksData.blondeGunBought = bool.Parse (gunData [1]);
+			gunsAndPerksData.greenEyeGunBought = bool.Parse (gunData [2]);
+			gunsAndPerksData.jully11Bought = bool.Parse (gunData [3]);
+			gunsAndPerksData.leoBlackDogGunBought = bool.Parse (gunData [4]);
+			gunsAndPerksData.rainiGunBought = bool.Parse (gunData [5]);
+			gunsAndPerksData.smilerieGunBought = bool.Parse (gunData [6]);
+			gunsAndPerksData.sniperGunBought = bool.Parse (gunData [7]);
+
+			// Perks
+			string[] perksData = splittedData[3].Split('%');
+			gunsAndPerksData.egoPerkBought = bool.Parse (splittedData [0]);
+			gunsAndPerksData.rusherPerkBought = bool.Parse (splittedData [1]);
+			gunsAndPerksData.strategyPerkBought = bool.Parse (splittedData [2]);
+			gunsAndPerksData.thinkerPerkBought = bool.Parse (splittedData [3]);
+			gunsAndPerksData.tryHardPerkBought = bool.Parse(splittedData[4]);
+
 			// Backed up by google
-			isBackedUpByGoogle = bool.Parse(splittedData[2]);
+			isBackedUpByGoogle = bool.Parse(splittedData[4]);
 
 			// Time stamp
-			timeStamp = double.Parse(splittedData[3]);
+			timeStamp = double.Parse(splittedData[5]);
 		}
 	}
 
+	/// <summary>
+	/// This acts as a data packet to see which products are purchased and which are not
+	/// </summary>
 	public struct SMPlayerPurchasedProducts
 	{
 		// XP boost
@@ -665,6 +724,6 @@ namespace SandeepMattepu.Android
 			}
 		}
 
-	}
+  	}
 }
 
