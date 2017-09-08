@@ -376,6 +376,338 @@ namespace SandeepMattepu.UI
 				break;
 			}
 		}
+
+		#region Gun Buttons
+
+		public void mrozykGunButtonPressed()
+		{
+			SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.Mrozyk);
+			SMProductEquipper.INSTANCE.saveToPrefs ();
+			showWeaponUIBasedOnData ();
+		}
+
+		public void rainiGunButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.rainiGunBought)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.Raini);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 200)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.Raini);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockGun (GUN_TYPE.Raini);
+				reduceCrownsAndSave (200);
+			}
+		}
+
+		public void smilereGunButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.smilerieGunBought)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.Smilere);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 250)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.Smilere);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockGun (GUN_TYPE.Smilere);
+				reduceCrownsAndSave (250);
+			}
+		}
+
+		public void sniperGunButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.sniperGunBought)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.Sniper);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 310)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.Sniper);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockGun (GUN_TYPE.Sniper);
+				reduceCrownsAndSave (310);
+			}
+		}
+
+		public void greenEyeGunButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.greenEyeGunBought)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.GreenEye);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 400)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.GreenEye);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockGun (GUN_TYPE.GreenEye);
+				reduceCrownsAndSave (400);
+			}
+		}
+
+		public void blackDogGunPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.leoBlackDogGunBought)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.LeoBlackDog);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 500)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.LeoBlackDog);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockGun (GUN_TYPE.LeoBlackDog);
+				reduceCrownsAndSave (500);
+			}
+		}
+
+		public void july11GunPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.jully11Bought)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.July11);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 670)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.July11);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockGun (GUN_TYPE.July11);
+				reduceCrownsAndSave (670);
+			}
+		}
+
+		public void blondeGunPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.blondeGunBought)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.Blonde);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 900)
+			{
+				SMProductEquipper.INSTANCE.equipGunWith (GUN_TYPE.Blonde);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockGun (GUN_TYPE.Blonde);
+				reduceCrownsAndSave (900);
+			}
+		}
+
+		#endregion
+
+		#region Perks Buttons
+
+		public void rusherPerkButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.rusherPerkBought)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.RUSHER);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 290)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.RUSHER);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockPerk (Perks_Type.RUSHER);
+				reduceCrownsAndSave (290);
+			}
+		}
+
+		public void strategyPerkButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.strategyPerkBought)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.STRATEGY);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 300)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.STRATEGY);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockPerk (Perks_Type.STRATEGY);
+				reduceCrownsAndSave (300);
+			}
+		}
+
+		public void egoPerkButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.egoPerkBought)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.EGO);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 350)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.EGO);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockPerk (Perks_Type.EGO);
+				reduceCrownsAndSave (350);
+			}
+		}
+
+		public void thinkerPerkButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.thinkerPerkBought)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.THINKER);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 500)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.THINKER);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockPerk (Perks_Type.THINKER);
+				reduceCrownsAndSave (500);
+			}
+		}
+
+		public void tryHardPerkButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerData.gunsAndPerksData.tryHardPerkBought)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.TRY_HARD);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+			else if((int)SMPlayerDataManager.PlayerData.numberOfCrowns >= 550)
+			{
+				SMProductEquipper.INSTANCE.setPerk (Perks_Type.TRY_HARD);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+
+				SMPlayerDataManager.PlayerData.gunsAndPerksData.unlockPerk (Perks_Type.TRY_HARD);
+				reduceCrownsAndSave (550);
+			}
+		}
+
+		#endregion
+
+		#region Helmets Buttons
+
+		public void tsTacticalHelmetBought()
+		{
+			if(SMPlayerDataManager.PlayerPurchasedProducts.tsTacticalHelmetBought)
+			{
+				SMProductEquipper.INSTANCE.setHelmet(Helmet_Type.TS_TACTICAL);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+		}
+
+		public void brethoreHelmetBought()
+		{
+			if(SMPlayerDataManager.PlayerPurchasedProducts.breathoreHelmetBought)
+			{
+				SMProductEquipper.INSTANCE.setHelmet(Helmet_Type.BREATHOR);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+		}
+
+		public void operativeHelmetBought()
+		{
+			if(SMPlayerDataManager.PlayerPurchasedProducts.operativeHelmetBought)
+			{
+				SMProductEquipper.INSTANCE.setHelmet(Helmet_Type.OPERATIVE);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+		}
+
+		public void pilotarHelmetBought()
+		{
+			if(SMPlayerDataManager.PlayerPurchasedProducts.pilotarHelmetBought)
+			{
+				SMProductEquipper.INSTANCE.setHelmet(Helmet_Type.PILOTAR);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+		}
+
+		#endregion
+
+		#region Laser Buttons
+
+		public void blueLaserButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerPurchasedProducts.blueLaserBought)
+			{
+				SMProductEquipper.INSTANCE.setLaser(Laser_Type.BLUE_LASER);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+		}
+
+		public void redLaserButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerPurchasedProducts.redLaserBought)
+			{
+				SMProductEquipper.INSTANCE.setLaser(Laser_Type.RED_LASER);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+		}
+
+		public void greenLaserButtonPressed()
+		{
+			if(SMPlayerDataManager.PlayerPurchasedProducts.greenLaserBought)
+			{
+				SMProductEquipper.INSTANCE.setLaser(Laser_Type.GREEN_LASER);
+				SMProductEquipper.INSTANCE.saveToPrefs ();
+				showWeaponUIBasedOnData ();
+			}
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Reduces the crowns and save.
+		/// </summary>
+		/// <param name="numberOfCrownsToReduce">Number of crowns to reduce.</param>
+		private void reduceCrownsAndSave(int numberOfCrownsToReduce)
+		{
+			SMPlayerDataManager.PlayerData.numberOfCrowns -= numberOfCrownsToReduce;
+			SMPlayerDataManager.PlayerData.reformatStringWithChanges ();
+			SMPlayerDataManager.forceSaveData ();
+		}
 	}
 
 	/// <summary>
@@ -412,12 +744,10 @@ namespace SandeepMattepu.UI
 				ColorBlock buttonColorBlock = new ColorBlock ();
 				buttonColorBlock.normalColor = isEquipped ? buttonColorProductAvailableAndEquipped :
 					buttonColorProductAvailableNotEquipped;
-				productEquipperButton.interactable = true;
 				productEquipperButton.colors = buttonColorBlock;
 			}
 			else
 			{
-				productEquipperButton.interactable = false;
 				ColorBlock buttonColorBlock = new ColorBlock ();
 				buttonColorBlock.disabledColor = buttonColorBlock.normalColor = buttonColorWhenProductNotAvialable;
 				productEquipperButton.colors = buttonColorBlock;
