@@ -296,6 +296,20 @@ namespace SandeepMattepu.Android
 
 		#endregion
 
+		/// <summary>
+		/// This function force saves the data so that even when there is cloud data present it will overrite it with this local data.
+		///  WARNING : - USE IT ONLY WHEN PLAYER UNLOCKED GUN OR PERK WITH GEMS
+		/// </summary>
+		public static void forceSaveData()
+		{
+			playerData.isBackedUpByGoogle = true;
+			playerData.reformatStringWithChanges ();
+			localPlayerData = new SMPlayerDataFormatter (playerData);
+			cloudPlayerData = new SMPlayerDataFormatter (playerData);
+
+			saveData ();
+		}
+
 		#endregion
 
 		/// <summary>
@@ -305,7 +319,7 @@ namespace SandeepMattepu.Android
 		private static string getDefaultData()
 		{
 			SMPlayerDataFormatter defaultData = new SMPlayerDataFormatter (1, "Not-Logged-Player", 1, 0, 0, 0, 0, 0, 0, 0
-				, new SMPlayerPurchasedProducts(false), false);
+				, new SMGunAndPerkData(1), false);
 			return defaultData.FormattedString;
 		}
 
@@ -340,7 +354,7 @@ namespace SandeepMattepu.Android
 		public ObscuredInt totalLoses;
 		public ObscuredInt timePlayerPlayed;
 		public ObscuredInt numberOfCrowns;
-		public SMPlayerPurchasedProducts gunsAndPerksData;
+		public SMGunAndPerkData gunsAndPerksData;
 		public ObscuredBool isBackedUpByGoogle;
 		public ObscuredDouble timeStamp;
 		public ObscuredString formattedString;
@@ -357,7 +371,7 @@ namespace SandeepMattepu.Android
 
 		public SMPlayerDataFormatter(int gameVersion, string UniqueID, int PlayerLevel, int AdditionalXP, int playerMadeKills,
 			int deathsToPlayer, int TotalWins, int TotalLoses, int timePlayed, int crownsNumber, 
-			SMPlayerPurchasedProducts playerPurchasedProducts, bool backedUpGoogle)
+			SMGunAndPerkData GunAndPerkData, bool backedUpGoogle)
 		{
 			gameVersionNumber = gameVersion;
 			playerUniqueID = UniqueID;
@@ -369,7 +383,8 @@ namespace SandeepMattepu.Android
 			totalLoses = TotalLoses;
 			timePlayerPlayed = timePlayed;
 			numberOfCrowns = crownsNumber;
-			gunsAndPerksData = playerPurchasedProducts;
+			gunsAndPerksData = new SMGunAndPerkData(GunAndPerkData);
+			gunsAndPerksData.unlockGunOrPerk (playerLevel);
 			isBackedUpByGoogle = backedUpGoogle;
 			formatDataToStringForSavingOrLoading ();
 		}
@@ -398,7 +413,8 @@ namespace SandeepMattepu.Android
 			totalLoses = dataFormatter.totalLoses;
 			timePlayerPlayed = dataFormatter.timePlayerPlayed;
 			numberOfCrowns = dataFormatter.numberOfCrowns;
-			gunsAndPerksData = dataFormatter.gunsAndPerksData;
+			gunsAndPerksData = new SMGunAndPerkData(dataFormatter.gunsAndPerksData);
+			gunsAndPerksData.unlockGunOrPerk (playerLevel);
 			isBackedUpByGoogle = dataFormatter.isBackedUpByGoogle;
 			timeStamp = dataFormatter.timeStamp;
 			formattedString = dataFormatter.formattedString;
@@ -447,34 +463,9 @@ namespace SandeepMattepu.Android
 			stringBuilder.Append((int)numberOfCrowns);
 			stringBuilder.Append ("|");
 
-			// Guns Data
-			stringBuilder.Append((bool)gunsAndPerksData.mrozykGunBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.blondeGunBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.greenEyeGunBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.jully11Bought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.leoBlackDogGunBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.rainiGunBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.smilerieGunBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.sniperGunBought);
-			stringBuilder.Append ("|");
-
-			// Perks data
-			stringBuilder.Append((bool)gunsAndPerksData.egoPerkBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.rusherPerkBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.strategyPerkBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.thinkerPerkBought);
-			stringBuilder.Append ("%");
-			stringBuilder.Append ((bool)gunsAndPerksData.tryHardPerkBought);
+			// Guns and Perks data
+			gunsAndPerksData.formatDataToStringForSaving ();
+			stringBuilder.Append ((string)gunsAndPerksData.formattedString);
 			stringBuilder.Append ("|");
 
 			// Backed up by google
@@ -512,26 +503,12 @@ namespace SandeepMattepu.Android
 			timePlayerPlayed = int.Parse(playerData[7]);
 			numberOfCrowns = int.Parse(playerData[8]);
 
-			gunsAndPerksData = new SMPlayerPurchasedProducts (false);
-
-			// Guns
-			string[] gunData = splittedData[2].Split('%');
-			gunsAndPerksData.mrozykGunBought = true;
-			gunsAndPerksData.blondeGunBought = bool.Parse (gunData [1]);
-			gunsAndPerksData.greenEyeGunBought = bool.Parse (gunData [2]);
-			gunsAndPerksData.jully11Bought = bool.Parse (gunData [3]);
-			gunsAndPerksData.leoBlackDogGunBought = bool.Parse (gunData [4]);
-			gunsAndPerksData.rainiGunBought = bool.Parse (gunData [5]);
-			gunsAndPerksData.smilerieGunBought = bool.Parse (gunData [6]);
-			gunsAndPerksData.sniperGunBought = bool.Parse (gunData [7]);
-
-			// Perks
-			string[] perksData = splittedData[3].Split('%');
-			gunsAndPerksData.egoPerkBought = bool.Parse (splittedData [0]);
-			gunsAndPerksData.rusherPerkBought = bool.Parse (splittedData [1]);
-			gunsAndPerksData.strategyPerkBought = bool.Parse (splittedData [2]);
-			gunsAndPerksData.thinkerPerkBought = bool.Parse (splittedData [3]);
-			gunsAndPerksData.tryHardPerkBought = bool.Parse(splittedData[4]);
+			// Guns and perks data
+			string gunAndPerkDataString = splittedData [2];
+			gunAndPerkDataString += "|";
+			gunAndPerkDataString += splittedData [3];
+			gunsAndPerksData = new SMGunAndPerkData (gunAndPerkDataString);
+			gunsAndPerksData.unlockGunOrPerk (playerLevel);
 
 			// Backed up by google
 			isBackedUpByGoogle = bool.Parse(splittedData[4]);
@@ -551,23 +528,6 @@ namespace SandeepMattepu.Android
 		public ObscuredBool xp5Boost;
 		public ObscuredBool xp8Boost;
 
-		// Guns
-		public ObscuredBool greenEyeGunBought;
-		public ObscuredBool leoBlackDogGunBought;
-		public ObscuredBool jully11Bought;
-		public ObscuredBool blondeGunBought;
-		public ObscuredBool mrozykGunBought;
-		public ObscuredBool rainiGunBought;
-		public ObscuredBool smilerieGunBought;
-		public ObscuredBool sniperGunBought;
-
-		// Perks
-		public ObscuredBool egoPerkBought;
-		public ObscuredBool rusherPerkBought;
-		public ObscuredBool strategyPerkBought;
-		public ObscuredBool thinkerPerkBought;
-		public ObscuredBool tryHardPerkBought;
-
 		// Lasers
 		public ObscuredBool blueLaserBought;
 		public ObscuredBool greenLaserBought;
@@ -585,21 +545,6 @@ namespace SandeepMattepu.Android
 			xp2Boost = defaultValue;
 			xp5Boost = defaultValue;
 			xp8Boost = defaultValue;
-
-			greenEyeGunBought = defaultValue;
-			leoBlackDogGunBought = defaultValue;
-			jully11Bought = defaultValue;
-			blondeGunBought = defaultValue;
-			mrozykGunBought = true;
-			rainiGunBought = defaultValue;
-			smilerieGunBought = defaultValue;
-			sniperGunBought = defaultValue;
-
-			egoPerkBought = defaultValue;
-			rusherPerkBought = defaultValue;
-			strategyPerkBought = defaultValue;
-			thinkerPerkBought = defaultValue;
-			tryHardPerkBought = defaultValue;
 
 			// Lasers
 			blueLaserBought = defaultValue;
@@ -650,33 +595,7 @@ namespace SandeepMattepu.Android
 				}
 				break;
 			}
-		}
-
-		/// <summary>
-		/// This function will get access to perk in the game
-		/// </summary>
-		/// <param name="perkType">Perk type player bought.</param>
-		public void purchasePerk(Perk perkType)
-		{
-			switch(perkType)
-			{
-			case Perk.Ego:
-				egoPerkBought = true;
-				break;
-			case Perk.Rusher:
-				rusherPerkBought = true;
-				break;
-			case Perk.Strategy:
-				strategyPerkBought = true;
-				break;
-			case Perk.Thinker:
-				thinkerPerkBought = true;
-				break;
-			case Perk.Tryhard:
-				tryHardPerkBought = true;
-				break;
-			}
-		}
+   		}
 
 		/// <summary>
 		/// This function will get access to laser in the game
@@ -725,5 +644,250 @@ namespace SandeepMattepu.Android
 		}
 
   	}
+
+	/// <summary>
+	/// This acts as a data packet to see which guns and perks are unlocked
+	/// </summary>
+	public struct SMGunAndPerkData
+	{
+		// Guns Data
+		public ObscuredBool greenEyeGunBought;
+		public ObscuredBool leoBlackDogGunBought;
+		public ObscuredBool jully11Bought;
+		public ObscuredBool blondeGunBought;
+		public ObscuredBool mrozykGunBought;
+		public ObscuredBool rainiGunBought;
+		public ObscuredBool smilerieGunBought;
+		public ObscuredBool sniperGunBought;
+
+		// Perks
+		public ObscuredBool egoPerkBought;
+		public ObscuredBool rusherPerkBought;
+		public ObscuredBool strategyPerkBought;
+		public ObscuredBool thinkerPerkBought;
+		public ObscuredBool tryHardPerkBought;
+
+		public ObscuredString formattedString;
+
+		public SMGunAndPerkData(ObscuredInt levelOfPlayer)
+		{
+			greenEyeGunBought = ((int)levelOfPlayer) >= 23 ? true : false;
+			leoBlackDogGunBought = ((int)levelOfPlayer) >= 27 ? true : false;
+			jully11Bought = ((int)levelOfPlayer) >= 44 ? true : false;
+			blondeGunBought = ((int)levelOfPlayer) >= 50 ? true : false;
+			mrozykGunBought = true;
+			rainiGunBought = ((int)levelOfPlayer) >= 7 ? true : false;
+			smilerieGunBought = ((int)levelOfPlayer) >= 11 ? true : false;
+			sniperGunBought = ((int)levelOfPlayer) >= 15 ? true : false;
+
+			egoPerkBought = ((int)levelOfPlayer) >= 22 ? true : false;
+			rusherPerkBought = ((int)levelOfPlayer) >= 13 ? true : false;
+			strategyPerkBought = ((int)levelOfPlayer) >= 18 ? true : false;
+			thinkerPerkBought = ((int)levelOfPlayer) >= 28 ? true : false;
+			tryHardPerkBought = ((int)levelOfPlayer) >= 35 ? true : false;
+
+			formattedString = null;
+
+			formatDataToStringForSaving ();
+   		}
+
+		/// <summary>
+		/// This creates instance out of string
+		/// </summary>
+		/// <param name="dataInString">Data in string.</param>
+		public SMGunAndPerkData(string dataInString)
+		{
+			greenEyeGunBought = false;
+			leoBlackDogGunBought = false;
+			jully11Bought = false;
+			blondeGunBought = false;
+			mrozykGunBought = true;
+			rainiGunBought = false;
+			smilerieGunBought = false;
+			sniperGunBought = false;
+
+			egoPerkBought = false;
+			rusherPerkBought = false;
+			strategyPerkBought = false;
+			thinkerPerkBought = false;
+			tryHardPerkBought = false;
+
+			formattedString = dataInString;
+
+			extractDataFromString ();
+		}
+
+		public SMGunAndPerkData(SMGunAndPerkData GunAndPerkData)
+		{
+			greenEyeGunBought = GunAndPerkData.greenEyeGunBought;
+			leoBlackDogGunBought = GunAndPerkData.leoBlackDogGunBought;
+			jully11Bought = GunAndPerkData.jully11Bought;
+			blondeGunBought = GunAndPerkData.blondeGunBought;
+			mrozykGunBought = GunAndPerkData.mrozykGunBought;
+			rainiGunBought = GunAndPerkData.rainiGunBought;
+			smilerieGunBought = GunAndPerkData.smilerieGunBought;
+			sniperGunBought = GunAndPerkData.sniperGunBought;
+
+			egoPerkBought = GunAndPerkData.egoPerkBought;
+			rusherPerkBought = GunAndPerkData.rusherPerkBought;
+			strategyPerkBought = GunAndPerkData.strategyPerkBought;
+			thinkerPerkBought = GunAndPerkData.thinkerPerkBought;
+			tryHardPerkBought = GunAndPerkData.tryHardPerkBought;
+
+			formattedString = GunAndPerkData.formattedString;
+		}
+
+		/// <summary>
+		/// Formats the data to string for saving.
+		/// </summary>
+		public void formatDataToStringForSaving()
+		{
+			StringBuilder stringBuilder = new StringBuilder ();
+
+			// Guns Data
+			stringBuilder.Append((bool)mrozykGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)blondeGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)greenEyeGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)jully11Bought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)leoBlackDogGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)rainiGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)smilerieGunBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)sniperGunBought);
+			stringBuilder.Append ("|");
+
+			// Perks data
+			stringBuilder.Append((bool)egoPerkBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)rusherPerkBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)strategyPerkBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)thinkerPerkBought);
+			stringBuilder.Append ("%");
+			stringBuilder.Append ((bool)tryHardPerkBought);
+
+			formattedString = stringBuilder.ToString ();
+   		}
+
+		/// <summary>
+		/// This function extracts data from fromatted string
+		/// </summary>
+		private void extractDataFromString()
+		{
+			string[] dataOfGunAndPerk = ((string)formattedString).Split ('|');
+			string[] gunData = (dataOfGunAndPerk[0]).Split ('%');
+			
+			mrozykGunBought = true;
+			blondeGunBought = bool.Parse (gunData [1]);
+			greenEyeGunBought = bool.Parse (gunData [2]);
+			jully11Bought = bool.Parse (gunData [3]);
+			leoBlackDogGunBought = bool.Parse (gunData [4]);
+			rainiGunBought = bool.Parse (gunData [5]);
+			smilerieGunBought = bool.Parse (gunData [6]);
+			sniperGunBought = bool.Parse (gunData [7]);
+
+			// Perks
+			string[] perksData = dataOfGunAndPerk[1].Split('%');
+			egoPerkBought = bool.Parse (perksData [0]);
+			rusherPerkBought = bool.Parse (perksData [1]);
+			strategyPerkBought = bool.Parse (perksData [2]);
+			thinkerPerkBought = bool.Parse (perksData [3]);
+			tryHardPerkBought = bool.Parse(perksData[4]);
+		}
+
+		/// <summary>
+		/// Unlocks the gun or perk based on player level.
+		/// </summary>
+		/// <param name="levelOfPlayer">Gun type.</param>
+		public void unlockGunOrPerk(ObscuredInt levelOfPlayer)
+		{
+			greenEyeGunBought = ((int)levelOfPlayer) >= 23 ? true : (bool)greenEyeGunBought;
+			leoBlackDogGunBought = ((int)levelOfPlayer) >= 27 ? true : (bool)leoBlackDogGunBought;
+			jully11Bought = ((int)levelOfPlayer) >= 44 ? true : (bool)jully11Bought;
+			blondeGunBought = ((int)levelOfPlayer) >= 50 ? true : (bool)blondeGunBought;
+			mrozykGunBought = true;
+			rainiGunBought = ((int)levelOfPlayer) >= 7 ? true : (bool)rainiGunBought;
+			smilerieGunBought = ((int)levelOfPlayer) >= 11 ? true : (bool)smilerieGunBought;
+			sniperGunBought = ((int)levelOfPlayer) >= 15 ? true : (bool)sniperGunBought;
+
+			egoPerkBought = ((int)levelOfPlayer) >= 22 ? true : (bool)egoPerkBought;
+			rusherPerkBought = ((int)levelOfPlayer) >= 13 ? true : (bool)rusherPerkBought;
+			strategyPerkBought = ((int)levelOfPlayer) >= 18 ? true : (bool)strategyPerkBought;
+			thinkerPerkBought = ((int)levelOfPlayer) >= 28 ? true : (bool)thinkerPerkBought;
+			tryHardPerkBought = ((int)levelOfPlayer) >= 35 ? true : (bool)tryHardPerkBought;
+
+			formattedString = null;
+
+			formatDataToStringForSaving ();
+		}
+
+		/// <summary>
+		/// Unlocks the gun.
+		/// </summary>
+		/// <param name="guntype">Gun type.</param>
+		public void unlockGun(GUN_TYPE guntype)
+		{
+			switch(guntype)
+			{
+			case GUN_TYPE.Blonde:
+				blondeGunBought = true;
+				break;
+			case GUN_TYPE.GreenEye:
+				greenEyeGunBought = true;
+				break;
+			case GUN_TYPE.July11:
+				jully11Bought = true;
+				break;
+			case GUN_TYPE.LeoBlackDog:
+				leoBlackDogGunBought = true;
+				break;
+			case GUN_TYPE.Mrozyk:
+				mrozykGunBought = true;
+				break;
+			case GUN_TYPE.Raini:
+				rainiGunBought = true;
+				break;
+			case GUN_TYPE.Smilere:
+				smilerieGunBought = true;
+				break;
+			case GUN_TYPE.Sniper:
+				sniperGunBought = true;
+				break;
+			}
+		}
+
+		/// <summary>
+		/// Unlocks the perk.
+		/// </summary>
+		/// <param name="perkType">Perk type.</param>
+		public void unlockPerk(Perks_Type perkType)
+		{
+			switch(perkType)
+			{
+			case Perks_Type.EGO:
+				egoPerkBought = true;
+				break;
+			case Perks_Type.RUSHER:
+				rusherPerkBought = true;
+				break;
+			case Perks_Type.STRATEGY:
+				strategyPerkBought = true;
+				break;
+			case Perks_Type.THINKER:
+				thinkerPerkBought = true;
+				break;
+			case Perks_Type.TRY_HARD:
+				tryHardPerkBought = true;
+				break;
+			}
+		}
+	}
 }
 
