@@ -601,17 +601,17 @@ namespace SandeepMattepu.Android
 		/// This function will get access to laser in the game
 		/// </summary>
 		/// <param name="laserType">Laser type that is purchased.</param>
-		public void purchaseLaser(Laser laserType)
+		public void purchaseLaser(Laser_Type laserType)
 		{
 			switch(laserType)
 			{
-			case Laser.BlueLaser:
+			case Laser_Type.BLUE_LASER:
 				blueLaserBought = true;
 				break;
-			case Laser.GreenLaser:
+			case Laser_Type.GREEN_LASER:
 				greenLaserBought = true;
 				break;
-			case Laser.RedLaser:
+			case Laser_Type.RED_LASER:
 				redLaserBought = true;
 				break;
 			}
@@ -621,23 +621,23 @@ namespace SandeepMattepu.Android
 		/// This function will get access to helmet in game
 		/// </summary>
 		/// <param name="helmetType">Helmet type that is purchased.</param>
-		public void purchaseHelmet(Helmet helmetType)
+		public void purchaseHelmet(Helmet_Type helmetType)
 		{
 			switch(helmetType)
 			{
-			case Helmet.Breathore:
+			case Helmet_Type.BREATHOR:
 				breathoreHelmetBought = true;
 				break;
-			case Helmet.Maskere:
+			case Helmet_Type.MASKERA:
 				maskeraHelmetBought = true;
 				break;
-			case Helmet.Operative:
+			case Helmet_Type.OPERATIVE:
 				operativeHelmetBought = true;
 				break;
-			case Helmet.Pilotar:
+			case Helmet_Type.PILOTAR:
 				pilotarHelmetBought = true;
 				break;
-			case Helmet.TSTactical:
+			case Helmet_Type.TS_TACTICAL:
 				tsTacticalHelmetBought = true;
 				break;
 			}

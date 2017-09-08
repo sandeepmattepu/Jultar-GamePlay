@@ -310,7 +310,8 @@ namespace SandeepMattepu
 		PILOTAR,
 		OPERATIVE,
 		BREATHOR,
-		TS_TACTICAL
+		TS_TACTICAL,
+		MASKERA
 	}
 
 	public enum Laser_Type
