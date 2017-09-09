@@ -106,6 +106,35 @@ namespace SandeepMattepu.Multiplayer
 			}
 		}
 
+		protected override void observeRoomForPlayerLeavingAndEntering ()
+		{
+			PhotonPlayer tempPlayer;
+			SMLeftOrJoinedPlayersData modifiedData = dataAboutPlayersLeftOrJoined ();
+			if(modifiedData != null)
+			{
+				if(modifiedData.HasPlayerJoined)
+				{
+					for(int i = 0; i < modifiedData.PlayersIdsWhoLeftOrJoined.Length; i++)
+					{
+						tempPlayer = PhotonPlayer.Find (modifiedData.PlayersIdsWhoLeftOrJoined [i]);
+						if(tempPlayer != null)
+						{
+							playersIdAndScore.Add (tempPlayer.ID, 0);
+						}
+					}
+				}
+				else
+				{
+					for(int i = 0; i < modifiedData.PlayersIdsWhoLeftOrJoined.Length; i++)
+					{
+						playersIdAndScore.Remove(modifiedData.PlayersIdsWhoLeftOrJoined[i]);
+					}
+				}
+			}
+
+			base.observeRoomForPlayerLeavingAndEntering ();
+		}
+
 		/// <summary>
 		/// This function will check number of kills made by single person to the maximum number of kills
 		/// </summary>

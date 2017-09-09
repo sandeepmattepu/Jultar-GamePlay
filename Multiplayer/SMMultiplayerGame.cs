@@ -160,6 +160,10 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		public static event onGameRulesCreated OnGameRulesLoaded;
 		/// <summary>
+		/// Occurs when other player joined or left.
+		/// </summary>
+		public static event onGameRulesCreated OnPlayerJoinedOrLeft;
+		/// <summary>
 		/// This represents whether the game is over or not
 		/// </summary>
 		private static bool isGameOver = false;
@@ -170,9 +174,15 @@ namespace SandeepMattepu.Multiplayer
 			}
 		}
 
+		/// <summary>
+		/// The number of player at start of game.
+		/// </summary>
+		protected PhotonPlayer[] playersAtStartOfGame;
+
 		protected virtual void Start()
 		{
 			isGameOver = false;
+			playersAtStartOfGame = PhotonNetwork.playerList;
 			if(OnGameRulesLoaded != null)
 			{
 				OnGameRulesLoaded ();
@@ -182,6 +192,95 @@ namespace SandeepMattepu.Multiplayer
 		protected virtual void Update()
 		{
 			checkGameTime ();
+			observeRoomForPlayerLeavingAndEntering ();
+		}
+
+		/// <summary>
+		/// Observes the room for player leaving and entering the game.
+		/// </summary>
+		protected virtual void observeRoomForPlayerLeavingAndEntering()
+		{
+			SMLeftOrJoinedPlayersData modifiedData = dataAboutPlayersLeftOrJoined ();
+			PhotonPlayer tempPlayer;
+
+			if(modifiedData != null)
+			{
+				if(modifiedData.HasPlayerJoined)
+				{
+					for(int i = 0; i < modifiedData.PlayersIdsWhoLeftOrJoined.Length; i++)
+					{
+						tempPlayer = PhotonPlayer.Find (modifiedData.PlayersIdsWhoLeftOrJoined [i]);
+						if(tempPlayer != null)
+						{
+							playersIdAndName.Add (tempPlayer.ID, tempPlayer.NickName);
+							playerIdAndDeaths.Add (tempPlayer.ID, 0);
+						}
+					}
+				}
+				else
+				{
+					for(int i = 0; i < modifiedData.PlayersIdsWhoLeftOrJoined.Length; i++)
+					{
+						playersIdAndName.Remove(modifiedData.PlayersIdsWhoLeftOrJoined[i]);
+						playerIdAndDeaths.Remove(modifiedData.PlayersIdsWhoLeftOrJoined[i]);
+					}
+				}
+
+				if(OnPlayerJoinedOrLeft != null)
+				{
+					OnPlayerJoinedOrLeft ();
+				}
+			}
+		}
+
+		/// <summary>
+		/// This process who has left or joined and gives that info
+		/// </summary>
+		/// <returns>About players left or joined.</returns>
+		protected SMLeftOrJoinedPlayersData dataAboutPlayersLeftOrJoined()
+		{
+			bool joinedOrLeft = true;
+			if(playersAtStartOfGame.Length != PhotonNetwork.playerList.Length)		// For optimizing
+			{
+				List<int> playerModifiedData = new List<int>();
+				List<int> currentPlayersID = new List<int> ();
+
+				for(int i = 0; i < PhotonNetwork.playerList.Length; i++)
+				{
+					currentPlayersID.Add (PhotonNetwork.playerList [i].ID);
+				}
+
+				// When players leave
+				if(playersAtStartOfGame.Length > PhotonNetwork.playerList.Length)
+				{
+					joinedOrLeft = false;		// false means left
+
+					for(int i = 0; i < playersAtStartOfGame.Length; i++)
+					{
+						if(!currentPlayersID.Contains(playersAtStartOfGame[i].ID))
+						{
+							playerModifiedData.Add (playersAtStartOfGame [i].ID);
+						}
+					}
+				}
+				// Someone joined game
+				else if(playersAtStartOfGame.Length < PhotonNetwork.playerList.Length)
+				{
+					joinedOrLeft = true;		// true means joined
+
+					for(int i = 0; i < playersAtStartOfGame.Length; i++)
+					{
+						currentPlayersID.Remove (playersAtStartOfGame [i].ID);
+					}
+					playerModifiedData = currentPlayersID;
+				}
+
+				playersAtStartOfGame = PhotonNetwork.playerList;
+
+				return new SMLeftOrJoinedPlayersData (playerModifiedData.ToArray (), joinedOrLeft);
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -307,6 +406,40 @@ namespace SandeepMattepu.Multiplayer
 		NOT_INITIALIZED = 0,
 		FREE_FOR_ALL,
 		TEAM_DEATH_MATCH
+	}
+
+	/// <summary>
+	/// This acts as data packet which carries info how many player joined or left
+	/// </summary>
+	public class SMLeftOrJoinedPlayersData
+	{
+		private int[] playersIdsWhoLeftOrJoined;
+		public int[] PlayersIdsWhoLeftOrJoined {
+			get {
+				return playersIdsWhoLeftOrJoined;
+			}
+		}
+
+		private bool hasPlayerJoined;
+		/// <summary>
+		/// True means player joined. False means player left.
+		/// </summary>
+		public bool HasPlayerJoined {
+			get {
+				return hasPlayerJoined;
+			}
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SandeepMattepu.Multiplayer.SMLeftOrJoinedPlayersData"/> struct.
+		/// </summary>
+		/// <param name="modifiedPlayers">Modified players.</param>
+		/// <param name="hasJoinedOrLeft">If set to <c>true</c> when player has joined or left.</param>
+		public SMLeftOrJoinedPlayersData(int[] modifiedPlayers, bool hasJoinedOrLeft)
+		{
+			playersIdsWhoLeftOrJoined = modifiedPlayers;
+			hasPlayerJoined = hasJoinedOrLeft;
+		}
 	}
 
 	public delegate void notifyScoreChange(object sender, int whoKilled, int whoDied);
