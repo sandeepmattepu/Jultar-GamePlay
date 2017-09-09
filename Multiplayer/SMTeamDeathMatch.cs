@@ -159,6 +159,7 @@ namespace SandeepMattepu.Multiplayer
 		private void addExcessPlayersToTeam(int[] excessivePlayers, bool hasJoinedOrLeft)
 		{
 			List<int> excesPlayers = new List<int> (excessivePlayers);
+			excesPlayers.Sort ();
 
 			while(excesPlayers.Count != 0)
 			{

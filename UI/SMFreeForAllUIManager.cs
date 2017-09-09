@@ -41,6 +41,8 @@ namespace SandeepMattepu.UI
 					playersTextUI [playersTextUI.Length - unUsedUILength].gameObject.SetActive (false);
 				}
 				assignUIAtBeginning ();
+
+				SMMultiplayerGame.OnPlayerJoinedOrLeft += refreshScoreBoard;
 			}
 			else
 			{
@@ -49,6 +51,25 @@ namespace SandeepMattepu.UI
 			}
 			hideUIInNonContext ();
 			hideAllUI ();
+		}
+
+		protected override void OnDestroy ()
+		{
+			base.OnDestroy ();
+			SMMultiplayerGame.OnPlayerJoinedOrLeft -= refreshScoreBoard;
+		}
+
+		/// <summary>
+		/// Refreshs the score board whenever player joins or leaves the game.
+		/// </summary>
+		private void refreshScoreBoard()
+		{
+			int unUsedUILength = Mathf.Abs(playersTextUI.Length - PhotonNetwork.playerList.Length);
+			for(; unUsedUILength > 0; unUsedUILength--)
+			{
+				playersTextUI [playersTextUI.Length - unUsedUILength].gameObject.SetActive (false);
+			}
+			assignUIAtBeginning ();
 		}
 
 		protected override void OnScoreChange (object sender, int whoKilled, int whoDied)
