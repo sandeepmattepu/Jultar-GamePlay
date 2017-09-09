@@ -171,10 +171,24 @@ namespace SandeepMattepu.UI
 
 		#endregion
 
+		/// <summary>
+		/// The exp boost UI.
+		/// </summary>
+		[SerializeField]
+		private Text expBoostUI;
+
+		/// <summary>
+		/// The crowns UI.
+		/// </summary>
+		[SerializeField]
+		private Text crownsUI;
+
 		// Use this for initialization
 		void Start () 
 		{
 			helmetAndRaceViewing ();
+			equipXpBoosterAndUI ();
+			setCrownsValueInUI ();
 			StartCoroutine ("loadDataToDisplay");
 		}
 
@@ -184,6 +198,39 @@ namespace SandeepMattepu.UI
 			{
 				ObscuredPrefs.DeleteAll ();
 			}
+		}
+
+		/// <summary>
+		/// Equips the xp booster and sets the UI.
+		/// </summary>
+		private void equipXpBoosterAndUI()
+		{
+			if(SMPlayerDataManager.PlayerPurchasedProducts.xp8Boost)
+			{
+				SMProductEquipper.INSTANCE.setCurrentExpBoost (8);
+				expBoostUI.text = "Exp Boost active: 8xp";
+				return;
+			}
+			else if(SMPlayerDataManager.PlayerPurchasedProducts.xp5Boost)
+			{
+				SMProductEquipper.INSTANCE.setCurrentExpBoost (5);
+				expBoostUI.text = "Exp Boost active: 5xp";
+				return;
+			}
+			else if(SMPlayerDataManager.PlayerPurchasedProducts.xp2Boost)
+			{
+				SMProductEquipper.INSTANCE.setCurrentExpBoost (2);
+				expBoostUI.text = "Exp Boost active: 2xp";
+				return;
+			}
+		}
+
+		/// <summary>
+		/// Sets the crowns value in UI.
+		/// </summary>
+		private void setCrownsValueInUI()
+		{
+			crownsUI.text = ((int)SMPlayerDataManager.PlayerData.numberOfCrowns).ToString();
 		}
 
 		/// <summary>
@@ -629,6 +676,10 @@ namespace SandeepMattepu.UI
 				SMProductEquipper.INSTANCE.setHelmet(Helmet_Type.TS_TACTICAL);
 				SMProductEquipper.INSTANCE.saveToPrefs ();
 				showWeaponUIBasedOnData ();
+
+				hideAllHelmets ();
+				jagurTacticalHelmet.SetActive (true);
+				monioTacticalHelmet.SetActive (true);
 			}
 		}
 
@@ -639,6 +690,10 @@ namespace SandeepMattepu.UI
 				SMProductEquipper.INSTANCE.setHelmet(Helmet_Type.BREATHOR);
 				SMProductEquipper.INSTANCE.saveToPrefs ();
 				showWeaponUIBasedOnData ();
+
+				hideAllHelmets ();
+				jagurBreathoreHelemt.SetActive (true);
+				monioBreathoreHelemt.SetActive (true);
 			}
 		}
 
@@ -649,6 +704,10 @@ namespace SandeepMattepu.UI
 				SMProductEquipper.INSTANCE.setHelmet(Helmet_Type.OPERATIVE);
 				SMProductEquipper.INSTANCE.saveToPrefs ();
 				showWeaponUIBasedOnData ();
+
+				hideAllHelmets ();
+				jagurOperativeHelemt.SetActive (true);
+				monioOperativeHelmet.SetActive (true);
 			}
 		}
 
@@ -659,6 +718,10 @@ namespace SandeepMattepu.UI
 				SMProductEquipper.INSTANCE.setHelmet(Helmet_Type.PILOTAR);
 				SMProductEquipper.INSTANCE.saveToPrefs ();
 				showWeaponUIBasedOnData ();
+
+				hideAllHelmets ();
+				jagurPilotarHelmet.SetActive (true);
+				monioPilotarHelmet.SetActive (true);
 			}
 		}
 
