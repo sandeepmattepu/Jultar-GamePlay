@@ -226,6 +226,8 @@ namespace SandeepMattepu.Multiplayer
 					}
 				}
 
+				playersAtStartOfGame = PhotonNetwork.playerList;
+
 				if(OnPlayerJoinedOrLeft != null)
 				{
 					OnPlayerJoinedOrLeft ();
@@ -274,8 +276,6 @@ namespace SandeepMattepu.Multiplayer
 					}
 					playerModifiedData = currentPlayersID;
 				}
-
-				playersAtStartOfGame = PhotonNetwork.playerList;
 
 				return new SMLeftOrJoinedPlayersData (playerModifiedData.ToArray (), joinedOrLeft);
 			}

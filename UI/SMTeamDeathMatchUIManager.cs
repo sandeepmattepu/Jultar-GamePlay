@@ -93,7 +93,7 @@ namespace SandeepMattepu.UI
 		{
 			base.OnDestroy ();
 			SMTeamDeathMatch.OnPlayersSplittedToTeams -= onTeamSplitted;
-			SMMultiplayerGame.OnPlayerJoinedOrLeft -= onTeamSplitted;
+			SMMultiplayerGame.OnPlayerJoinedOrLeft -= refreshScoreBoard;
 		}
 
 		protected override void OnRulesCreated ()
@@ -102,7 +102,7 @@ namespace SandeepMattepu.UI
 			{
 				base.OnRulesCreated ();
 				SMTeamDeathMatch.OnPlayersSplittedToTeams += onTeamSplitted;
-				SMMultiplayerGame.OnPlayerJoinedOrLeft += onTeamSplitted;
+				SMMultiplayerGame.OnPlayerJoinedOrLeft += refreshScoreBoard;
 			}
 			else
 			{
@@ -195,6 +195,15 @@ namespace SandeepMattepu.UI
 					}
 				}
 			}
+		}
+
+		private void refreshScoreBoard()
+		{
+			playerScoreAndUI.Clear ();
+			team1Players.Clear ();
+			team2Players.Clear ();
+
+			OnRulesCreated ();
 		}
 
 		/// <summary>

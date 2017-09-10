@@ -64,12 +64,8 @@ namespace SandeepMattepu.UI
 		/// </summary>
 		private void refreshScoreBoard()
 		{
-			int unUsedUILength = Mathf.Abs(playersTextUI.Length - PhotonNetwork.playerList.Length);
-			for(; unUsedUILength > 0; unUsedUILength--)
-			{
-				playersTextUI [playersTextUI.Length - unUsedUILength].gameObject.SetActive (false);
-			}
-			assignUIAtBeginning ();
+			playerScoreAndUI.Clear ();
+			OnRulesCreated ();
 		}
 
 		protected override void OnScoreChange (object sender, int whoKilled, int whoDied)
