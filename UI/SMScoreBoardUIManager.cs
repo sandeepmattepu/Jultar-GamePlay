@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.Multiplayer;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 namespace SandeepMattepu.UI
 {
@@ -152,6 +153,7 @@ namespace SandeepMattepu.UI
 			SMMultiplayerGame.INSTANCE.OnScoreChange -= OnScoreChange;
 			SMPlayerSpawnerAndAssigner.OnPlayerRespawned -= hideAllUI;
 			SMMultiplayerGame.OnGameOver -= showActivePlayersHiddenScoreUI;
+			SMMultiplayerGame.OnPlayerJoinedOrLeft -= refreshScoreBoard;
 		}
 
 		/// <summary>
@@ -162,18 +164,56 @@ namespace SandeepMattepu.UI
 			multiplayerType = SMMultiplayerGame.gameType;
 			PhotonPlayer[] players = PhotonNetwork.playerList;
 			int index = 0;
-			foreach(PhotonPlayer player in players)
+			foreach(KeyValuePair<int,ObscuredInt> pias in SMMultiplayerGame.PlayersIdAndScore)
 			{
 				PlayerScoreUI playerSU = new PlayerScoreUI ();
-				playerSU.name = player.NickName;
-				playerSU.playerID = player.ID;
+				string name = null;
+				if(SMMultiplayerGame.PlayersIdAndName.TryGetValue(pias.Key, out name))
+				{
+					playerSU.name = name;
+				}
+				playerSU.playerID = pias.Key;
 				playerSU.uiIndex = index;
 				index++;
-				playerSU.score = 0;
-				playerSU.deaths = 0;
+				playerSU.score = pias.Value;
+				ObscuredInt deaths;
+				if(SMMultiplayerGame.PlayerIdAndDeaths.TryGetValue(pias.Key, out deaths))
+				{
+					playerSU.deaths = deaths;
+				}
 				playerScoreAndUI.Add (playerSU);
 			}
 			SMMultiplayerGame.INSTANCE.OnScoreChange += OnScoreChange;
+			SMMultiplayerGame.OnPlayerJoinedOrLeft += refreshScoreBoard;
+		}
+
+		/// <summary>
+		/// Refreshs the score board whenever player joins or leaves the game.
+		/// </summary>
+		public virtual void refreshScoreBoard()
+		{
+			playerScoreAndUI.Clear ();
+			PhotonPlayer[] players = PhotonNetwork.playerList;
+			int index = 0;
+			foreach (KeyValuePair<int,ObscuredInt> pias in SMMultiplayerGame.PlayersIdAndScore) 
+			{
+				PlayerScoreUI playerSU = new PlayerScoreUI ();
+				string name = null;
+				if (SMMultiplayerGame.PlayersIdAndName.TryGetValue (pias.Key, out name)) 
+				{
+					playerSU.name = name;
+				}
+				playerSU.playerID = pias.Key;
+				playerSU.uiIndex = index;
+				index++;
+				playerSU.score = pias.Value;
+				ObscuredInt deaths;
+				if (SMMultiplayerGame.PlayerIdAndDeaths.TryGetValue (pias.Key, out deaths)) 
+				{
+					playerSU.deaths = deaths;
+				}
+				playerScoreAndUI.Add (playerSU);
+			}
 		}
 
 		protected virtual void OnScoreChange(object sender, int whoKilled, int whoDied)

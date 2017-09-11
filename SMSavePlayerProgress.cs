@@ -23,41 +23,56 @@ namespace SandeepMattepu
 		/// <summary>
 		/// The killes made by player in his entire game life.
 		/// </summary>
-		private ObscuredInt killesMade = SMPlayerDataManager.PlayerData.killsMadeByPlayer;
+		private ObscuredInt killesMade;
 		/// <summary>
 		/// The deaths encountered by player in his entire game life..
 		/// </summary>
-		private ObscuredInt deathsEncountered = SMPlayerDataManager.PlayerData.deathsOccuredToPlayer;
+		private ObscuredInt deathsEncountered;
 		/// <summary>
 		/// The time played by the player in his entire game time.
 		/// </summary>
-		private ObscuredInt timePlayed = SMPlayerDataManager.PlayerData.timePlayerPlayed;
+		private ObscuredInt timePlayed;
 		/// <summary>
 		/// The total wins made by player.
 		/// </summary>
-		private ObscuredInt totalWinsMadeByPlayer = SMPlayerDataManager.PlayerData.totalWins;
+		private ObscuredInt totalWinsMadeByPlayer;
 		/// <summary>
 		/// The total loses made by player.
 		/// </summary>
-		private ObscuredInt totalLosesMadeByPlayer = SMPlayerDataManager.PlayerData.totalLoses;
+		private ObscuredInt totalLosesMadeByPlayer;
 		/// <summary>
 		/// The current level of player.
 		/// </summary>
-		private ObscuredInt currentLevelOfPlayer = SMPlayerDataManager.PlayerData.playerLevel;
+		private ObscuredInt currentLevelOfPlayer;
 		/// <summary>
 		/// The additional xp of player.
 		/// </summary>
-		private ObscuredInt additionalXpOfPlayer = SMPlayerDataManager.PlayerData.additionalXp;
+		private ObscuredInt additionalXpOfPlayer;
 
 		// Use this for initialization
 		void Start () 
 		{
+			loadPlayerData ();
 			SMMultiplayerGame.OnGameOver += savePlayerData;
 		}
 
 		void OnDestroy()
 		{
 			SMMultiplayerGame.OnGameOver -= savePlayerData;
+		}
+
+		/// <summary>
+		/// Loads the player data.
+		/// </summary>
+		private void loadPlayerData()
+		{
+			killesMade = SMPlayerDataManager.PlayerData.killsMadeByPlayer;
+			deathsEncountered = SMPlayerDataManager.PlayerData.deathsOccuredToPlayer;
+			timePlayed = SMPlayerDataManager.PlayerData.timePlayerPlayed;
+			totalWinsMadeByPlayer = SMPlayerDataManager.PlayerData.totalWins;
+			totalLosesMadeByPlayer = SMPlayerDataManager.PlayerData.totalLoses;
+			currentLevelOfPlayer = SMPlayerDataManager.PlayerData.playerLevel;
+			additionalXpOfPlayer = SMPlayerDataManager.PlayerData.additionalXp;
 		}
 
 		/// <summary>

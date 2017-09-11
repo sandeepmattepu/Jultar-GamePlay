@@ -46,6 +46,10 @@ namespace SandeepMattepu.Multiplayer
 		protected override void Start()
 		{
 			base.Start ();
+			if(PhotonNetwork.isMasterClient)
+			{
+				registerPlayersForScoreBoard ();
+			}
 			startDownloadingXpRewardData();
 		}
 
@@ -73,31 +77,18 @@ namespace SandeepMattepu.Multiplayer
 		}
 
 		/// <summary>
-		/// Assigns entire score
-		/// </summary>
-		/// <param name="PlayersIDsAndScores">Players Ids and scores.</param>
-		public static void assignEntireScoreToAllPlayers(Dictionary<int,int> PlayersIDsAndScores)
-		{
-			playersIdAndScore.Clear ();
-
-			foreach(KeyValuePair<int,int> pias in PlayersIDsAndScores)
-			{
-				playersIdAndScore.Add (pias.Key, pias.Value);
-			}
-		}
-
-		/// <summary>
 		/// Registers the player for score board.
 		/// </summary>
 		/// <param name="photonView">Photon view of the player.</param>
-		public void registerPlayerForScoreBoard(PhotonView photonView)
+		public void registerPlayersForScoreBoard()
 		{
-			if (!playersIdAndName.ContainsKey(photonView.owner.ID))
+			foreach(PhotonPlayer player in PhotonNetwork.playerList)
 			{
-				playersIdAndName.Add(photonView.owner.ID, photonView.owner.NickName);
-				playersIdAndScore.Add(photonView.owner.ID, 0);
-				playerIdAndDeaths.Add (photonView.owner.ID, 0);
+				playersIdAndName.Add (player.ID, player.NickName);
+				playersIdAndScore.Add (player.ID, 0);
+				playerIdAndDeaths.Add (player.ID, 0);
 			}
+			base.raiseOnPlayerJoinedOrLeftEvent ();
 		}
 
 		protected override void checkGameTime ()

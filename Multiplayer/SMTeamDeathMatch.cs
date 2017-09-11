@@ -98,7 +98,10 @@ namespace SandeepMattepu.Multiplayer
 		{
 			base.Start ();
 			startDownloadingXpRewardData();
-			splitPlayersIntoTeams ();
+			if(PhotonNetwork.isMasterClient)
+			{
+				splitPlayersIntoTeams ();
+			}
 		}
 
 		/// <summary>
@@ -107,21 +110,7 @@ namespace SandeepMattepu.Multiplayer
 		private void startDownloadingXpRewardData()
 		{
 			//TODO write www class code
-		}
-
-		/// <summary>
-		/// Assigns entire score
-		/// </summary>
-		/// <param name="PlayersIDsAndScores">Players Ids and scores.</param>
-		public static void assignEntireScoreToAllPlayers(Dictionary<int,int> PlayersIDsAndScores)
-		{
-			playersIdAndScore.Clear ();
-
-			foreach(KeyValuePair<int,int> pias in PlayersIDsAndScores)
-			{
-				playersIdAndScore.Add (pias.Key, pias.Value);
-			}
-		}
+   		}
 
 		/// <summary>
 		/// Assigns entire score

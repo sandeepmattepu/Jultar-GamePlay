@@ -516,6 +516,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	{
 		Dictionary<int,int> playerIdAndScore = new Dictionary<int, int> ();
 		Dictionary<int,int> playerIdAndTeamIndex = new Dictionary<int, int> ();
+		Dictionary<int,int> playerIdAndDeathInfo = new Dictionary<int, int> ();
 
 		float[] times = { 
 			(float)timeDelayToStartMatch,
@@ -530,9 +531,14 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			{
 				playerIdAndScore.Add (pidAS.Key, (int)pidAS.Value);
 			}
+			foreach(KeyValuePair<int,ObscuredInt> pidAS in SMFreeForAll.PlayerIdAndDeaths)
+			{
+				playerIdAndDeathInfo.Add (pidAS.Key, (int)pidAS.Value);
+			}
 			data = new object[] {
 				times,
-				playerIdAndScore
+				playerIdAndScore,
+				playerIdAndDeathInfo
 			};
 		}
 		else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
@@ -541,10 +547,15 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			{
 				playerIdAndScore.Add (pidAS.Key, (int)pidAS.Value);
 			}
+			foreach(KeyValuePair<int,ObscuredInt> pidAS in SMFreeForAll.PlayerIdAndDeaths)
+			{
+				playerIdAndDeathInfo.Add (pidAS.Key, (int)pidAS.Value);
+			}
 			playerIdAndTeamIndex = SMTeamDeathMatch.PlayerIdAndTeamIndex;
 			data = new object[] {
 				times,
 				playerIdAndScore,
+				playerIdAndDeathInfo,
 				playerIdAndTeamIndex
 			};
 		}
@@ -570,15 +581,24 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 				gameRulesThatSpawned.setGameTimer (times [1]);
 			}
 
+			SMMultiplayerGame.assignEntireScoreToAllPlayers ((Dictionary<int,int>)data [1]);
+			SMMultiplayerGame.assignEntireDeathInfoToAllPlayers ((Dictionary<int,int>)data [2]);
+
 			if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL) 
 			{
-				SMFreeForAll.assignEntireScoreToAllPlayers ((Dictionary<int,int>)data [1]);
+				if(freeForAllWhenRecievedDataAtBeginning == null)
+				{
+					freeForAllWhenRecievedDataAtBeginning = new UnityEvent ();
+				}
 				freeForAllWhenRecievedDataAtBeginning.Invoke ();
 			}
 			else if (SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH) 
 			{
-				SMTeamDeathMatch.assignEntireScoreToAllPlayers((Dictionary<int,int>)data[1]);
-				SMTeamDeathMatch.assignEntirePlayerTeamToIDs ((Dictionary<int,int>)data [2]);
+				SMTeamDeathMatch.assignEntirePlayerTeamToIDs ((Dictionary<int,int>)data [3]);
+				if(teamDeathMatchWhenRecieveDataAtBeginning == null)
+				{
+					teamDeathMatchWhenRecieveDataAtBeginning = new UnityEvent ();
+				}
 				teamDeathMatchWhenRecieveDataAtBeginning.Invoke ();
 			}
 			hasRecievedTimeDataFromMaster = true;

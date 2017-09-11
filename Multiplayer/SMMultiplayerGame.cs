@@ -409,6 +409,48 @@ namespace SandeepMattepu.Multiplayer
 		{
 			gameTimer = timerValue;
 		}
+
+		/// <summary>
+		/// Raises the on player joined or left event.
+		/// </summary>
+		protected void raiseOnPlayerJoinedOrLeftEvent()
+		{
+			if(OnPlayerJoinedOrLeft != null)
+			{
+				OnPlayerJoinedOrLeft ();
+			}
+		}
+
+		/// <summary>
+		/// Assigns entire score
+		/// </summary>
+		/// <param name="PlayersIDsAndScores">Players Ids and scores.</param>
+		public static void assignEntireScoreToAllPlayers(Dictionary<int,int> PlayersIDsAndScores)
+		{
+			playersIdAndScore.Clear ();
+			playersIdAndName.Clear ();
+
+			foreach(KeyValuePair<int,int> pias in PlayersIDsAndScores)
+			{
+				playersIdAndScore.Add (pias.Key, pias.Value);
+				PhotonPlayer player = PhotonPlayer.Find (pias.Key);
+				playersIdAndName.Add (pias.Key, player.NickName);
+			}
+		}
+
+		/// <summary>
+		/// Assigns entire death info
+		/// </summary>
+		/// <param name="PlayersIDsAndScores">Players Ids and death info.</param>
+		public static void assignEntireDeathInfoToAllPlayers(Dictionary<int,int> PlayersIDsAndDeaths)
+		{
+			playerIdAndDeaths.Clear ();
+
+			foreach(KeyValuePair<int,int> pias in PlayersIDsAndDeaths)
+			{
+				playerIdAndDeaths.Add (pias.Key, pias.Value);
+			}
+		}
 	}
 
 	/// <summary>

@@ -38,12 +38,6 @@ public class SMPlayerIdentifier : MonoBehaviour
 		photonViewComponenet = GetComponent<PhotonView>();
 		playerNameUI.text = photonViewComponenet.owner.NickName;
 		gameType = SMMultiplayerGame.INSTANCE;
-
-		if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
-		{
-			SMFreeForAll afterCast = (SMFreeForAll)gameType;
-			afterCast.registerPlayerForScoreBoard(photonViewComponenet);
-		}
 		setPlayerUIColor(photonViewComponenet);
 
 		if(!photonViewComponenet.isMine)
