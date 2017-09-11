@@ -19,17 +19,6 @@ namespace SandeepMattepu.Multiplayer
 	public class SMTeamDeathMatch : SMMultiplayerGame
 	{
 		/// <summary>
-		/// This dictionary holds player's score as value and player's Id as key
-		/// </summary>
-		private static Dictionary<int, ObscuredInt> playersIdAndScore = new Dictionary<int, ObscuredInt>();
-		/// <summary>
-		/// This dictionary holds player's score as value and player's Id as key
-		/// </summary>
-		public static Dictionary<int, ObscuredInt> PlayersIdAndScore
-		{
-			get { return playersIdAndScore; }
-		}
-		/// <summary>
 		/// This dictionary holds player id as key and player's team index as value
 		/// </summary>
 		private static Dictionary<int,int> playerIdAndTeamIndex = new Dictionary<int, int>();
@@ -118,6 +107,30 @@ namespace SandeepMattepu.Multiplayer
 		private void startDownloadingXpRewardData()
 		{
 			//TODO write www class code
+		}
+
+		/// <summary>
+		/// Assigns entire score
+		/// </summary>
+		/// <param name="PlayersIDsAndScores">Players Ids and scores.</param>
+		public static void assignEntireScoreToAllPlayers(Dictionary<int,int> PlayersIDsAndScores)
+		{
+			playersIdAndScore.Clear ();
+
+			foreach(KeyValuePair<int,int> pias in PlayersIDsAndScores)
+			{
+				playersIdAndScore.Add (pias.Key, pias.Value);
+			}
+		}
+
+		/// <summary>
+		/// Assigns entire score
+		/// </summary>
+		/// <param name="PlayersIDsAndScores">Players Ids and scores.</param>
+		public static void assignEntirePlayerTeamToIDs(Dictionary<int,int> PlayersIDsAndTeamIndexes)
+		{
+			playerIdAndTeamIndex.Clear ();
+			playerIdAndTeamIndex = PlayersIDsAndTeamIndexes;
 		}
 
 		protected override void observeRoomForPlayerLeavingAndEntering ()

@@ -54,6 +54,19 @@ namespace SandeepMattepu.Multiplayer
 		/// <value>The name of the players identifier and.</value>
 		public static Dictionary<int, string> PlayersIdAndName
 		{ get { return playersIdAndName;} }
+
+		/// <summary>
+		/// This dictionary holds player's score as value and player's Id as key
+		/// </summary>
+		protected static Dictionary<int, ObscuredInt> playersIdAndScore = new Dictionary<int, ObscuredInt>();
+		/// <summary>
+		/// This dictionary holds player's score as value and player's Id as key
+		/// </summary>
+		public static Dictionary<int, ObscuredInt> PlayersIdAndScore
+		{
+			get { return playersIdAndScore; }
+		}
+
 		/// <summary>
 		/// This dictionary holds number of deaths a player gone through
 		/// </summary>

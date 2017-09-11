@@ -810,15 +810,15 @@ namespace SandeepMattepu.UI
 				buttonColorBlock.normalColor = isEquipped ? buttonColorProductAvailableAndEquipped :
 					buttonColorProductAvailableNotEquipped;
 				productEquipperButton.colors = buttonColorBlock;
-				productEquipperButtonText.color = isEquipped ? buttonColorProductAvailableAndEquipped :
-					buttonColorProductAvailableNotEquipped;
+//				productEquipperButtonText.color = isEquipped ? buttonColorProductAvailableAndEquipped :
+//					buttonColorProductAvailableNotEquipped;
 			}
 			else
 			{
 				ColorBlock buttonColorBlock = new ColorBlock ();
 				buttonColorBlock.disabledColor = buttonColorBlock.normalColor = buttonColorWhenProductNotAvialable;
 				productEquipperButton.colors = buttonColorBlock;
-				productEquipperButtonText.color = buttonColorWhenProductNotAvialable;
+				//productEquipperButtonText.color = buttonColorWhenProductNotAvialable;
 			}
 		}
 

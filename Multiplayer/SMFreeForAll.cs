@@ -19,17 +19,6 @@ namespace SandeepMattepu.Multiplayer
 	public class SMFreeForAll : SMMultiplayerGame
 	{
 		/// <summary>
-		/// This dictionary holds player's score as value and player's Id as key
-		/// </summary>
-		private static Dictionary<int, ObscuredInt> playersIdAndScore = new Dictionary<int, ObscuredInt>();
-		/// <summary>
-		/// This dictionary holds player's score as value and player's Id as key
-		/// </summary>
-		public static Dictionary<int, ObscuredInt> PlayersIdAndScore
-		{
-			get { return playersIdAndScore;	}
-		}
-		/// <summary>
 		/// Is the local player leading
 		/// </summary>
 		private static ObscuredBool isLocalPlayerLeading = false;
@@ -81,6 +70,20 @@ namespace SandeepMattepu.Multiplayer
 				}
 			}
 			base.reportScore(whoKilledID, whoDiedID);
+		}
+
+		/// <summary>
+		/// Assigns entire score
+		/// </summary>
+		/// <param name="PlayersIDsAndScores">Players Ids and scores.</param>
+		public static void assignEntireScoreToAllPlayers(Dictionary<int,int> PlayersIDsAndScores)
+		{
+			playersIdAndScore.Clear ();
+
+			foreach(KeyValuePair<int,int> pias in PlayersIDsAndScores)
+			{
+				playersIdAndScore.Add (pias.Key, pias.Value);
+			}
 		}
 
 		/// <summary>
