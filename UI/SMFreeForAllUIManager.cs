@@ -62,7 +62,7 @@ namespace SandeepMattepu.UI
 		/// <summary>
 		/// Refreshs the score board whenever player joins or leaves the game.
 		/// </summary>
-		private void refreshScoreBoard()
+		public void refreshScoreBoard()
 		{
 			playerScoreAndUI.Clear ();
 			OnRulesCreated ();

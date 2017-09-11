@@ -197,7 +197,7 @@ namespace SandeepMattepu.UI
 			}
 		}
 
-		private void refreshScoreBoard()
+		public void refreshScoreBoard()
 		{
 			playerScoreAndUI.Clear ();
 			team1Players.Clear ();

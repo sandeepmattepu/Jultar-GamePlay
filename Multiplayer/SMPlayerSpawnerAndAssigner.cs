@@ -15,6 +15,7 @@ using System.Collections;
 using SandeepMattepu.UI;
 using System.Collections.Generic;
 using CodeStage.AntiCheat.ObscuredTypes;
+using UnityEngine.Events;
 
 
 /// <summary>
@@ -147,6 +148,14 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// This becomes true when we recieve time data from master for first time
 	/// </summary>
 	private ObscuredBool hasRecievedTimeDataFromMaster = false;
+	/// <summary>
+	/// This invokes when this client is not master and recieves data from master. Occures only when game is FFA format
+	/// </summary>
+	public UnityEvent freeForAllWhenRecievedDataAtBeginning;
+	/// <summary>
+	/// This invokes when this client is not master and recieves data from master. Occures only when game is TDM format
+	/// </summary>
+	public UnityEvent teamDeathMatchWhenRecieveDataAtBeginning;
 	// Use this for initialization
 	void Start () 
 	{
@@ -224,7 +233,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 		}
 		else
 		{
-			requestTimeToMasterClient ();
+			requestDataToMasterClient ();
 		}
 		matchStartsInUI.text = "Match starts in ...";
 
@@ -481,18 +490,18 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	{
 		if(eventCode == (int)MultiplayerEvents.ReceiveTime && !PhotonNetwork.isMasterClient)
 		{
-			receiveTimeDataFromMaster ((float[])content);
+			receiveDataFromMaster ((object[])content);
 		}
 		else if(eventCode == (int)MultiplayerEvents.RequestForTime && PhotonNetwork.isMasterClient)
 		{
-			receiveRequestForTimeFromOtherClientsAndRespond ();
+			receiveRequestForDataFromOtherClientsAndRespond ();
 		}
 	}
 
 	/// <summary>
 	/// This function request the master client for time remaining to start the game
 	/// </summary>
-	private void requestTimeToMasterClient()
+	private void requestDataToMasterClient()
 	{
 		if(!PhotonNetwork.isMasterClient)
 		{
@@ -503,31 +512,74 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// <summary>
 	/// Receives the request for time from other clients and respond them with time data.
 	/// </summary>
-	private void receiveRequestForTimeFromOtherClientsAndRespond()
+	private void receiveRequestForDataFromOtherClientsAndRespond()
 	{
+		Dictionary<int,int> playerIdAndScore = new Dictionary<int, int> ();
+		Dictionary<int,int> playerIdAndTeamIndex = new Dictionary<int, int> ();
+
 		float[] times = { 
 			(float)timeDelayToStartMatch,
 			SMMultiplayerGame.INSTANCE.GameTimer,
 		};
 
+		object[] data = new object[0];
+
+		if(SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
+		{
+			foreach(KeyValuePair<int,ObscuredInt> pidAS in SMFreeForAll.PlayersIdAndScore)
+			{
+				playerIdAndScore.Add (pidAS.Key, (int)pidAS.Value);
+			}
+			data = new object[] {
+				times,
+				playerIdAndScore
+			};
+		}
+		else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
+		{
+			foreach(KeyValuePair<int,ObscuredInt> pidAS in SMFreeForAll.PlayersIdAndScore)
+			{
+				playerIdAndScore.Add (pidAS.Key, (int)pidAS.Value);
+			}
+			playerIdAndTeamIndex = SMTeamDeathMatch.PlayerIdAndTeamIndex;
+			data = new object[] {
+				times,
+				playerIdAndScore,
+				playerIdAndTeamIndex
+			};
+		}
+
 		if(PhotonNetwork.isMasterClient)
 		{
-			PhotonNetwork.RaiseEvent ((int)MultiplayerEvents.ReceiveTime, (object)times, true, null);
+			PhotonNetwork.RaiseEvent ((int)MultiplayerEvents.ReceiveTime, (object)data, true, null);
 		}
 	}
 
 	/// <summary>
-	/// Receives the time data from master cleint.
+	/// Receives the data from master cleint.
 	/// </summary>
-	/// <param name="times">Times data.</param>
-	private void receiveTimeDataFromMaster(float[] times)
+	/// <param name="data">Data.</param>
+	private void receiveDataFromMaster(object[] data)
 	{
 		if(!hasRecievedTimeDataFromMaster)
 		{
+			float[] times = (float[])(data [0]);
 			timeDelayToStartMatch = times [0];
 			if(gameRulesThatSpawned != null)
 			{
 				gameRulesThatSpawned.setGameTimer (times [1]);
+			}
+
+			if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL) 
+			{
+				SMFreeForAll.assignEntireScoreToAllPlayers ((Dictionary<int,int>)data [1]);
+				freeForAllWhenRecievedDataAtBeginning.Invoke ();
+			}
+			else if (SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH) 
+			{
+				SMTeamDeathMatch.assignEntireScoreToAllPlayers((Dictionary<int,int>)data[1]);
+				SMTeamDeathMatch.assignEntirePlayerTeamToIDs ((Dictionary<int,int>)data [2]);
+				teamDeathMatchWhenRecieveDataAtBeginning.Invoke ();
 			}
 			hasRecievedTimeDataFromMaster = true;
 		}
