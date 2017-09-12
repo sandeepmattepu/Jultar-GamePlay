@@ -15,7 +15,7 @@ using SandeepMattepu.Multiplayer;
 
 namespace SandeepMattepu.UI
 {
-	public class SMUIManager : MonoBehaviour 
+	public class SMUIManager : Photon.PunBehaviour
 	{
 		public RectTransform areYouSureExitPanel;
 		public Text victoryText;
@@ -25,6 +25,8 @@ namespace SandeepMattepu.UI
 		public int gameStartsInSeconds;
 		public AudioClip victorySound;
 		public AudioClip defeatSound;
+
+		private string sceneToLoadWhenExittedFromGame;
 
 		void Start()
 		{
@@ -44,8 +46,8 @@ namespace SandeepMattepu.UI
 
 		public void yesSureToExitPressed(string sceneName)
 		{
+			sceneToLoadWhenExittedFromGame = sceneName;
 			PhotonNetwork.LeaveRoom ();
-			SceneManager.LoadScene (sceneName);
 		}
 
 		public void noSureToExitPressed()
@@ -107,6 +109,11 @@ namespace SandeepMattepu.UI
 				PhotonNetwork.room.IsVisible = true;
 				PhotonNetwork.LoadLevel (loadSceneAfterGame);
 			}
+		}
+
+		public override void OnLeftRoom ()
+		{
+			SceneManager.LoadScene (sceneToLoadWhenExittedFromGame);
 		}
 	}	
 }
