@@ -521,7 +521,7 @@ namespace SandeepMattepu.Android
 	/// <summary>
 	/// This acts as a data packet to see which products are purchased and which are not
 	/// </summary>
-	public struct SMPlayerPurchasedProducts
+	public class SMPlayerPurchasedProducts
 	{
 		// XP boost
 		public ObscuredBool xp2Boost;
