@@ -192,6 +192,7 @@ namespace SandeepMattepu.UI
 		void Start () 
 		{
 			helmetAndRaceViewing ();
+			hideUnEquippedHelmetsAndShowDefault ();
 			equipXpBoosterAndUI ();
 			setCrownsValueInUI ();
 			StartCoroutine ("loadDataToDisplay");
@@ -291,6 +292,36 @@ namespace SandeepMattepu.UI
 			jagurPilotarHelmet.SetActive (false);
 			jagurTacticalHelmet.SetActive (false);
 			jagurBreathoreHelemt.SetActive (false);
+		}
+
+		/// <summary>
+		/// This function hides helmet that is niether purchased nor equipped and showes the default helmet
+		/// </summary>
+		public void hideUnEquippedHelmetsAndShowDefault()
+		{
+			hideAllHelmets ();
+
+			Helmet_Type currentHelmet = (Helmet_Type)((int)SMProductEquipper.INSTANCE.CurrentHelmet);
+
+			switch(currentHelmet)
+			{
+			case Helmet_Type.BREATHOR:
+				monioBreathoreHelemt.SetActive (true);
+				jagurBreathoreHelemt.SetActive (true);
+				break;
+			case Helmet_Type.OPERATIVE:
+				monioOperativeHelmet.SetActive (true);
+				jagurOperativeHelemt.SetActive (true);
+				break;
+			case Helmet_Type.PILOTAR:
+				monioPilotarHelmet.SetActive (true);
+				jagurPilotarHelmet.SetActive (true);
+				break;
+			case Helmet_Type.TS_TACTICAL:
+				monioTacticalHelmet.SetActive (true);
+				jagurTacticalHelmet.SetActive (true);
+				break;
+			}
 		}
 
 		/// <summary>
@@ -906,7 +937,7 @@ namespace SandeepMattepu.UI
 			{
 				levelToUnlockUI.gameObject.SetActive (false);
 
-				coinsOrAvailabilityUI.text = "Available!";
+				coinsOrAvailabilityUI.text = isEquipped ? "Equipped!" : "Available!";
 				coinsOrAvailabilityUI.color = coinsOrAvailabilityUIColor;
 			}
 			else
@@ -945,7 +976,14 @@ namespace SandeepMattepu.UI
 			base.setProductAvailability (isAvailable, isEquipped);
 
 			buyInStoreOrAvailabilityUI.color = buyInStoreOrAvailabilityUIColor;
-			buyInStoreOrAvailabilityUI.text = isAvailable ? "Available!" : "Buy in store";
+			if(isAvailable)
+			{
+				buyInStoreOrAvailabilityUI.text = isEquipped ? "Equipped!" : "Available";
+			}
+			else
+			{
+				buyInStoreOrAvailabilityUI.text = "Buy in Store";
+			}
 		}
 	}
 
