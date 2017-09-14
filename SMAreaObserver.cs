@@ -21,7 +21,7 @@ namespace SandeepMattepu
 		/// <summary>
 		/// The local player ID.
 		/// </summary>
-		private int localPlayerID = PhotonNetwork.player.ID;
+		private int localPlayerID;
 		/// <summary>
 		/// The number of enimeies in region.
 		/// </summary>
@@ -35,6 +35,7 @@ namespace SandeepMattepu
 
 		void Start()
 		{
+			localPlayerID = PhotonNetwork.player.ID;
 			SMPlayerSpawnerAndAssigner.OnPlayerRespawned += checkEnemiesInTheArea;
 		}
 

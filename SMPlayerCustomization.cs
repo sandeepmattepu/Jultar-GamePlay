@@ -192,9 +192,6 @@ namespace SandeepMattepu.UI
 		void Start () 
 		{
 			helmetAndRaceViewing ();
-			hideUnEquippedHelmetsAndShowDefault ();
-			equipXpBoosterAndUI ();
-			setCrownsValueInUI ();
 			StartCoroutine ("loadDataToDisplay");
 		}
 
@@ -245,6 +242,9 @@ namespace SandeepMattepu.UI
 		private IEnumerator loadDataToDisplay()
 		{
 			yield return new WaitUntil (() => SMPlayerDataManager.PlayerData != null);
+			hideUnEquippedHelmetsAndShowDefault ();
+			equipXpBoosterAndUI ();
+			setCrownsValueInUI ();
 			showUIBasedOnData ();
 		}
 

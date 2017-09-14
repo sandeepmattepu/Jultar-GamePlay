@@ -176,24 +176,39 @@ namespace SandeepMattepu
 			{
 			case Helmet_Type.BREATHOR:
 				brethorHelmet.SetActive (true);
-				playerHealth.addPointsToMaxHealthBy (25.0f);
-				playerHealth.setPlayerImmunityTowardsGasBombs (true);
+				if(playerHealth != null)
+				{
+					playerHealth.addPointsToMaxHealthBy (25.0f);
+					playerHealth.setPlayerImmunityTowardsGasBombs (true);
+				}
 				speedOfAnimator = breathorControllerSpeed;
 				break;
 			case Helmet_Type.OPERATIVE:
 				operativeHelmet.SetActive (true);
-				playerHealth.addPointsToMaxHealthBy (10.0f);
+				if(playerHealth != null)
+				{
+					playerHealth.addPointsToMaxHealthBy (10.0f);
+				}
 				speedOfAnimator = operativeControllerSpeed;
 				break;
 			case Helmet_Type.PILOTAR:
 				pilotarHelmet.SetActive (true);
-				playerHealth.addPointsToMaxHealthBy (20.0f);
-				playerFiring.setGrenadeOuterDamageValue (0.55f);
+				if(playerHealth != null)
+				{
+					playerHealth.addPointsToMaxHealthBy (20.0f);
+				}
+				if(playerFiring != null)
+				{
+					playerFiring.setGrenadeOuterDamageValue (0.55f);
+				}
 				speedOfAnimator = pilotarControllerSpeed;
 				break;
 			case Helmet_Type.TS_TACTICAL:
 				tsTacticalHelmet.SetActive (true);
-				playerHealth.addPointsToMaxHealthBy (10.0f);
+				if(playerHealth != null)
+				{
+					playerHealth.addPointsToMaxHealthBy (10.0f);
+				}
 				speedOfAnimator = tsTacticalControllerSpeed;
 				break;
 			}

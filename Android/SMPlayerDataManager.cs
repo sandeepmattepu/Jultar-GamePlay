@@ -73,6 +73,7 @@ namespace SandeepMattepu.Android
 		/// </summary>
 		public static void loadData()
 		{
+			loadNonConsumablePurchased ();
 			if(Social.localUser.authenticated)
 			{
 				((PlayGamesPlatform)Social.Active).SavedGame.OpenWithAutomaticConflictResolution
@@ -202,6 +203,22 @@ namespace SandeepMattepu.Android
 			}
 		}
 
+		/// <summary>
+		/// Loads the non consumable purchased products which are saved locally.
+		/// </summary>
+		private static void loadNonConsumablePurchased()
+		{
+			if(ObscuredPrefs.HasKey("NON_CONSUME_PRODUCTS"))
+			{
+				string data = ObscuredPrefs.GetString ("NON_CONSUME_PRODUCTS");
+				PlayerPurchasedProducts.parseDataFromString (data);
+			}
+			else
+			{
+				ObscuredPrefs.SetString ("NON_CONSUME_PRODUCTS", PlayerPurchasedProducts.ToString ());
+			}
+		}
+
 		#endregion
 
 		#endregion
@@ -292,6 +309,14 @@ namespace SandeepMattepu.Android
 			}
 
 			ObscuredPrefs.SetString (_PlayerPrefsKey, localPlayerData.formattedString);
+		}
+
+		/// <summary>
+		/// Use this function to save the non consumable purchased products locally.
+		/// </summary>
+		public static void saveNonConsumablePurchased()
+		{
+			ObscuredPrefs.SetString ("NON_CONSUME_PRODUCTS", PlayerPurchasedProducts.ToString ());
 		}
 
 		#endregion
@@ -641,6 +666,66 @@ namespace SandeepMattepu.Android
 				tsTacticalHelmetBought = true;
 				break;
 			}
+		}
+
+		public override string ToString ()
+		{
+			StringBuilder builder = new StringBuilder ();
+
+			// XP Boost
+			builder.Append(((bool)xp2Boost).ToString());
+			builder.Append('|');
+			builder.Append (((bool)xp5Boost).ToString ());
+			builder.Append('|');
+			builder.Append (((bool)xp8Boost).ToString ());
+			builder.Append('%');
+
+			// Lasers
+			builder.Append(((bool)blueLaserBought).ToString());
+			builder.Append('|');
+			builder.Append (((bool)greenLaserBought).ToString ());
+			builder.Append('|');
+			builder.Append (((bool)redLaserBought).ToString ());
+			builder.Append('%');
+
+			// Helmet
+			builder.Append(((bool)breathoreHelmetBought).ToString());
+			builder.Append('|');
+			builder.Append (((bool)maskeraHelmetBought).ToString ());
+			builder.Append('|');
+			builder.Append (((bool)operativeHelmetBought).ToString ());
+			builder.Append('|');
+			builder.Append (((bool)pilotarHelmetBought).ToString ());
+			builder.Append('|');
+			builder.Append (((bool)tsTacticalHelmetBought).ToString ());
+			builder.Append('%');
+
+			return builder.ToString ();
+		}
+
+		public void parseDataFromString(string dataInString)
+		{
+			string[] data = dataInString.Split ('%');
+
+			// XP Boost
+			string[] dataInXp = data[0].Split('|');
+			xp2Boost = bool.Parse (dataInXp [0]);
+			xp5Boost = bool.Parse (dataInXp [1]);
+			xp8Boost = bool.Parse (dataInXp [2]);
+
+			// Lasers
+			string[] dataInLaser = data[1].Split('|');
+			blueLaserBought = bool.Parse (dataInLaser [0]);
+			greenLaserBought = bool.Parse (dataInLaser [1]);
+			redLaserBought = bool.Parse (dataInLaser [2]);
+
+			// Helmet
+			string[] dataInHelmet = data[2].Split('|');
+			breathoreHelmetBought = bool.Parse (dataInHelmet [0]);
+			maskeraHelmetBought = bool.Parse (dataInHelmet [1]);
+			operativeHelmetBought = bool.Parse (dataInHelmet [2]);
+			pilotarHelmetBought = bool.Parse (dataInHelmet [3]);
+			tsTacticalHelmetBought = bool.Parse (dataInHelmet [4]);
 		}
 
   	}
