@@ -187,8 +187,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 				{
 					setSliderValues ();
 					hidePlayerInteractiveUI();
-					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
-					createDeadBody(true, true);
+					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others, (int)SMProductEquipper.INSTANCE.CurrentHelmet);
+					createDeadBody(true, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 					Destroy(this.gameObject);
 				}
 			}
@@ -199,7 +199,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			if (playerHealth <= 0.0f)
 			{
 				hidePlayerInteractiveUI();
-				createDeadBody(false, true);
+				createDeadBody (false, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 				Destroy(this.gameObject);
 			}
 		}
@@ -248,8 +248,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 				{
 					setSliderValues ();
 					hidePlayerInteractiveUI();
-					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
-					createDeadBody(true, true);
+					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others, (int)SMProductEquipper.INSTANCE.CurrentHelmet);
+					createDeadBody(true, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 					Destroy(this.gameObject);
 				}
 			}
@@ -260,7 +260,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			if (playerHealth <= 0.0f)
 			{
 				hidePlayerInteractiveUI();
-				createDeadBody(false, true);
+				createDeadBody(false, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 				Destroy(this.gameObject);
 			}
 		}
@@ -302,7 +302,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// </summary>
 	/// <param name="isMultiplayer">Value which indicates to produce ragdoll for multiplayer game or single player game</param>
 	/// <param name="canListenAudio">Value which indicates whether ragdoll can hear sounds are not</param>
-	private void createDeadBody(bool isMultiplayer, bool canListenAudio)
+	/// <param name="helmetType">Helmet type that dead body should have</param>
+	private void createDeadBody(bool isMultiplayer, bool canListenAudio, int helmetType)
 	{
 		if(isMultiplayer && photonViewComponent.isMine)
 		{
@@ -316,7 +317,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 		SMDestroyRagdoll destroyRagdoll = ragdollBody.GetComponent<SMDestroyRagdoll>();
 		destroyRagdoll.isMultiplayer = isMultiplayer;
 		destroyRagdoll.canListenToAudio = canListenAudio;
-		ragdollBody.GetComponent<SMPlayerEquipper> ().assignHelmetToDeadBody ((int)SMProductEquipper.INSTANCE.CurrentHelmet);
+		ragdollBody.GetComponent<SMPlayerEquipper> ().assignHelmetToDeadBody (helmetType);
 		Camera gameCamera = transform.GetComponent<SMPlayerController>().characterFocusedCamera;
 		if(gameCamera != null)
 		{
@@ -385,8 +386,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 					setSliderValues();
 					spawnManager.spawnAfterDeath();
 					hidePlayerInteractiveUI();
-					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
-					createDeadBody(true, true);
+					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others, (int)SMProductEquipper.INSTANCE.CurrentHelmet);
+					createDeadBody(true, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 					Destroy(this.gameObject);
 				}
 			}
@@ -397,7 +398,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			if(playerHealth <= 0.0f)
 			{
 				hidePlayerInteractiveUI();
-				createDeadBody(false, true);
+				createDeadBody(false, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 				Destroy(this.gameObject);
 			}
 		}
@@ -453,8 +454,8 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 					setSliderValues();
 					spawnManager.spawnAfterDeath();
 					hidePlayerInteractiveUI();
-					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others);
-					createDeadBody(true, true);
+					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others, (int)SMProductEquipper.INSTANCE.CurrentHelmet);
+					createDeadBody(true, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 					Destroy(this.gameObject);
 				}
 			}
@@ -465,7 +466,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			if(playerHealth <= 0.0f)
 			{
 				hidePlayerInteractiveUI();
-				createDeadBody(false, true);
+				createDeadBody(false, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 				Destroy(this.gameObject);
 			}
 		}
@@ -574,9 +575,9 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// This function will send this client representers to die
 	/// </summary>
 	[PunRPC]
-	public void sendDeathMessage()
+	public void sendDeathMessage(int helmetValue)
 	{
-		createDeadBody(true, false);
+		createDeadBody(true, false, helmetValue);
 		Destroy(this.gameObject);
 	}
 
