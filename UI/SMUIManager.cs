@@ -47,6 +47,7 @@ namespace SandeepMattepu.UI
 		public void yesSureToExitPressed(string sceneName)
 		{
 			sceneToLoadWhenExittedFromGame = sceneName;
+			SMMultiplayerGame.INSTANCE.gameObject.GetComponent<SMSavePlayerProgress> ().penalizeAndSavePlayerProgress ();
 			PhotonNetwork.LeaveRoom ();
 		}
 

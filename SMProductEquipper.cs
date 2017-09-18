@@ -97,7 +97,7 @@ namespace SandeepMattepu
 		// Update is called once per frame
 		void Update () 
 		{
-			cheatCodes ();
+			//cheatCodes ();
 		}
 
 		private void cheatCodes()

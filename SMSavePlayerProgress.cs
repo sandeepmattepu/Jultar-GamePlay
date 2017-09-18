@@ -48,6 +48,20 @@ namespace SandeepMattepu
 		/// The additional xp of player.
 		/// </summary>
 		private ObscuredInt additionalXpOfPlayer;
+		/// <summary>
+		/// The total crowns available to player.
+		/// </summary>
+		private ObscuredInt totalCrowns;
+		/// <summary>
+		/// The xp to penalize player when left.
+		/// </summary>
+		[SerializeField]
+		private ObscuredInt xpToPenalize;
+		/// <summary>
+		/// The gems to award when won.
+		/// </summary>
+		[SerializeField]
+		private ObscuredInt gemsToAwardWhenWon;
 
 		// Use this for initialization
 		void Start () 
@@ -66,6 +80,7 @@ namespace SandeepMattepu
 		/// </summary>
 		private void loadPlayerData()
 		{
+			totalCrowns = SMPlayerDataManager.PlayerData.numberOfCrowns;
 			killesMade = SMPlayerDataManager.PlayerData.killsMadeByPlayer;
 			deathsEncountered = SMPlayerDataManager.PlayerData.deathsOccuredToPlayer;
 			timePlayed = SMPlayerDataManager.PlayerData.timePlayerPlayed;
@@ -96,6 +111,7 @@ namespace SandeepMattepu
 			{
 				if(SMFreeForAll.IsLocalPlayerLeading)
 				{
+					totalCrowns += gemsToAwardWhenWon;
 					totalWinsMadeByPlayer += 1;
 				}
 				else
@@ -113,6 +129,7 @@ namespace SandeepMattepu
 			{
 				if(SMTeamDeathMatch.IsLocalPlayerTeamLeading)
 				{
+					totalCrowns += gemsToAwardWhenWon;
 					totalWinsMadeByPlayer += 1;
 				}
 				else
@@ -133,6 +150,7 @@ namespace SandeepMattepu
 				SMPlayerDataManager.PlayerData.killsMadeByPlayer = killesMade;
 				SMPlayerDataManager.PlayerData.deathsOccuredToPlayer = deathsEncountered;
 				SMPlayerDataManager.PlayerData.timePlayerPlayed = timePlayed;
+				SMPlayerDataManager.PlayerData.numberOfCrowns = totalCrowns;
 				SMPlayerDataManager.PlayerData.totalWins = totalWinsMadeByPlayer;
 				SMPlayerDataManager.PlayerData.totalLoses = totalLosesMadeByPlayer;
 				SMPlayerDataManager.PlayerData.additionalXp = additionalXpOfPlayer;
@@ -172,6 +190,37 @@ namespace SandeepMattepu
 			xpRequiredUptoNextTenLevels = factor >= 8 ? (200000) : xpRequiredUptoNextTenLevels;
 			int xpRequiredForEachLevel = (factor == 0 ? (xpRequiredUptoNextTenLevels / 9) : (xpRequiredUptoNextTenLevels / 10));
 			return xpRequiredForEachLevel;
+		}
+
+		/// <summary>
+		/// Penalizes when player leaves and save player progress.
+		/// </summary>
+		public void penalizeAndSavePlayerProgress()
+		{
+			while(xpToPenalize > 0)
+			{
+				if(additionalXpOfPlayer >= xpToPenalize)
+				{
+					additionalXpOfPlayer -= xpToPenalize;
+					xpToPenalize = 0;
+				}
+				else
+				{
+					xpToPenalize -= additionalXpOfPlayer;
+					additionalXpOfPlayer = 0;
+					if(currentLevelOfPlayer == 1)
+					{
+						xpToPenalize = 0;
+					}
+					else
+					{
+						currentLevelOfPlayer -= 1;
+						additionalXpOfPlayer = calculateTotalXpRequiredForNextLevel (currentLevelOfPlayer);
+					}
+				}
+			}
+
+			savePlayerData ();
 		}
 	}
 }
