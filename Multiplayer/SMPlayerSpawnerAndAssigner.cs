@@ -594,7 +594,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			}
 			else if (SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH) 
 			{
-				SMTeamDeathMatch.assignEntirePlayerTeamToIDs ((Dictionary<int,int>)data [3]);
+//				SMTeamDeathMatch.assignEntirePlayerTeamToIDs ((Dictionary<int,int>)data [3]);
 				if(teamDeathMatchWhenRecieveDataAtBeginning == null)
 				{
 					teamDeathMatchWhenRecieveDataAtBeginning = new UnityEvent ();
