@@ -213,7 +213,10 @@ namespace SandeepMattepu.Multiplayer
 		protected virtual void Update()
 		{
 			checkGameTime ();
-			observeRoomForPlayerLeavingAndEntering ();
+			if(IsGameStarter)
+			{
+				observeRoomForPlayerLeavingAndEntering ();
+			}
 		}
 
 		/// <summary>

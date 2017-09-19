@@ -77,16 +77,12 @@ namespace SandeepMattepu.Multiplayer
 			}
 		}
 
-		void Awake()
+		protected override void Awake()
 		{
+			base.Awake ();
 			gameType = MPGameTypes.TEAM_DEATH_MATCH;
 			instance = this;
-
-			// When player is playing mp game back to back then to avoid bugs
-			playersIdAndName.Clear();
-            playersIdAndScore.Clear();
 			playerIdAndTeamIndex.Clear ();
-			playerIdAndDeaths.Clear ();
 			playersInTeam.Clear ();
 			isLocalPlayerTeamLeading = false;
 			team1Score = 0;
@@ -110,7 +106,8 @@ namespace SandeepMattepu.Multiplayer
 		}
 
 		/// <summary>
-		/// This function splits the players into teams and assigns each player a team number
+		/// This function splits the players into teams and assigns each player a team number. First players are sorted 
+		/// according to their ID number in ascending order and all players are seperated from the srted list
 		/// </summary>
 		private void splitPlayersIntoTeams()
 		{
@@ -321,6 +318,30 @@ namespace SandeepMattepu.Multiplayer
 				Score = playerInTeam.Score;
 				TeamID = playerInTeam.TeamID;
 			}
+		}
+
+		/// <summary>
+		/// Set players into teams. 
+		/// WARNING :- Call it only in Team death match context.
+		/// </summary>
+		/// <param name="team1">Team1 players.</param>
+		/// <param name="team2">Team2 players.</param>
+		public static void setPlayersTeamInfo(PhotonPlayer[] team1, PhotonPlayer[] team2)
+		{
+			List<PhotonPlayer> Team1 = new List<PhotonPlayer> (team1);
+			List<PhotonPlayer> Team2 = new List<PhotonPlayer> (team2);
+			setPlayersTeamInfo (Team1, Team2);
+		}
+
+		/// <summary>
+		/// Set players into teams.
+		/// WARNING :- Call it only in Team death match context.
+		/// </summary>
+		/// <param name="team1">Team1 players.</param>
+		/// <param name="team2">Team2 players.</param>
+		public static void setPlayersTeamInfo(List<PhotonPlayer> team1, List<PhotonPlayer> team2)
+		{
+			
 		}
 	}
 }

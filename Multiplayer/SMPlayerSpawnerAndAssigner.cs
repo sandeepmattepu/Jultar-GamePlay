@@ -237,7 +237,10 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 		}
 		matchStartsInUI.text = "Match starts in ...";
 
-		yield return new WaitUntil (() => (hasRecievedTimeDataFromMaster || PhotonNetwork.isMasterClient));
+		while(!(hasRecievedTimeDataFromMaster || PhotonNetwork.isMasterClient))
+		{
+			yield return new WaitForSeconds (2.0f);	// Keeps requesting even if master client changes
+		}
 
 		while(timeDelayToStartMatch > 0)
 		{
@@ -488,11 +491,11 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	/// <param name="senderID">Sender I.</param>
 	private void OnEvent(byte eventCode, object content, int senderID)
 	{
-		if(eventCode == (int)MultiplayerEvents.ReceiveTime && !PhotonNetwork.isMasterClient)
+		if(eventCode == (int)MultiplayerEvents.ReceiveData && !PhotonNetwork.isMasterClient)
 		{
 			receiveDataFromMaster ((object[])content);
 		}
-		else if(eventCode == (int)MultiplayerEvents.RequestForTime && PhotonNetwork.isMasterClient)
+		else if(eventCode == (int)MultiplayerEvents.RequestForData && PhotonNetwork.isMasterClient)
 		{
 			receiveRequestForDataFromOtherClientsAndRespond ();
 		}
@@ -505,7 +508,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 	{
 		if(!PhotonNetwork.isMasterClient)
 		{
-			PhotonNetwork.RaiseEvent ((int)MultiplayerEvents.RequestForTime, null, true, null);
+			PhotonNetwork.RaiseEvent ((int)MultiplayerEvents.RequestForData, null, true, null);
 		}
 	}
 
@@ -562,7 +565,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 
 		if(PhotonNetwork.isMasterClient)
 		{
-			PhotonNetwork.RaiseEvent ((int)MultiplayerEvents.ReceiveTime, (object)data, true, null);
+			PhotonNetwork.RaiseEvent ((int)MultiplayerEvents.ReceiveData, (object)data, true, null);
 		}
 	}
 
