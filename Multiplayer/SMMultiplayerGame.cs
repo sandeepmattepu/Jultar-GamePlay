@@ -191,6 +191,10 @@ namespace SandeepMattepu.Multiplayer
 		/// The number of player at start of game.
 		/// </summary>
 		protected PhotonPlayer[] playersAtStartOfGame;
+		/// <summary>
+		/// Use this to request for data or send refresh signal to all other clients
+		/// </summary>
+		private SMPlayerSpawnerAndAssigner dataTransmitter;
 
 		protected virtual void Awake()
 		{
@@ -227,7 +231,7 @@ namespace SandeepMattepu.Multiplayer
 			SMLeftOrJoinedPlayersData modifiedData = dataAboutPlayersLeftOrJoined ();
 			PhotonPlayer tempPlayer;
 
-			if(modifiedData != null)
+			if(modifiedData != null && PhotonNetwork.isMasterClient)
 			{
 				if(modifiedData.HasPlayerJoined)
 				{
@@ -253,6 +257,7 @@ namespace SandeepMattepu.Multiplayer
 				}
 
 				playersAtStartOfGame = PhotonNetwork.playerList;
+				dataTransmitter.sendSignalToAllToRefreshData ();
 
 				if(OnPlayerJoinedOrLeft != null)
 				{
@@ -432,6 +437,15 @@ namespace SandeepMattepu.Multiplayer
 			{
 				OnPlayerJoinedOrLeft ();
 			}
+		}
+
+		/// <summary>
+		/// Sets the data transmitter.
+		/// </summary>
+		/// <param name="DataTransmitter">Data transmitter.</param>
+		public void setDataTransmitter(SMPlayerSpawnerAndAssigner DataTransmitter)
+		{
+			dataTransmitter = DataTransmitter;
 		}
 
 		/// <summary>

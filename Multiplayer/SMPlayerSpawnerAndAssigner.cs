@@ -22,7 +22,7 @@ using UnityEngine.Events;
 /// This class will spawn the players in the game at certain positions based on their index values in network and assignes proper values to
 /// player components. This class also spawns game rules in the scene.
 /// </summary>
-public class SMPlayerSpawnerAndAssigner : MonoBehaviour 
+public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour 
 {
     /// <summary>
     /// This will decide which rules that need to be maintained in the game. Set this value before loading the game
@@ -237,10 +237,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 		}
 		matchStartsInUI.text = "Match starts in ...";
 
-		while(!(hasRecievedTimeDataFromMaster || PhotonNetwork.isMasterClient))
-		{
-			yield return new WaitForSeconds (2.0f);	// Keeps requesting even if master client changes
-		}
+		yield return new WaitUntil (() => (hasRecievedTimeDataFromMaster || PhotonNetwork.isMasterClient));
 
 		while(timeDelayToStartMatch > 0)
 		{
@@ -481,6 +478,7 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 		}
 		specialWeaponManager.registerMultiplayerGame(gameRulesThatSpawned);
 		gameRulesThatSpawned.xpMadeAfterKill *= SMProductEquipper.INSTANCE.CurrentExpBoostMultiplier;
+		gameRulesThatSpawned.setDataTransmitter (this);
 	}
 
 	/// <summary>
@@ -583,28 +581,45 @@ public class SMPlayerSpawnerAndAssigner : MonoBehaviour
 			{
 				gameRulesThatSpawned.setGameTimer (times [1]);
 			}
-
-			SMMultiplayerGame.assignEntireScoreToAllPlayers ((Dictionary<int,int>)data [1]);
-			SMMultiplayerGame.assignEntireDeathInfoToAllPlayers ((Dictionary<int,int>)data [2]);
-
-			if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL) 
-			{
-				if(freeForAllWhenRecievedDataAtBeginning == null)
-				{
-					freeForAllWhenRecievedDataAtBeginning = new UnityEvent ();
-				}
-				freeForAllWhenRecievedDataAtBeginning.Invoke ();
-			}
-			else if (SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH) 
-			{
-//				SMTeamDeathMatch.assignEntirePlayerTeamToIDs ((Dictionary<int,int>)data [3]);
-				if(teamDeathMatchWhenRecieveDataAtBeginning == null)
-				{
-					teamDeathMatchWhenRecieveDataAtBeginning = new UnityEvent ();
-				}
-				teamDeathMatchWhenRecieveDataAtBeginning.Invoke ();
-			}
 			hasRecievedTimeDataFromMaster = true;
 		}
+
+		SMMultiplayerGame.assignEntireScoreToAllPlayers ((Dictionary<int,int>)data [1]);
+		SMMultiplayerGame.assignEntireDeathInfoToAllPlayers ((Dictionary<int,int>)data [2]);
+
+		if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL) 
+		{
+			if(freeForAllWhenRecievedDataAtBeginning == null)
+			{
+				freeForAllWhenRecievedDataAtBeginning = new UnityEvent ();
+			}
+			freeForAllWhenRecievedDataAtBeginning.Invoke ();
+		}
+		else if (SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH) 
+		{
+			//				SMTeamDeathMatch.assignEntirePlayerTeamToIDs ((Dictionary<int,int>)data [3]);
+			if(teamDeathMatchWhenRecieveDataAtBeginning == null)
+			{
+				teamDeathMatchWhenRecieveDataAtBeginning = new UnityEvent ();
+			}
+			teamDeathMatchWhenRecieveDataAtBeginning.Invoke ();
+		}
+	}
+
+	public override void OnMasterClientSwitched (PhotonPlayer newMasterClient)
+	{
+		if(newMasterClient.ID == PhotonNetwork.player.ID)
+		{
+			if(!hasRecievedTimeDataFromMaster)
+			{
+				hasRecievedTimeDataFromMaster = true;
+				receiveRequestForDataFromOtherClientsAndRespond ();
+			}
+		}
+	}
+
+	public void sendSignalToAllToRefreshData()
+	{
+		receiveRequestForDataFromOtherClientsAndRespond ();		// This does required job for us job
 	}
 }
