@@ -227,6 +227,7 @@ namespace SandeepMattepu.Multiplayer
 						{
 							playersIdAndName.Add (tempPlayer.ID, tempPlayer.NickName);
 							playerIdAndDeaths.Add (tempPlayer.ID, 0);
+							playersIdAndScore.Add (tempPlayer.ID, 0);
 						}
 					}
 				}
@@ -236,6 +237,7 @@ namespace SandeepMattepu.Multiplayer
 					{
 						playersIdAndName.Remove(modifiedData.PlayersIdsWhoLeftOrJoined[i]);
 						playerIdAndDeaths.Remove(modifiedData.PlayersIdsWhoLeftOrJoined[i]);
+						playersIdAndScore.Remove(modifiedData.PlayersIdsWhoLeftOrJoined[i]);
 					}
 				}
 
