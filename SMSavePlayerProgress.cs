@@ -95,6 +95,15 @@ namespace SandeepMattepu
 		/// </summary>
 		private void savePlayerData()
 		{
+			savePlayerData (true);
+		}
+
+		/// <summary>
+		/// This function is called at the end of the game to save player progress
+		/// </summary>
+		/// <param name="rewardPlayer">If set to <c>true</c> reward player.</param>
+		private void savePlayerData(bool rewardPlayer)
+		{
 			int localPlayerId = PhotonNetwork.player.ID;
 			ObscuredInt deathsNumber = 0;
 			ObscuredInt scoreMade;
@@ -111,7 +120,7 @@ namespace SandeepMattepu
 			{
 				if(SMFreeForAll.IsLocalPlayerLeading)
 				{
-					totalCrowns += gemsToAwardWhenWon;
+					totalCrowns = rewardPlayer ? (int)(totalCrowns + gemsToAwardWhenWon) : (int)totalCrowns;
 					totalWinsMadeByPlayer += 1;
 				}
 				else
@@ -129,7 +138,7 @@ namespace SandeepMattepu
 			{
 				if(SMTeamDeathMatch.IsLocalPlayerTeamLeading)
 				{
-					totalCrowns += gemsToAwardWhenWon;
+					totalCrowns = rewardPlayer ? (int)(totalCrowns + gemsToAwardWhenWon) : (int)totalCrowns;
 					totalWinsMadeByPlayer += 1;
 				}
 				else
@@ -220,7 +229,7 @@ namespace SandeepMattepu
 				}
 			}
 
-			savePlayerData ();
+			savePlayerData (false);
 		}
 	}
 }
