@@ -31,15 +31,11 @@ namespace SandeepMattepu.Multiplayer
 
 		// Use this for initialization
 
-		void Awake()
+		protected override void Awake()
 		{
+			base.Awake ();
 			gameType = MPGameTypes.FREE_FOR_ALL;
 			instance = this;
-
-			// When player is playing mp game back to back then to avoid bugs
-			playersIdAndName.Clear();
-			playersIdAndScore.Clear();
-			playerIdAndDeaths.Clear ();
 			isLocalPlayerLeading = false;
 		}
 

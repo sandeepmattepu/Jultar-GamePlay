@@ -192,6 +192,14 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		protected PhotonPlayer[] playersAtStartOfGame;
 
+		protected virtual void Awake()
+		{
+			// When player is playing mp game back to back then to avoid bugs
+			playersIdAndName.Clear();
+			playersIdAndScore.Clear();
+			playerIdAndDeaths.Clear ();
+		}
+
 		protected virtual void Start()
 		{
 			isGameOver = false;
