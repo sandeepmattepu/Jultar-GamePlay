@@ -42,10 +42,6 @@ namespace SandeepMattepu.Multiplayer
 		protected override void Start()
 		{
 			base.Start ();
-			if(PhotonNetwork.isMasterClient)
-			{
-				registerPlayersForScoreBoard ();
-			}
 			startDownloadingXpRewardData();
 		}
 
@@ -70,22 +66,7 @@ namespace SandeepMattepu.Multiplayer
 				}
 			}
 			base.reportScore(whoKilledID, whoDiedID);
-		}
-
-		/// <summary>
-		/// Registers the player for score board.
-		/// </summary>
-		/// <param name="photonView">Photon view of the player.</param>
-		public void registerPlayersForScoreBoard()
-		{
-			foreach(PhotonPlayer player in PhotonNetwork.playerList)
-			{
-				playersIdAndName.Add (player.ID, player.NickName);
-				playersIdAndScore.Add (player.ID, 0);
-				playerIdAndDeaths.Add (player.ID, 0);
-			}
-			base.raiseOnPlayerJoinedOrLeftEvent ();
-		}
+   		}
 
 		protected override void checkGameTime ()
 		{

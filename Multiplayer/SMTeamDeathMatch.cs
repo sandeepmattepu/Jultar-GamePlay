@@ -105,6 +105,86 @@ namespace SandeepMattepu.Multiplayer
 			//TODO write www class code
 		}
 
+		protected override void observeRoomForPlayerLeavingAndEntering ()
+		{
+			SMLeftOrJoinedPlayersData modifiedData = dataAboutPlayersLeftOrJoined ();
+
+			if(modifiedData != null && PhotonNetwork.isMasterClient)
+			{
+				addExcessPlayersToTeam (modifiedData.PlayersIdsWhoLeftOrJoined, modifiedData.HasPlayerJoined);
+				base.observeRoomForPlayerLeavingAndEntering ();
+			}
+		}
+
+		/// <summary>
+		/// Assigns entire score
+		/// </summary>
+		/// <param name="PlayersIDsAndScores">Players Ids and scores.</param>
+		public static void assignEntirePlayerTeamToIDs(Dictionary<int,int> PlayersIDsAndTeamIndexes)
+		{
+			playerIdAndTeamIndex.Clear ();
+			playerIdAndTeamIndex = PlayersIDsAndTeamIndexes;
+		}
+
+
+		/// <summary>
+		/// Adds the excess players to team.
+		/// </summary>
+		/// <param name="excessivePlayers">Excessive players IDs.</param>
+		/// <param name="hasJoinedOrLeft">If set to <c>true</c> then players has joined or left.</param>
+		private void addExcessPlayersToTeam(int[] excessivePlayers, bool hasJoinedOrLeft)
+		{
+			List<int> excesPlayers = new List<int> (excessivePlayers);
+			excesPlayers.Sort ();
+
+			while(excesPlayers.Count != 0)
+			{
+				if(hasJoinedOrLeft)
+				{
+					int playerInTeam1 = 0;
+					int playersInTeam2 = 0;
+
+					foreach(PlayerInTeam pit in playersInTeam)
+					{
+						if(pit.TeamID == 1)
+						{
+							playerInTeam1 += 1;
+						}
+						else if(pit.TeamID == 2)
+						{
+							playersInTeam2 += 1;
+						}
+					}
+
+					if(playerInTeam1 > playersInTeam2)
+					{
+						playerIdAndTeamIndex.Add (excesPlayers [0], 2);
+						playersInTeam.Add(new PlayerInTeam(excesPlayers[0], 0, 2));
+						excesPlayers.Remove (excesPlayers [0]);
+					}
+					else if(playerInTeam1 <= playersInTeam2)
+					{
+						playerIdAndTeamIndex.Add (excesPlayers [0], 1);
+						playersInTeam.Add(new PlayerInTeam(excesPlayers[0], 0, 1));
+						excesPlayers.Remove (excesPlayers [0]);
+					}
+				}
+				else
+				{
+					playerIdAndTeamIndex.Remove (excesPlayers [0]);
+					for(int i = 0; i < playersInTeam.Count; i++)
+					{
+						if(playersInTeam[i].ID == excesPlayers [0])
+						{
+							playersInTeam.RemoveAt (i);
+							break;
+						}
+					}
+					excesPlayers.Remove (excesPlayers [0]);
+				}
+			}
+		}
+
 		/// <summary>
 		/// This function splits the players into teams and assigns each player a team number. First players are sorted 
 		/// according to their ID number in ascending order and all players are seperated from the srted list
@@ -144,13 +224,6 @@ namespace SandeepMattepu.Multiplayer
 				}
 			}
 
-			players = new List<PhotonPlayer> (PhotonNetwork.playerList);
-			foreach(PhotonPlayer player in players)
-			{
-				playersIdAndName.Add (player.ID, player.NickName);
-				playersIdAndScore.Add (player.ID, 0);
-				playerIdAndDeaths.Add (player.ID, 0);
-			}
 			if(OnPlayersSplittedToTeams != null)
 			{
 				OnPlayersSplittedToTeams ();

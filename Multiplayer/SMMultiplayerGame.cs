@@ -208,6 +208,10 @@ namespace SandeepMattepu.Multiplayer
 		{
 			isGameOver = false;
 			playersAtStartOfGame = PhotonNetwork.playerList;
+			if(PhotonNetwork.isMasterClient)
+			{
+				registerPlayersForScoreBoard ();
+			}
 			if(OnGameRulesLoaded != null)
 			{
 				OnGameRulesLoaded ();
@@ -220,6 +224,20 @@ namespace SandeepMattepu.Multiplayer
 			if(IsGameStarter)
 			{
 				observeRoomForPlayerLeavingAndEntering ();
+			}
+		}
+
+		/// <summary>
+		/// Registers the player for score board.
+		/// </summary>
+		/// <param name="photonView">Photon view of the player.</param>
+		private void registerPlayersForScoreBoard()
+		{
+			foreach(PhotonPlayer player in PhotonNetwork.playerList)
+			{
+				playersIdAndName.Add (player.ID, player.NickName);
+				playersIdAndScore.Add (player.ID, 0);
+				playerIdAndDeaths.Add (player.ID, 0);
 			}
 		}
 
@@ -426,18 +444,7 @@ namespace SandeepMattepu.Multiplayer
 		public void setGameTimer(float timerValue)
 		{
 			gameTimer = timerValue;
-		}
-
-		/// <summary>
-		/// Raises the on player joined or left event.
-		/// </summary>
-		protected void raiseOnPlayerJoinedOrLeftEvent()
-		{
-			if(OnPlayerJoinedOrLeft != null)
-			{
-				OnPlayerJoinedOrLeft ();
-			}
-		}
+   		}
 
 		/// <summary>
 		/// Sets the data transmitter.
