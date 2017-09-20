@@ -19,6 +19,18 @@ namespace SandeepMattepu.Multiplayer
 	public class SMMultiplayerGame : MonoBehaviour
 	{
 		/// <summary>
+		/// This defines whether multiplayer is loaded or not
+		/// </summary>
+		private bool isMultiplayerLoaded = false;
+		/// <summary>
+		/// This defines whether multiplayer is loaded or not
+		/// </summary>
+		public bool IsMultiplayerLoaded {
+			get {
+				return isMultiplayerLoaded;
+			}
+		}
+		/// <summary>
 		/// This occurs when game has met end condititon like when reached kill limits, time is over
 		/// </summary>
 		public static event onGameRulesCreated OnGameOver;
@@ -212,6 +224,7 @@ namespace SandeepMattepu.Multiplayer
 			{
 				registerPlayersForScoreBoard ();
 			}
+			isMultiplayerLoaded = true;
 			if(OnGameRulesLoaded != null)
 			{
 				OnGameRulesLoaded ();

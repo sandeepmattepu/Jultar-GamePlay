@@ -9,6 +9,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using SandeepMattepu.Multiplayer;
+using System.Collections;
 
 /// <summary>
 /// This class will identify the player in the network with name, id and other with attributes
@@ -59,28 +60,37 @@ public class SMPlayerIdentifier : MonoBehaviour
 		}
 		else
 		{
-			if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
-			{
-				playerNameUI.color = Color.red;
-			}
-			else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
-			{
-				int idOfThisPlayer = photonViewComponenet.owner.ID;
+			StartCoroutine ("waitAndSetUIColor");
+		}
+	}
 
-				int teamIndexOfThisPlayer = 0;
-				SMTeamDeathMatch.PlayerIdAndTeamIndex.TryGetValue (idOfThisPlayer, out teamIndexOfThisPlayer);
-				int localPlayerTeam = SMTeamDeathMatch.LocalPlayerTeamIndex;
+	private IEnumerator waitAndSetUIColor()
+	{
+		yield return new WaitUntil (() => (SMMultiplayerGame.INSTANCE != null && SMMultiplayerGame.INSTANCE.IsMultiplayerLoaded));
 
-				if(localPlayerTeam != -1)
+		if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
+		{
+			playerNameUI.color = Color.red;
+		}
+		else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
+		{
+			int idOfThisPlayer = photonViewComponenet.owner.ID;
+			int teamIndexOfThisPlayer = 0;
+
+			yield return new WaitUntil (() => ((SMTeamDeathMatch)SMMultiplayerGame.INSTANCE).HasPlayerSplittedToTeams);
+
+			SMTeamDeathMatch.PlayerIdAndTeamIndex.TryGetValue (idOfThisPlayer, out teamIndexOfThisPlayer);
+			int localPlayerTeam = SMTeamDeathMatch.LocalPlayerTeamIndex;
+
+			if(localPlayerTeam != -1)
+			{
+				if(localPlayerTeam == teamIndexOfThisPlayer)
 				{
-					if(localPlayerTeam == teamIndexOfThisPlayer)
-					{
-						playerNameUI.color = Color.blue;
-					}
-					else
-					{
-						playerNameUI.color = Color.red;
-					}
+					playerNameUI.color = Color.blue;
+				}
+				else
+				{
+					playerNameUI.color = Color.red;
 				}
 			}
 		}

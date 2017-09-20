@@ -49,6 +49,19 @@ namespace SandeepMattepu.Multiplayer
 		/// </summary>
 		public static event onGameRulesCreated OnPlayersSplittedToTeams;
 		/// <summary>
+		/// This says whether players has been splitted to teams
+		/// </summary>
+		private bool hasPlayerSplittedToTeams = false;
+		/// <summary>
+		/// This says whether players has been splitted to teams
+		/// </summary>
+		public bool HasPlayerSplittedToTeams {
+			get {
+				return hasPlayerSplittedToTeams;
+			}
+		}
+
+		/// <summary>
 		/// Is local player's team leading.
 		/// </summary>
 		private static ObscuredBool isLocalPlayerTeamLeading = false;
@@ -94,7 +107,10 @@ namespace SandeepMattepu.Multiplayer
 		{
 			base.Start ();
 			startDownloadingXpRewardData();
-			splitPlayersIntoTeams ();
+			if(PhotonNetwork.isMasterClient)
+			{
+				splitPlayersIntoTeams ();
+			}
 		}
 
 		/// <summary>
@@ -124,6 +140,7 @@ namespace SandeepMattepu.Multiplayer
 		{
 			playerIdAndTeamIndex.Clear ();
 			playerIdAndTeamIndex = PlayersIDsAndTeamIndexes;
+			((SMTeamDeathMatch)INSTANCE).hasPlayerSplittedToTeams = true;
 		}
 
 
@@ -189,6 +206,7 @@ namespace SandeepMattepu.Multiplayer
 		/// This function splits the players into teams and assigns each player a team number. First players are sorted 
 		/// according to their ID number in ascending order and all players are seperated from the srted list
 		/// </summary>
+		[System.Obsolete("Don't use this function. Player's team info should be recieved from Room scene")]
 		private void splitPlayersIntoTeams()
 		{
 			List<PhotonPlayer> players = new List<PhotonPlayer> (PhotonNetwork.playerList);
@@ -223,7 +241,7 @@ namespace SandeepMattepu.Multiplayer
 					playersInTeam.Add(new PlayerInTeam(players[0].ID, 0, 1));
 				}
 			}
-
+			hasPlayerSplittedToTeams = true;
 			if(OnPlayersSplittedToTeams != null)
 			{
 				OnPlayersSplittedToTeams ();
@@ -414,7 +432,10 @@ namespace SandeepMattepu.Multiplayer
 		/// <param name="team2">Team2 players.</param>
 		public static void setPlayersTeamInfo(List<PhotonPlayer> team1, List<PhotonPlayer> team2)
 		{
-			
+			if(PhotonNetwork.isMasterClient)
+			{
+				
+			}
 		}
 	}
 }
