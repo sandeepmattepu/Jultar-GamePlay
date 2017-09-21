@@ -107,10 +107,7 @@ namespace SandeepMattepu.Multiplayer
 		{
 			base.Start ();
 			startDownloadingXpRewardData();
-			if(PhotonNetwork.isMasterClient)
-			{
-				splitPlayersIntoTeams ();
-			}
+			splitPlayersIntoTeams ();
 		}
 
 		/// <summary>
@@ -139,7 +136,33 @@ namespace SandeepMattepu.Multiplayer
 		public static void assignEntirePlayerTeamToIDs(Dictionary<int,int> PlayersIDsAndTeamIndexes)
 		{
 			playerIdAndTeamIndex.Clear ();
+			playersInTeam.Clear ();
+			team1Score = 0;
+			team2Score = 0;
+
 			playerIdAndTeamIndex = PlayersIDsAndTeamIndexes;
+			ObscuredInt tempScore = 0;
+
+			foreach(KeyValuePair<int,int> piti in playerIdAndTeamIndex)
+			{
+				if(playersIdAndScore.TryGetValue(piti.Key, out tempScore))
+				{
+					playersInTeam.Add(new PlayerInTeam(piti.Key, tempScore, piti.Value));
+					if(piti.Key == 1)
+					{
+						team1Score += tempScore;
+					}
+					else if(team2Score == 2)
+					{
+						team2Score += tempScore;
+					}
+				}
+
+				if(piti.Key == PhotonNetwork.player.ID)
+				{
+					localPlayerTeamIndex = piti.Value;
+				}
+			}
 			((SMTeamDeathMatch)INSTANCE).hasPlayerSplittedToTeams = true;
 		}
 
