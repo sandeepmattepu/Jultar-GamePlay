@@ -295,8 +295,8 @@ namespace SandeepMattepu.UI
 			}
 			setUIColor (monioRaceTotalScore, MpPlayerRaceType.Monio);
 			setUIColor (jagurRaceTotalScore, MpPlayerRaceType.Jagur);
-			monioRaceTotalScore.text = "Monio" + System.Environment.NewLine + "0";
-			jagurRaceTotalScore.text = "Jagur" + System.Environment.NewLine + "0";
+			monioRaceTotalScore.text = "Monio" + System.Environment.NewLine + SMTeamDeathMatch.Team1Score;
+			jagurRaceTotalScore.text = "Jagur" + System.Environment.NewLine + SMTeamDeathMatch.Team2Score;
 			assignUIIndexToPlayers ();
 		}
 	}	

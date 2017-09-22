@@ -95,7 +95,6 @@ namespace SandeepMattepu.Multiplayer
 			base.Awake ();
 			gameType = MPGameTypes.TEAM_DEATH_MATCH;
 			instance = this;
-			playerIdAndTeamIndex.Clear ();
 			playersInTeam.Clear ();
 			isLocalPlayerTeamLeading = false;
 			team1Score = 0;
@@ -107,7 +106,12 @@ namespace SandeepMattepu.Multiplayer
 		{
 			base.Start ();
 			startDownloadingXpRewardData();
-			splitPlayersIntoTeams ();
+		}
+
+		protected override void OnDestroy ()
+		{
+			base.OnDestroy ();
+			playerIdAndTeamIndex.Clear ();
 		}
 
 		/// <summary>
@@ -165,7 +169,6 @@ namespace SandeepMattepu.Multiplayer
 			}
 			((SMTeamDeathMatch)INSTANCE).hasPlayerSplittedToTeams = true;
 		}
-
 
 		/// <summary>
 		/// Adds the excess players to team.
@@ -459,6 +462,28 @@ namespace SandeepMattepu.Multiplayer
 			{
 				
 			}
+		}
+
+		/// <summary>
+		/// Set players into teams.
+		/// WARNING :- Call it only in Team death match context.
+		/// </summary>
+		/// <param name="team1">ID of Team1 players.</param>
+		/// <param name="team2">ID of Team2 players.</param>
+		public static void setPlayersTeamInfo(int[] team1, int[] team2)
+		{
+			Dictionary<int,int> tempPlayerIdAndTeamIndex = new Dictionary<int, int> ();
+
+			foreach(int id in team1)
+			{
+				tempPlayerIdAndTeamIndex.Add (id, 1);
+			}
+			foreach(int id in team2)
+			{
+				tempPlayerIdAndTeamIndex.Add (id, 2);
+			}
+
+			assignEntirePlayerTeamToIDs (tempPlayerIdAndTeamIndex);
 		}
 	}
 }

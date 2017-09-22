@@ -240,6 +240,10 @@ namespace SandeepMattepu.Multiplayer
 			}
 		}
 
+		protected virtual void OnDestroy ()
+		{
+		}
+
 		/// <summary>
 		/// Registers the player for score board.
 		/// </summary>
