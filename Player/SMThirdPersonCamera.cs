@@ -48,6 +48,9 @@ public class SMThirdPersonCamera : MonoBehaviour
 	/// </summary>
 	[Tooltip("This will determine how fast the camera should move to the desired targeted position")]
 	public float cameraTransitionSpeed = 1;
+	[Tooltip("This when true will make camera snap it closer to player when there is something in between camera and player")]
+	[SerializeField]
+	private bool cameraAlwaysFocusAtPlayer = false;
 	/// <summary>
 	/// This will indicate the postion of the camera
 	/// </summary>
@@ -84,6 +87,9 @@ public class SMThirdPersonCamera : MonoBehaviour
     /// This variable hold reference to the mesh renderer to make it appear or dissapear at appropriate times
     /// </summary>
     private MeshRenderer meshRenderer = null;
+	[Tooltip("These are the tags that are considered as obstructing the view oof player when cameraAlwaysFocusAtPlayer is true")]
+	[SerializeField]
+	private string[] cameraAndPlayerObstructingGameObjectTags;
 
 	#if UNITY_EDITOR
 
@@ -196,30 +202,43 @@ public class SMThirdPersonCamera : MonoBehaviour
 	{
 		if(targetCameraShouldFocus != this.transform && targetCameraShouldFocus != null)
 		{
-//			Vector3 directionVector = virtualCameraTransform.position - targetCameraShouldFocus.position;
-//			rayFromTargetToCamera = new Ray (targetCameraShouldFocus.position, directionVector);
-//			Debug.DrawRay (targetCameraShouldFocus.position, directionVector);
-//			Physics.Raycast (rayFromTargetToCamera, out hitInfo, distanceFromTarget);
-//			if(hitInfo.collider != null && hitInfo.collider.tag == "Building")
-//			{
-//				transform.position = Vector3.Lerp(transform.position, hitInfo.point, Time.deltaTime * cameraTransitionSpeed);
-//				transform.LookAt (targetCameraShouldFocus);
-//				if(meshRenderer != null)
-//				{
-//					meshRenderer.enabled = true;
-//					meshRenderer = null;
-//				}
-//			}
-//			else if(hitInfo.collider != null && hitInfo.collider.tag == "HideMesh")
-//			{
-//				meshRenderer = hitInfo.collider.gameObject.GetComponent<MeshRenderer>();
-//				if(meshRenderer != null)
-//				{
-//					meshRenderer.enabled = false;
-//				}
-//			}
-//			else
-//			{
+			bool foundNoneBetweenCameraAndPlayer = true;
+			if(cameraAlwaysFocusAtPlayer)
+			{
+				Vector3 directionVector = virtualCameraTransform.position - targetCameraShouldFocus.position;
+				rayFromTargetToCamera = new Ray (targetCameraShouldFocus.position, directionVector);
+				Physics.Raycast (rayFromTargetToCamera, out hitInfo, distanceFromTarget);
+				if(hitInfo.collider != null)
+				{
+					foreach(string tagOfObstructor in cameraAndPlayerObstructingGameObjectTags)
+					{
+						if(hitInfo.collider.tag == tagOfObstructor)
+						{
+							foundNoneBetweenCameraAndPlayer = false;
+							transform.position = Vector3.Lerp(transform.position, hitInfo.point, Time.deltaTime * cameraTransitionSpeed);
+							transform.LookAt (targetCameraShouldFocus);
+							if(meshRenderer != null)
+							{
+								meshRenderer.enabled = true;
+								meshRenderer = null;
+							}
+							break;
+						}
+					}
+				}
+				else if(hitInfo.collider != null && hitInfo.collider.tag == "HideMesh")
+				{
+					foundNoneBetweenCameraAndPlayer = false;
+					meshRenderer = hitInfo.collider.gameObject.GetComponent<MeshRenderer>();
+					if(meshRenderer != null)
+					{
+						meshRenderer.enabled = false;
+					}
+				}
+			}
+
+			if(!cameraAlwaysFocusAtPlayer || foundNoneBetweenCameraAndPlayer)
+			{
 				cameraOrientation = Quaternion.Euler(angleMadeWithHorizontalFromPlayer, -angleMadeWithVerticalFromPlayer, 0);
 				cameraPosition = cameraOrientation * new Vector3(0, 0, -distanceFromTarget) + targetCameraShouldFocus.position;
 				transform.rotation = Quaternion.Slerp(transform.rotation, cameraOrientation, Time.deltaTime * cameraTransitionSpeed);
@@ -229,7 +248,7 @@ public class SMThirdPersonCamera : MonoBehaviour
 					meshRenderer.enabled = true;
 					meshRenderer = null;
 				}
-			//}
+			}
 		}
 	}
 
