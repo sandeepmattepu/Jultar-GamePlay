@@ -33,6 +33,16 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 	/// </summary>
 	public GameObject playerToBeSpawned;
 	/// <summary>
+	/// The monio spawn music.
+	/// </summary>
+	[SerializeField]
+	private AudioClip monioSpawnMusic;
+	/// <summary>
+	/// The jagur spawn music.
+	/// </summary>
+	[SerializeField]
+	private AudioClip jagurSpawnMusic;
+	/// <summary>
 	/// One of the game object in the array will get instantiated based on the game type player wants to play
 	/// </summary>
 	public GameObject[] gameRulesToBeSpawned;
@@ -363,6 +373,12 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 	/// </summary>
 	public void spawnSinglePlayer()
 	{
+		AudioClip clipToBePlayed = null;
+		clipToBePlayed = monioSpawnMusic;
+		if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
+		{
+			clipToBePlayed = SMTeamDeathMatch.LocalPlayerTeamIndex == 1 ? monioSpawnMusic : jagurSpawnMusic;
+		}
 		object[] dataToTransfer = { 
 			((int)SMProductEquipper.INSTANCE.CurrentHelmet)
 		};
@@ -413,6 +429,7 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 			gameRulesThatSpawned.localPlayer.setPlayerUIColor(player.GetComponent<PhotonView>());
 		}
 
+		AudioSource.PlayClipAtPoint (clipToBePlayed, player.GetComponent<SMPlayerController> ().characterFocusedCamera.transform.position);
 		showUIAfterRespwan ();
 	}
 

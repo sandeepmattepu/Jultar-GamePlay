@@ -23,8 +23,10 @@ namespace SandeepMattepu.UI
 		public Text nextMapIn;
 		public string loadSceneAfterGame;
 		public int gameStartsInSeconds;
-		public AudioClip victorySound;
-		public AudioClip defeatSound;
+		public AudioClip monioVictorySound;
+		public AudioClip monioDefeatSound;
+		public AudioClip jagurVictorySound;
+		public AudioClip jagurDefeatSound;
 
 		private string sceneToLoadWhenExittedFromGame;
 
@@ -65,12 +67,12 @@ namespace SandeepMattepu.UI
 				if(SMFreeForAll.IsLocalPlayerLeading)
 				{
 					victoryText.gameObject.SetActive (true);
-					clipTobePlayed = victorySound;
+					clipTobePlayed = monioVictorySound;
 				}
 				else
 				{
 					defeatText.gameObject.SetActive (true);
-					clipTobePlayed = defeatSound;
+					clipTobePlayed = monioDefeatSound;
 				}
 			}
 			else if(SMPlayerSpawnerAndAssigner.gameType == MPGameTypes.TEAM_DEATH_MATCH)
@@ -78,12 +80,12 @@ namespace SandeepMattepu.UI
 				if(SMTeamDeathMatch.IsLocalPlayerTeamLeading)
 				{
 					victoryText.gameObject.SetActive (true);
-					clipTobePlayed = victorySound;
+					clipTobePlayed = SMTeamDeathMatch.LocalPlayerTeamIndex == 1 ? monioVictorySound : jagurVictorySound;
 				}
 				else
 				{
 					defeatText.gameObject.SetActive (true);
-					clipTobePlayed = defeatSound;
+					clipTobePlayed = SMTeamDeathMatch.LocalPlayerTeamIndex == 1 ? monioDefeatSound : jagurDefeatSound;
 				}
 			}
 			AudioPersister.Instance.ChangeBGM(clipTobePlayed);
