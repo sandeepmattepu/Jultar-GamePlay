@@ -105,6 +105,9 @@ public class SMThirdPersonCamera : MonoBehaviour
 	/// This touch manager is used to identify where touch/mouse click belongs to
 	/// </summary>
 	public SMTouchManager touchManager;
+	private Vector3 lastPositionOfTarget;
+	[Range(0.001f,1.0f)][SerializeField]
+	private float cameraResponseDelayToPlayerMovement = 0.001f;
 
 	#endif
 	// Use this for initialization
@@ -122,6 +125,7 @@ public class SMThirdPersonCamera : MonoBehaviour
 		// Setup camera postion and rotation based on inspector values
 		transform.eulerAngles = new Vector3 (angleMadeWithVerticalFromPlayer, angleMadeWithHorizontalFromPlayer, 0);
 		transform.position = (transform.forward * -distanceFromTarget);
+		lastPositionOfTarget = targetCameraShouldFocus.position;
 	}
 	
 	// Update is called once per frame
@@ -200,53 +204,58 @@ public class SMThirdPersonCamera : MonoBehaviour
 	/// </summary>
 	private void setCameraAppropriately()
 	{
-		if(targetCameraShouldFocus != this.transform && targetCameraShouldFocus != null)
+		Vector3 targetMovementDifference = targetCameraShouldFocus.position - lastPositionOfTarget;
+		if(targetMovementDifference.magnitude >= cameraResponseDelayToPlayerMovement)
 		{
-			bool foundNoneBetweenCameraAndPlayer = true;
-			if(cameraAlwaysFocusAtPlayer)
+			lastPositionOfTarget = targetCameraShouldFocus.position;
+			if(targetCameraShouldFocus != this.transform && targetCameraShouldFocus != null)
 			{
-				Vector3 directionVector = virtualCameraTransform.position - targetCameraShouldFocus.position;
-				rayFromTargetToCamera = new Ray (targetCameraShouldFocus.position, directionVector);
-				Physics.Raycast (rayFromTargetToCamera, out hitInfo, distanceFromTarget);
-				if(hitInfo.collider != null)
+				bool foundNoneBetweenCameraAndPlayer = true;
+				if(cameraAlwaysFocusAtPlayer)
 				{
-					foreach(string tagOfObstructor in cameraAndPlayerObstructingGameObjectTags)
+					Vector3 directionVector = virtualCameraTransform.position - targetCameraShouldFocus.position;
+					rayFromTargetToCamera = new Ray (targetCameraShouldFocus.position, directionVector);
+					Physics.Raycast (rayFromTargetToCamera, out hitInfo, distanceFromTarget);
+					if(hitInfo.collider != null)
 					{
-						if(hitInfo.collider.tag == tagOfObstructor)
+						foreach(string tagOfObstructor in cameraAndPlayerObstructingGameObjectTags)
 						{
-							foundNoneBetweenCameraAndPlayer = false;
-							transform.position = Vector3.Lerp(transform.position, hitInfo.point, Time.deltaTime * cameraTransitionSpeed);
-							transform.LookAt (targetCameraShouldFocus);
-							if(meshRenderer != null)
+							if(hitInfo.collider.tag == tagOfObstructor)
 							{
-								meshRenderer.enabled = true;
-								meshRenderer = null;
+								foundNoneBetweenCameraAndPlayer = false;
+								transform.position = Vector3.Lerp(transform.position, hitInfo.point, Time.deltaTime * cameraTransitionSpeed);
+								transform.LookAt (targetCameraShouldFocus);
+								if(meshRenderer != null)
+								{
+									meshRenderer.enabled = true;
+									meshRenderer = null;
+								}
+								break;
 							}
-							break;
+						}
+					}
+					else if(hitInfo.collider != null && hitInfo.collider.tag == "HideMesh")
+					{
+						foundNoneBetweenCameraAndPlayer = false;
+						meshRenderer = hitInfo.collider.gameObject.GetComponent<MeshRenderer>();
+						if(meshRenderer != null)
+						{
+							meshRenderer.enabled = false;
 						}
 					}
 				}
-				else if(hitInfo.collider != null && hitInfo.collider.tag == "HideMesh")
-				{
-					foundNoneBetweenCameraAndPlayer = false;
-					meshRenderer = hitInfo.collider.gameObject.GetComponent<MeshRenderer>();
-					if(meshRenderer != null)
-					{
-						meshRenderer.enabled = false;
-					}
-				}
-			}
 
-			if(!cameraAlwaysFocusAtPlayer || foundNoneBetweenCameraAndPlayer)
-			{
-				cameraOrientation = Quaternion.Euler(angleMadeWithHorizontalFromPlayer, -angleMadeWithVerticalFromPlayer, 0);
-				cameraPosition = cameraOrientation * new Vector3(0, 0, -distanceFromTarget) + targetCameraShouldFocus.position;
-				transform.rotation = Quaternion.Slerp(transform.rotation, cameraOrientation, Time.deltaTime * cameraTransitionSpeed);
-				transform.position = Vector3.Lerp(transform.position, cameraPosition, Time.deltaTime * cameraTransitionSpeed);
-				if (meshRenderer != null)
+				if(!cameraAlwaysFocusAtPlayer || foundNoneBetweenCameraAndPlayer)
 				{
-					meshRenderer.enabled = true;
-					meshRenderer = null;
+					cameraOrientation = Quaternion.Euler(angleMadeWithHorizontalFromPlayer, -angleMadeWithVerticalFromPlayer, 0);
+					cameraPosition = cameraOrientation * new Vector3(0, 0, -distanceFromTarget) + targetCameraShouldFocus.position;
+					transform.rotation = Quaternion.Slerp(transform.rotation, cameraOrientation, Time.deltaTime * cameraTransitionSpeed);
+					transform.position = Vector3.Lerp(transform.position, cameraPosition, Time.deltaTime * cameraTransitionSpeed);
+					if (meshRenderer != null)
+					{
+						meshRenderer.enabled = true;
+						meshRenderer = null;
+					}
 				}
 			}
 		}

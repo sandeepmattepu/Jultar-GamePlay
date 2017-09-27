@@ -203,9 +203,10 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 
 		if(player.GetComponent<PhotonView>().isMine)
 		{
-			player.transform.GetComponent<SMPlayerController> ().characterFocusedCamera = cameraPlayerShouldFollow;
-			cameraPlayerShouldFollow.GetComponent<SMThirdPersonCamera> ().targetCameraShouldFocus = player.transform;
-			cameraPlayerShouldFollow.GetComponent<SMThirdPersonCamera> ().rotationKnob = player.transform;
+			SMPlayerController playerController = player.GetComponent<SMPlayerController> ();
+			playerController.characterFocusedCamera = cameraPlayerShouldFollow;
+			cameraPlayerShouldFollow.GetComponent<SMThirdPersonCamera> ().targetCameraShouldFocus = playerController.playerPartCamerToBeFocussed.transform;
+			cameraPlayerShouldFollow.GetComponent<SMThirdPersonCamera> ().rotationKnob = playerController.playerPartCamerToBeFocussed.transform;
 
 			player.transform.GetComponent<SMPlayerController> ().movementJoyStick = movementStick;
 			player.transform.GetComponent<SMPlayerController> ().orientationJoyStick = orientationStick;
@@ -401,9 +402,10 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 
 		if (player.GetComponent<PhotonView>().isMine)
 		{
-			player.transform.GetComponent<SMPlayerController>().characterFocusedCamera = cameraPlayerShouldFollow;
-			cameraPlayerShouldFollow.GetComponent<SMThirdPersonCamera>().targetCameraShouldFocus = player.transform;
-			cameraPlayerShouldFollow.GetComponent<SMThirdPersonCamera>().rotationKnob = player.transform;
+			SMPlayerController playerController = player.GetComponent<SMPlayerController> ();
+			playerController.characterFocusedCamera = cameraPlayerShouldFollow;
+			cameraPlayerShouldFollow.GetComponent<SMThirdPersonCamera> ().targetCameraShouldFocus = playerController.playerPartCamerToBeFocussed.transform;
+			cameraPlayerShouldFollow.GetComponent<SMThirdPersonCamera> ().rotationKnob = playerController.playerPartCamerToBeFocussed.transform;
 
 			player.transform.GetComponent<SMPlayerController>().movementJoyStick = movementStick;
 			player.transform.GetComponent<SMPlayerController>().orientationJoyStick = orientationStick;
@@ -442,7 +444,7 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 		{
 			playerUI.SetActive(false);
 		}
-	}
+  	}
 
 	/// <summary>
 	/// Shows the user interface after respawn.

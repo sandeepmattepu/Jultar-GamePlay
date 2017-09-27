@@ -108,6 +108,8 @@ namespace SandeepMattepu
 		/// This will store the player's requested animation state in current frame
 		/// </summary>
 		private PlayerAnimType currentFramePlayerRequestAnimState = PlayerAnimType.IDLE;
+		[Tooltip("This is the part that camera focuses")]
+		public GameObject playerPartCamerToBeFocussed;
 
 		#region Variables that calculate touch type
 
