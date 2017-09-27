@@ -27,6 +27,7 @@ namespace SandeepMattepu.UI
 		public AudioClip monioDefeatSound;
 		public AudioClip jagurVictorySound;
 		public AudioClip jagurDefeatSound;
+		public bool showNextMapStartsIn = false;
 
 		private string sceneToLoadWhenExittedFromGame;
 
@@ -93,7 +94,7 @@ namespace SandeepMattepu.UI
 
 		IEnumerator tickCountDownForRoomScene()
 		{
-			nextMapIn.gameObject.SetActive (true);
+			nextMapIn.gameObject.SetActive (showNextMapStartsIn);
 			while(gameStartsInSeconds > 0)
 			{
 				nextMapIn.text = "Next map starts in " + gameStartsInSeconds + " seconds";

@@ -19,6 +19,11 @@ namespace SandeepMattepu.UI
 	/// </summary>
 	public class SMTeamDeathMatchUIManager : SMScoreBoardUIManager 
 	{
+		public enum TeamUIColorDifferentiationgMethod
+		{
+			FixedColor,
+			ColorBasedOnTeam
+		}
 		/// <summary>
 		/// The team1 players in the game.
 		/// </summary>
@@ -51,6 +56,12 @@ namespace SandeepMattepu.UI
 		/// </summary>
 		[SerializeField]
 		private Color friendlyTeamColor;
+		[SerializeField]
+		private TeamUIColorDifferentiationgMethod uiColorDifferentiator;
+		[SerializeField]
+		private Color monioRaceTeamColor;
+		[SerializeField]
+		private Color jagurRaceTeamColor;
 
 		protected override void Start()
 		{
@@ -211,13 +222,28 @@ namespace SandeepMattepu.UI
 		/// <param name="raceType">The race type</param>
 		private void setUIColor(Text textUI, MpPlayerRaceType raceType)
 		{
-			if(raceType == localPlayerRace)
+			switch(uiColorDifferentiator)
 			{
-				textUI.color = friendlyTeamColor;
-			}
-			else
-			{
-				textUI.color = enemyTeamColor;
+				case TeamUIColorDifferentiationgMethod.ColorBasedOnTeam:
+					if(raceType == localPlayerRace)
+					{
+						textUI.color = friendlyTeamColor;
+					}
+					else
+					{
+						textUI.color = enemyTeamColor;
+					}
+					break;
+				case TeamUIColorDifferentiationgMethod.FixedColor:
+					if(raceType == MpPlayerRaceType.Jagur)
+					{
+						textUI.color = jagurRaceTeamColor;
+					}
+					else
+					{
+						textUI.color = monioRaceTeamColor;
+					}
+					break;
 			}
 		}
 
@@ -229,17 +255,36 @@ namespace SandeepMattepu.UI
 		/// <param name="ID">The Id of the player</param>
 		private void setUIColor(Text textUI, MpPlayerRaceType raceType, int ID)
 		{
-			if(ID == PhotonNetwork.player.ID)
+			switch(uiColorDifferentiator)
 			{
-				textUI.color = localPlayerColor;
-			}
-			else if(raceType == localPlayerRace)
-			{
-				textUI.color = friendlyTeamColor;
-			}
-			else
-			{
-				textUI.color = enemyTeamColor;
+				case TeamUIColorDifferentiationgMethod.ColorBasedOnTeam:
+					if(ID == PhotonNetwork.player.ID)
+					{
+						textUI.color = localPlayerColor;
+					}
+					else if(raceType == localPlayerRace)
+					{
+						textUI.color = friendlyTeamColor;
+					}
+					else
+					{
+						textUI.color = enemyTeamColor;
+					}
+					break;
+				case TeamUIColorDifferentiationgMethod.FixedColor:
+					if(ID == PhotonNetwork.player.ID)
+					{
+						textUI.color = localPlayerColor;
+					}
+					else if(raceType == MpPlayerRaceType.Monio)
+					{
+						textUI.color = monioRaceTeamColor;
+					}
+					else if(raceType == MpPlayerRaceType.Jagur)
+					{
+						textUI.color = jagurRaceTeamColor;
+					}
+					break;
 			}
 		}
 
