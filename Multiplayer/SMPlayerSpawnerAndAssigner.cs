@@ -159,6 +159,10 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 	/// </summary>
 	private ObscuredBool hasRecievedTimeDataFromMaster = false;
 	/// <summary>
+	/// The grenade user interface input.
+	/// </summary>
+	public SMGrenadeInput grenadeUIInput;
+	/// <summary>
 	/// This invokes when this client is not master and recieves data from master. Occures only when game is FFA format
 	/// </summary>
 	public UnityEvent freeForAllWhenRecievedDataAtBeginning;
@@ -216,8 +220,11 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 			pickUpButton.gameObject.SetActive (false);
 			player.transform.GetComponent<SMWeaponManager> ().currentWeaponText = currentWeaponText;
 
-			player.transform.GetComponent<SMPlayerFiring> ().ammoDetailsUI = ammoDetailsUI;
-			player.transform.GetComponent<SMPlayerFiring> ().grenadeInput = grenadeButton;
+			SMPlayerFiring playerFiring = player.GetComponent<SMPlayerFiring> ();
+			playerFiring.ammoDetailsUI = ammoDetailsUI;
+			playerFiring.grenadeInput = grenadeButton;
+			grenadeUIInput.playerFiring = playerFiring;
+			grenadeUIInput.PlayerGrenade = player.GetComponent<IKControl> ();
 
 			player.transform.GetComponent<SMPlayerController> ().leanButton = leanButtonUI;
 			player.transform.GetComponent<SMPlayerController> ().hideOrUnhideButton = hideButtonUI;
@@ -415,8 +422,11 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 			pickUpButton.gameObject.SetActive(false);
 			player.transform.GetComponent<SMWeaponManager>().currentWeaponText = currentWeaponText;
 
-			player.transform.GetComponent<SMPlayerFiring>().ammoDetailsUI = ammoDetailsUI;
-			player.transform.GetComponent<SMPlayerFiring> ().grenadeInput = grenadeButton;
+			SMPlayerFiring playerFiring = player.GetComponent<SMPlayerFiring> ();
+			playerFiring.ammoDetailsUI = ammoDetailsUI;
+			playerFiring.grenadeInput = grenadeButton;
+			grenadeUIInput.playerFiring = playerFiring;
+			grenadeUIInput.PlayerGrenade = player.GetComponent<IKControl> ();
 
 			player.transform.GetComponent<SMPlayerController>().leanButton = leanButtonUI;
 			player.transform.GetComponent<SMPlayerController>().hideOrUnhideButton = hideButtonUI;

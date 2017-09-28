@@ -104,6 +104,15 @@ namespace SandeepMattepu.Weapon
 		[SerializeField]
 		private ObscuredInt numberOfGrenadeBombs = 2;
 		/// <summary>
+		/// The total number of grenads the player has
+		/// </summary>
+		public ObscuredInt NumberOfGrenadeBombs {
+			get {
+				return numberOfGrenadeBombs;
+			}
+		}
+
+		/// <summary>
 		/// Does throwing a grenade is finsihed
 		/// </summary>
 		private ObscuredBool isThrowingGrenadeFinished = true;

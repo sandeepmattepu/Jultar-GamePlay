@@ -10,6 +10,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using SandeepMattepu.Weapon;
 
 namespace SandeepMattepu.UI
 {
@@ -18,6 +20,23 @@ namespace SandeepMattepu.UI
 	/// </summary>
 	public class SMGrenadeInput : MonoBehaviour, IPointerUpHandler, IPointerDownHandler 
 	{
+		/// <summary>
+		/// This image changes its color based on availability, under firing
+		/// </summary>
+		[SerializeField]
+		private Image grenadeImage;
+		/// <summary>
+		/// Color of grenade button when available and not pressed.
+		/// </summary>
+		public Color whenAvailableAndNotUnderThrowing;
+		/// <summary>
+		/// Color of grenade when available and under pressed.
+		/// </summary>
+		public Color whenAvailableAndUnderThrowing;
+		/// <summary>
+		/// Color of grenade when not available
+		/// </summary>
+		public Color whenNotAvailable;
 		public delegate void pressIntensity(float intensity);
 		public delegate void onTouchDown();
 		/// <summary>
@@ -41,6 +60,26 @@ namespace SandeepMattepu.UI
 		/// </summary>
 		[SerializeField]
 		private float maxHoldingTime = 1.6f;
+		/// <summary>
+		/// The player component which has grenade's date.
+		/// </summary>
+		private IKControl playerGrenade;
+		/// <summary>
+		/// The player component which has grenade's date.
+		/// </summary>
+		public IKControl PlayerGrenade {
+			get {
+				return playerGrenade;
+			}
+			set {
+				playerGrenade = value;
+				assignEventsToPlayer (playerGrenade);
+			}
+		}
+		/// <summary>
+		/// The player firing component.
+		/// </summary>
+		public SMPlayerFiring playerFiring;
 
 		// Update is called once per frame
 		void Update () 
@@ -57,6 +96,27 @@ namespace SandeepMattepu.UI
 			else if(isThrowing)
 			{
 				timePlayerIsHoldingButton += Time.deltaTime;
+			}
+		}
+
+		/// <summary>
+		/// This function assigns required functions to events of the player
+		/// </summary>
+		private void assignEventsToPlayer(IKControl player)
+		{
+			player.OnGrenadeRelease += (() => grenadeImage.color = whenAvailableAndUnderThrowing);
+			player.OnGrenadeThrowFinished += OnGrenadeThrowFinishHandler;
+		}
+
+		private void OnGrenadeThrowFinishHandler()
+		{
+			if(playerFiring.NumberOfGrenadeBombs > 0)
+			{
+				grenadeImage.color = whenAvailableAndNotUnderThrowing;
+			}
+			else
+			{
+				grenadeImage.color = whenNotAvailable;
 			}
 		}
 
