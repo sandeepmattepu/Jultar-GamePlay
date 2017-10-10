@@ -93,6 +93,13 @@ namespace SandeepMattepu.UI
 		private int timePlayed;
 		#endregion
 
+		#region UI customization variables
+		public bool showDays = true;
+		public bool showHours = true;
+		public bool showMinutes = true;
+		public bool showSeconds = true;
+		#endregion
+
 		private void Start () 
 		{
 			StartCoroutine ("loadDataToDisplay");
@@ -132,7 +139,7 @@ namespace SandeepMattepu.UI
 			}
 			else
 			{
-				winToLoseRatio = (totalWins / totalLoses);
+				winToLoseRatio = ((float)totalWins / (float)totalLoses);
 			}
 			requiredXpForNextLevel = SMSavePlayerProgress.calculateTotalXpRequiredForNextLevel (currentLevel);
 
@@ -145,9 +152,32 @@ namespace SandeepMattepu.UI
 		/// <param name="time">Total time in seconds.</param>
 		private void assignTimeToUI(int time)
 		{
-			TimeSpan timeSpan = new TimeSpan (time);
-			timePlayedUI.text = timeSpan.Days.ToString () + " Days " + timeSpan.Hours.ToString ()
-			+ " Hours " + timeSpan.Minutes.ToString () + " Minutes " + timeSpan.Seconds.ToString () + " Seconds";
+			int timeLeft = time;
+			int Days = timeLeft / 86400;
+			timeLeft = timeLeft % 86400;
+			int Hours = timeLeft / 3600;
+			timeLeft = timeLeft % 3600;
+			int Minutes = timeLeft / 60;
+			timeLeft = timeLeft % 60;
+			int Seconds = timeLeft;
+
+			timePlayedUI.text = "";
+			if(showDays)
+			{
+				timePlayedUI.text = Days.ToString () + " Days ";
+			}
+			if(showHours)
+			{
+				timePlayedUI.text += Hours.ToString ()+ " Hours ";
+			}
+			if(showMinutes)
+			{
+				timePlayedUI.text += Minutes.ToString()+ " Minutes ";
+			}
+			if(showSeconds)
+			{
+				timePlayedUI.text += Seconds.ToString()+ " Seconds";
+			}
 		}
 	}
 }

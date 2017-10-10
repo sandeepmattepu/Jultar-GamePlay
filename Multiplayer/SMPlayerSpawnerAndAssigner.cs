@@ -507,11 +507,8 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 		}
 		specialWeaponManager.registerMultiplayerGame(gameRulesThatSpawned);
 		gameRulesThatSpawned.xpMadeAfterKill *= SMProductEquipper.INSTANCE.CurrentExpBoostMultiplier;
-		if(UnityAds.INSTANCE != null)
-		{
-			gameRulesThatSpawned.xpMadeAfterKill *= UnityAds.INSTANCE.PlayerHasAdRewardXp;
-			UnityAds.INSTANCE.reduceNumberOfGames ();
-		}
+		gameRulesThatSpawned.xpMadeAfterKill *= UnityAds.PlayerHasAdRewardXp;
+		UnityAds.reduceNumberOfGames ();
 		gameRulesThatSpawned.setDataTransmitter (this);
 	}
 

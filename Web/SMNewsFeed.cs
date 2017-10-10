@@ -45,7 +45,6 @@ namespace SandeepMattepu.Web
 		{
 			WWW request = new WWW (webAddressOfNewsFeed);
 			yield return request;
-			Debug.Log ("Data Ready");
 			if(uiToDisplayNewsFeed != null)
 			{
 				uiToDisplayNewsFeed.text = request.text;

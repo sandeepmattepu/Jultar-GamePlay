@@ -109,7 +109,14 @@ namespace SandeepMattepu
 			ObscuredInt scoreMade;
 			bool isDataReadyToSave = false;
 
-			timePlayed += (int)SMMultiplayerGame.INSTANCE.gameSessionTime;
+			if(rewardPlayer)
+			{
+				timePlayed += (int)SMMultiplayerGame.INSTANCE.gameSessionTime;
+			}
+			else
+			{
+				timePlayed += (int)SMMultiplayerGame.INSTANCE.GameTimer;
+			}
 			additionalXpOfPlayer += SMMultiplayerGame.INSTANCE.TotalXpMadeByPlayer;
 			if(SMMultiplayerGame.PlayerIdAndDeaths.TryGetValue (localPlayerId, out deathsNumber))
 			{
@@ -122,6 +129,7 @@ namespace SandeepMattepu
 				{
 					totalCrowns = rewardPlayer ? (int)(totalCrowns + gemsToAwardWhenWon) : (int)totalCrowns;
 					totalWinsMadeByPlayer += 1;
+					additionalXpOfPlayer += SMMultiplayerGame.INSTANCE.RewardXpForWinningGame;
 				}
 				else
 				{
@@ -140,6 +148,7 @@ namespace SandeepMattepu
 				{
 					totalCrowns = rewardPlayer ? (int)(totalCrowns + gemsToAwardWhenWon) : (int)totalCrowns;
 					totalWinsMadeByPlayer += 1;
+					additionalXpOfPlayer += SMMultiplayerGame.INSTANCE.RewardXpForWinningGame;
 				}
 				else
 				{
@@ -195,8 +204,8 @@ namespace SandeepMattepu
 		public static int calculateTotalXpRequiredForNextLevel(int currentLevel)
 		{
 			int factor = currentLevel / 10;
-			int xpRequiredUptoNextTenLevels = 70000 + (factor * 5000);
-			xpRequiredUptoNextTenLevels = factor >= 8 ? (200000) : xpRequiredUptoNextTenLevels;
+			int xpRequiredUptoNextTenLevels = 700000 + (factor * 50000);
+			xpRequiredUptoNextTenLevels = factor >= 8 ? (2000000) : xpRequiredUptoNextTenLevels;
 			int xpRequiredForEachLevel = (factor == 0 ? (xpRequiredUptoNextTenLevels / 9) : (xpRequiredUptoNextTenLevels / 10));
 			return xpRequiredForEachLevel;
 		}

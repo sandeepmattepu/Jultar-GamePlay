@@ -51,6 +51,19 @@ namespace SandeepMattepu.Multiplayer
 				return totalXpMadeByPlayer;
 			}
 		}
+		/// <summary>
+		/// The reward xp for winning game.
+		/// </summary>
+		[SerializeField]
+		private ObscuredInt rewardXpForWinningGame = 1000;
+		/// <summary>
+		/// The reward xp for winning game.
+		/// </summary>
+		public ObscuredInt RewardXpForWinningGame {
+			get {
+				return rewardXpForWinningGame;
+			}
+		}
 
 		/// <summary>
 		/// The scene name after the end of multiplayer game.
