@@ -149,6 +149,14 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 
 	#endregion
 
+	#region Events
+	public delegate void localPlayerDied();
+	/// <summary>
+	/// Occurs when local player died.
+	/// </summary>
+	public static event localPlayerDied LocalPlayerDied;
+	#endregion
+
 	/// <summary>
 	/// Call this function to set the amount of damage the player recieved
 	/// </summary>
@@ -185,6 +193,10 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 
 				if(playerHealth <= 0.0f)
 				{
+					if(LocalPlayerDied != null)
+					{
+						LocalPlayerDied ();
+					}
 					setSliderValues ();
 					hidePlayerInteractiveUI();
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others, (int)SMProductEquipper.INSTANCE.CurrentHelmet);
@@ -198,6 +210,10 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			setSliderValues ();
 			if (playerHealth <= 0.0f)
 			{
+				if(LocalPlayerDied != null)
+				{
+					LocalPlayerDied ();
+				}
 				hidePlayerInteractiveUI();
 				createDeadBody (false, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 				Destroy(this.gameObject);
@@ -246,6 +262,10 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 
 				if(playerHealth <= 0.0f)
 				{
+					if(LocalPlayerDied != null)
+					{
+						LocalPlayerDied ();
+					}
 					setSliderValues ();
 					hidePlayerInteractiveUI();
 					photonViewComponent.RPC("sendDeathMessage", PhotonTargets.Others, (int)SMProductEquipper.INSTANCE.CurrentHelmet);
@@ -259,6 +279,10 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			setSliderValues ();
 			if (playerHealth <= 0.0f)
 			{
+				if(LocalPlayerDied != null)
+				{
+					LocalPlayerDied ();
+				}
 				hidePlayerInteractiveUI();
 				createDeadBody(false, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 				Destroy(this.gameObject);
@@ -379,6 +403,10 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 
 				if (playerHealth <= 0.0f)
 				{
+					if(LocalPlayerDied != null)
+					{
+						LocalPlayerDied ();
+					}
 					if(ID >= 0)				// Sometimes ID will have -ve value due to death traps
 					{
 						playerIdentifier.reportScore(ID);
@@ -397,6 +425,10 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			setSliderValues();
 			if(playerHealth <= 0.0f)
 			{
+				if(LocalPlayerDied != null)
+				{
+					LocalPlayerDied ();
+				}
 				hidePlayerInteractiveUI();
 				createDeadBody(false, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 				Destroy(this.gameObject);
@@ -447,6 +479,10 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 
 				if (playerHealth <= 0.0f)
 				{
+					if(LocalPlayerDied != null)
+					{
+						LocalPlayerDied ();
+					}
 					if(ID >= 0)				// Sometimes ID will have -ve value due to death traps
 					{
 						playerIdentifier.reportScore(ID);
@@ -465,6 +501,10 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 			setSliderValues();
 			if(playerHealth <= 0.0f)
 			{
+				if(LocalPlayerDied != null)
+				{
+					LocalPlayerDied ();
+				}
 				hidePlayerInteractiveUI();
 				createDeadBody(false, true, SMProductEquipper.INSTANCE.CurrentHelmet);
 				Destroy(this.gameObject);

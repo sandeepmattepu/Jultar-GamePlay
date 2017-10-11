@@ -79,9 +79,27 @@ namespace SandeepMattepu.UI
 		/// <summary>
 		/// The player firing component.
 		/// </summary>
-		public SMPlayerFiring playerFiring;
+		private SMPlayerFiring playerFiring;
+		/// <summary>
+		/// The player firing component.
+		/// </summary>
+		public SMPlayerFiring PlayerFiring {
+			get {
+				return playerFiring;
+			}
+			set {
+				playerFiring = value;
+				setUIColor ();
+			}
+		}
 
-		// Update is called once per frame
+		void Start()
+		{
+			// This is to fix when player is in process of throwing and got killed, grenade ui color wont be normal but will has
+			// whenAvailableAndUnderTouching color
+			SMPlayerHealth.LocalPlayerDied += OnGrenadeThrowFinishHandler;
+		}
+
 		void Update () 
 		{
 			if(timePlayerIsHoldingButton >= maxHoldingTime)
@@ -97,6 +115,11 @@ namespace SandeepMattepu.UI
 			{
 				timePlayerIsHoldingButton += Time.deltaTime;
 			}
+		}
+
+		private void setUIColor()
+		{
+			OnGrenadeThrowFinishHandler ();
 		}
 
 		/// <summary>

@@ -223,7 +223,7 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 			SMPlayerFiring playerFiring = player.GetComponent<SMPlayerFiring> ();
 			playerFiring.ammoDetailsUI = ammoDetailsUI;
 			playerFiring.grenadeInput = grenadeButton;
-			grenadeUIInput.playerFiring = playerFiring;
+			grenadeUIInput.PlayerFiring = playerFiring;
 			grenadeUIInput.PlayerGrenade = player.GetComponent<IKControl> ();
 
 			player.transform.GetComponent<SMPlayerController> ().leanButton = leanButtonUI;
@@ -425,7 +425,7 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 			SMPlayerFiring playerFiring = player.GetComponent<SMPlayerFiring> ();
 			playerFiring.ammoDetailsUI = ammoDetailsUI;
 			playerFiring.grenadeInput = grenadeButton;
-			grenadeUIInput.playerFiring = playerFiring;
+			grenadeUIInput.PlayerFiring = playerFiring;
 			grenadeUIInput.PlayerGrenade = player.GetComponent<IKControl> ();
 
 			player.transform.GetComponent<SMPlayerController>().leanButton = leanButtonUI;
