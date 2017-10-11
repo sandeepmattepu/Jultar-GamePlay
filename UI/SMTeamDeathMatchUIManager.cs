@@ -155,7 +155,7 @@ namespace SandeepMattepu.UI
 				else if(theEffectedPlayer.teamIndex == 2)
 				{
 					team2Players.Sort ();
-					for(int i = 3; i < (team1Players.Count + 3); i++)
+					for(int i = 3; i < (team2Players.Count + 3); i++)
 					{
 						team2Players [i-3].uiIndex = i;
 						playersTextUI [i].text = team2Players [i-3].name + " " + team2Players [i-3].score + "/" + team2Players [i-3].deaths;

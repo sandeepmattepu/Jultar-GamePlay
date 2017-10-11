@@ -38,10 +38,15 @@ namespace SandeepMattepu.UI
 		[SerializeField]
 		private Text deathsEncounteredText;
 		/// <summary>
-		/// This UI displays win to lose ratio
+		/// This UI displays wins
 		/// </summary>
 		[SerializeField]
-		private Text winToLoseRatioText;
+		private Text winsMadeText;
+		/// <summary>
+		/// This UI displays loses
+		/// </summary>
+		[SerializeField]
+		private Text losesHappenedText;
 		/// <summary>
 		/// The time played UI.
 		/// </summary>
@@ -113,7 +118,8 @@ namespace SandeepMattepu.UI
 			currentLevelText.text = "Level: " + currentLevel.ToString ();
 			killsMadeText.text = "Kills : " + killsMade.ToString ();
 			deathsEncounteredText.text = "Deaths : " + deathsEncountered.ToString ();
-			winToLoseRatioText.text = "W/L Ratio : " + winToLoseRatio.ToString ();
+			winsMadeText.text = "Wins : " + totalWins.ToString ();
+			losesHappenedText.text = "Loses : " + totalLoses.ToString ();
 			xpRequiredForNextLevelSlider.minValue = 0;
 			xpRequiredForNextLevelSlider.maxValue = requiredXpForNextLevel;
 			xpRequiredForNextLevelSlider.value = additionalXpOfUser;

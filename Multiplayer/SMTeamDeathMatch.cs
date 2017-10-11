@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using CodeStage.AntiCheat.ObscuredTypes;
+using System;
 
 namespace SandeepMattepu.Multiplayer
 {
@@ -96,6 +97,7 @@ namespace SandeepMattepu.Multiplayer
 			gameType = MPGameTypes.TEAM_DEATH_MATCH;
 			instance = this;
 			playersInTeam.Clear ();
+			playerIdAndTeamIndex.Clear ();
 			isLocalPlayerTeamLeading = false;
 			team1Score = 0;
 			team2Score = 0;
@@ -106,12 +108,12 @@ namespace SandeepMattepu.Multiplayer
 		{
 			base.Start ();
 			startDownloadingXpRewardData();
+			splitPlayersIntoTeams ();
 		}
 
 		protected override void OnDestroy ()
 		{
 			base.OnDestroy ();
-			playerIdAndTeamIndex.Clear ();
 		}
 
 		/// <summary>
@@ -199,6 +201,13 @@ namespace SandeepMattepu.Multiplayer
 						}
 					}
 
+					// If player left this room and joined again this room which is low probability but still we will handle the case
+					if(playerIdAndTeamIndex.ContainsKey(excesPlayers[0]))
+					{
+						playerIdAndTeamIndex.Remove (excesPlayers [0]);
+						playersInTeam.Remove(new PlayerInTeam(excesPlayers[0], 0, 0));
+					}
+
 					if(playerInTeam1 > playersInTeam2)
 					{
 						playerIdAndTeamIndex.Add (excesPlayers [0], 2);
@@ -232,7 +241,7 @@ namespace SandeepMattepu.Multiplayer
 		/// This function splits the players into teams and assigns each player a team number. First players are sorted 
 		/// according to their ID number in ascending order and all players are seperated from the srted list
 		/// </summary>
-		[System.Obsolete("Don't use this function. Player's team info should be recieved from Room scene")]
+		//[System.Obsolete("Don't use this function. Player's team info should be recieved from Room scene")]
 		private void splitPlayersIntoTeams()
 		{
 			List<PhotonPlayer> players = new List<PhotonPlayer> (PhotonNetwork.playerList);
@@ -413,7 +422,7 @@ namespace SandeepMattepu.Multiplayer
 			isLocalPlayerTeamLeading = false;
 		}
 
-		private class PlayerInTeam
+		private class PlayerInTeam : IEquatable<PlayerInTeam>
 		{
 			public int ID;
 			public int Score;
@@ -434,6 +443,54 @@ namespace SandeepMattepu.Multiplayer
 				ID = playerInTeam.ID;
 				Score = playerInTeam.Score;
 				TeamID = playerInTeam.TeamID;
+			}
+
+			#region IEquatable implementation
+
+			public bool Equals (PlayerInTeam other)
+			{
+				if (other == null)
+					return false;
+				return (this.ID == other.ID);
+			}
+
+			#endregion
+
+			public override bool Equals (object obj)
+			{
+				if(obj == null)
+				{
+					return false;
+				}
+				else
+				{
+					PlayerInTeam player = (PlayerInTeam)obj;
+					return (player.ID == this.ID);
+				}
+			}
+
+			public override int GetHashCode ()
+			{
+				return ID;
+			}
+
+			public static bool operator ==(PlayerInTeam a, PlayerInTeam b)
+			{
+				if(System.Object.ReferenceEquals(a,b))
+				{
+					return true;
+				}
+				else if(a == null || b == null)
+				{
+					return false;
+				}
+
+				return (a.ID == b.ID);
+			}
+
+			public static bool operator !=(PlayerInTeam a, PlayerInTeam b)
+			{
+				return !(a == b);
 			}
 		}
 
