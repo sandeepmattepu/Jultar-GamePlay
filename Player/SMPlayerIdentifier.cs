@@ -21,6 +21,22 @@ public class SMPlayerIdentifier : MonoBehaviour
 	/// </summary>
 	public Text playerNameUI;
 	/// <summary>
+	/// The color of the local player in multiplayer context.
+	/// </summary>
+	[SerializeField]
+	private Color localPlayerColor;
+	/// <summary>
+	/// The color of the players in same team.
+	/// </summary>
+	[SerializeField]
+	private Color playersOfSameTeamColor;
+	/// <summary>
+	/// The enemy team players color in TDM or enemy players color in FFA.
+	/// </summary>
+	[SerializeField]
+	[Tooltip("The enemy team player's color in TDM or enemy player's color in FFA.")]
+	private Color enemyTeamOrEnemyPlayers;
+	/// <summary>
 	/// The photon view component attached to it
 	/// </summary>
 	private PhotonView photonViewComponenet;
@@ -56,7 +72,7 @@ public class SMPlayerIdentifier : MonoBehaviour
 	{
 		if (photonView.isMine)
 		{
-			playerNameUI.color = Color.blue;
+			playerNameUI.color = localPlayerColor;
 		}
 		else
 		{
@@ -70,7 +86,7 @@ public class SMPlayerIdentifier : MonoBehaviour
 
 		if (SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
 		{
-			playerNameUI.color = Color.red;
+			playerNameUI.color = enemyTeamOrEnemyPlayers;
 		}
 		else if(SMMultiplayerGame.gameType == MPGameTypes.TEAM_DEATH_MATCH)
 		{
@@ -86,11 +102,11 @@ public class SMPlayerIdentifier : MonoBehaviour
 			{
 				if(localPlayerTeam == teamIndexOfThisPlayer)
 				{
-					playerNameUI.color = Color.blue;
+					playerNameUI.color = playersOfSameTeamColor;
 				}
 				else
 				{
-					playerNameUI.color = Color.red;
+					playerNameUI.color = enemyTeamOrEnemyPlayers;
 				}
 			}
 		}
