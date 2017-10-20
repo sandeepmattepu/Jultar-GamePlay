@@ -19,6 +19,17 @@ namespace SandeepMattepu.UI
 	/// </summary>
 	public class SMFreeForAllUIManager : SMScoreBoardUIManager
 	{
+		/// <summary>
+		/// When true then it always shows top players
+		/// </summary>
+		[SerializeField][HideInInspector]
+		private bool alwaysShowTopPlayers = false;
+		/// <summary>
+		/// The number of top players to show when "alwaysShowTopPlayers" variable is true.
+		/// </summary>
+		[SerializeField][HideInInspector]
+		private int numberOfTopPlayersToShow = 3;
+
 		void hideUIInNonContext()
 		{
 			if(multiplayerType != MPGameTypes.FREE_FOR_ALL)
@@ -95,6 +106,28 @@ namespace SandeepMattepu.UI
 			if(SMMultiplayerGame.gameType == MPGameTypes.FREE_FOR_ALL)
 			{
 				base.showScoreBoardButtonPressed ();
+			}
+		}
+
+		protected override void hideAllUI ()
+		{
+			if(!alwaysShowTopPlayers)
+			{
+				base.hideAllUI ();
+			}
+			else
+			{
+				for(int i = 0; i < playersTextUI.Length; i++)
+				{
+					if(i < numberOfTopPlayersToShow && i < playerScoreAndUI.Count)
+					{
+						playersTextUI [i].gameObject.SetActive (true);
+					}
+					else
+					{
+						playersTextUI [i].gameObject.SetActive (false);
+					}
+				}
 			}
 		}
 

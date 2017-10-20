@@ -28,6 +28,7 @@ namespace SandeepMattepu.UI
 		public AudioClip jagurVictorySound;
 		public AudioClip jagurDefeatSound;
 		public bool showNextMapStartsIn = false;
+        public static bool rematch = false;
 
 		private string sceneToLoadWhenExittedFromGame;
 
@@ -107,7 +108,8 @@ namespace SandeepMattepu.UI
 
 		private void loadNextScene()
 		{
-			if(PhotonNetwork.isMasterClient)
+            rematch = true;
+            if (PhotonNetwork.isMasterClient)
 			{
 				PhotonNetwork.room.IsOpen = true;
 				PhotonNetwork.room.IsVisible = true;

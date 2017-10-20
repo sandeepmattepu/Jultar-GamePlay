@@ -133,7 +133,7 @@ namespace SandeepMattepu.UI
 		/// <summary>
 		/// This function hides all scoreboard
 		/// </summary>
-		protected void hideAllUI()
+		protected virtual void hideAllUI()
 		{
 			foreach(Text ui in playersTextUI)
 			{
