@@ -109,6 +109,11 @@ namespace SandeepMattepu.Weapon
 			}
 		}
 
+		private void Update()
+		{
+			checkCurrentGunPlayerStandingOn ();
+		}
+
 		/// <summary>
 		/// This function will make sure that player is holding the appropriate gun based on what he choosed in customization panel
 		/// </summary>
@@ -268,6 +273,29 @@ namespace SandeepMattepu.Weapon
 			else
 			{
 				if(collider.tag == "Weapon")		// When player leaves weapon collider
+				{
+					currentGunPlayerStandingOn = null;
+					pickUpButton.gameObject.SetActive (false);
+				}
+			}
+		}
+
+		/// <summary>
+		/// This function checks the gun player standing on. If it is null then function will hide the UI
+		/// </summary>
+		private void checkCurrentGunPlayerStandingOn()
+		{
+			if(currentGunPlayerStandingOn == null)
+			{
+				if(isUsingMultiplayer)
+				{
+					if(photonViewComponent.isMine)
+					{
+						currentGunPlayerStandingOn = null;
+						pickUpButton.gameObject.SetActive (false);
+					}
+				}
+				else
 				{
 					currentGunPlayerStandingOn = null;
 					pickUpButton.gameObject.SetActive (false);

@@ -25,7 +25,7 @@ namespace SandeepMattepu
 				float maxHitPoints = (playerHealth.MaxArmor + playerHealth.MaxHealth);
 				if(playerHealth.isUsingMultiPlayer)
 				{
-					playerHealth.reduceHealthPointsBy (maxHitPoints, -100);		// -ve value is sent saying that trap is not the player
+					playerHealth.reduceHealthPointsBy (maxHitPoints, -10000);		// -ve value is sent saying that trap is not the player
 				}
 				else
 				{
