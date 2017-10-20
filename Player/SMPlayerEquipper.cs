@@ -31,13 +31,13 @@ namespace SandeepMattepu
 		private SMPlayerHealth playerHealth;
 		private Animator animator;
 		[SerializeField]
-		private ObscuredFloat breathorControllerSpeed = 1.05f;
+		private ObscuredFloat breathorControllerSpeed = 1.10f;
 		[SerializeField]
-		private ObscuredFloat operativeControllerSpeed = 1.15f;
+		private ObscuredFloat operativeControllerSpeed = 1.20f;
 		[SerializeField]
 		private ObscuredFloat pilotarControllerSpeed = 1.0f;
 		[SerializeField]
-		private ObscuredFloat tsTacticalControllerSpeed = 1.05f;
+		private ObscuredFloat tsTacticalControllerSpeed = 1.15f;
 		private PhotonView photonViewComponent;
 		[SerializeField]
 		private ObscuredBool isUsingMultiplayer = false;
@@ -178,7 +178,7 @@ namespace SandeepMattepu
 				brethorHelmet.SetActive (true);
 				if(playerHealth != null)
 				{
-					playerHealth.addPointsToMaxHealthBy (25.0f);
+					playerHealth.addPointsToMaxHealthBy (50.0f);
 					playerHealth.setPlayerImmunityTowardsGasBombs (true);
 				}
 				speedOfAnimator = breathorControllerSpeed;
@@ -187,7 +187,7 @@ namespace SandeepMattepu
 				operativeHelmet.SetActive (true);
 				if(playerHealth != null)
 				{
-					playerHealth.addPointsToMaxHealthBy (10.0f);
+					playerHealth.addPointsToMaxHealthBy (35.0f);
 				}
 				speedOfAnimator = operativeControllerSpeed;
 				break;
@@ -195,7 +195,7 @@ namespace SandeepMattepu
 				pilotarHelmet.SetActive (true);
 				if(playerHealth != null)
 				{
-					playerHealth.addPointsToMaxHealthBy (20.0f);
+					playerHealth.addPointsToMaxHealthBy (60.0f);
 				}
 				if(playerFiring != null)
 				{
@@ -207,7 +207,7 @@ namespace SandeepMattepu
 				tsTacticalHelmet.SetActive (true);
 				if(playerHealth != null)
 				{
-					playerHealth.addPointsToMaxHealthBy (10.0f);
+					playerHealth.addPointsToMaxHealthBy (20.0f);
 				}
 				speedOfAnimator = tsTacticalControllerSpeed;
 				break;

@@ -24,7 +24,7 @@ public class SMPlayerHealth : MonoBehaviour, IPunObservable
 	/// <summary>
 	/// The max armor player can carry.
 	/// </summary>
-	public ObscuredFloat MaxArmor = 100.0f;
+	public ObscuredFloat MaxArmor = 1000.0f;
 	/// <summary>
 	/// The current health value of the player
 	/// </summary>
