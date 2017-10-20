@@ -47,6 +47,10 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 	/// </summary>
 	public GameObject[] gameRulesToBeSpawned;
 	/// <summary>
+	/// This is the time interval after which time gets synched.
+	/// </summary>
+	public float timeIntervalBetweenDataSynces;
+	/// <summary>
 	/// The game rules prefab that spawned.
 	/// </summary>
 	private SMMultiplayerGame gameRulesThatSpawned;
@@ -180,6 +184,11 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 		SMTeamDeathMatch.OnGameOver += hideUIAfterDeath;
 	}
 
+	private void Update()
+	{
+		syncDataAfterFewSeconds ();
+	}
+
 	void OnDestroy()
 	{
 		SMTeamDeathMatch.OnGameOver -= hideUIAfterDeath;
@@ -190,6 +199,27 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 	{
 		yield return new WaitForSeconds (0.85f);
 		spawnPlayers ();
+	}
+
+	// Used in below function
+	private float tempGameTimeStorager = 0.0f;
+	/// <summary>
+	/// This function syncs data after every few seconds to make all player's data in sync
+	/// </summary>
+	private void syncDataAfterFewSeconds()
+	{
+		if(timeIntervalBetweenDataSynces > 0.0f)		// Other values means don't sync time
+		{
+			if(tempGameTimeStorager < timeIntervalBetweenDataSynces)
+			{
+				tempGameTimeStorager += Time.deltaTime;
+			}
+			else
+			{
+				tempGameTimeStorager = 0.0f;
+				sendSignalToAllToRefreshData ();
+			}
+		}
 	}
 
 	/// <summary>
@@ -204,6 +234,7 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 			, dataToTransfer) as GameObject;
 		Transform playerPosition = placePlayerPositionAtStart ();
 		player.transform.position = playerPosition.position;
+		player.transform.rotation = playerPosition.rotation;
 
 		if(player.GetComponent<PhotonView>().isMine)
 		{
@@ -400,11 +431,13 @@ public class SMPlayerSpawnerAndAssigner : Photon.PunBehaviour
 		{
 			int random = Random.Range (0, region2SpawnPoints.Length);
 			player.transform.position = region2SpawnPoints [random].position;
+			player.transform.rotation = region2SpawnPoints [random].rotation;
 		}
 		else
 		{
 			int random = Random.Range (0, region1SpawnPoints.Length);
 			player.transform.position = region1SpawnPoints [random].position;
+			player.transform.rotation = region1SpawnPoints [random].rotation;
 		}
 
 		if (player.GetComponent<PhotonView>().isMine)
